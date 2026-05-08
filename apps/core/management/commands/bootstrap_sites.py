@@ -112,8 +112,8 @@ class Command(BaseCommand):
                 title="About",
                 slug="about",
                 headline=(
-                    "Hands-on Tech Lead &amp; Solutions Architect · Python · Java · AWS · "
-                    "Gen-AI · 22+ yrs Delivering &amp; Leading Engineering Teams"
+                    "Hands-on Tech Lead & Solutions Architect · Python · Java · AWS · "
+                    "Gen-AI · 22+ yrs Delivering & Leading Engineering Teams"
                 ),
                 bio=(
                     "<p>I code and I lead — and I'm good at making each one strengthen the other.</p>"
