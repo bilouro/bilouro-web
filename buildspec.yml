@@ -1,0 +1,20 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo "Logging in to ECR..."
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
+      - REPO_URI=$ECR_REGISTRY/$ECR_REPOSITORY
+      - IMAGE_TAG=${CODEBUILD_RESOLVED_SOURCE_VERSION:-latest}
+      - echo "Will tag as $REPO_URI:latest and $REPO_URI:$IMAGE_TAG"
+
+  build:
+    commands:
+      - echo "Building image..."
+      - docker buildx create --use --name builder
+      - docker buildx build --platform linux/amd64 -t $REPO_URI:latest -t $REPO_URI:$IMAGE_TAG --push .
+
+  post_build:
+    commands:
+      - echo "Build complete. Pushed $REPO_URI:latest and $REPO_URI:$IMAGE_TAG"

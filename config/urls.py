@@ -19,6 +19,7 @@ def healthz(_request):
 
 urlpatterns = [
     path("healthz/", healthz, name="healthz"),
+    path("healthz", healthz),  # App Runner's probe omits trailing slash
     path("django-admin/", admin.site.urls),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),

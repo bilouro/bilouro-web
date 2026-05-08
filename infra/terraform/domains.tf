@@ -11,8 +11,9 @@
 resource "aws_apprunner_custom_domain_association" "domain" {
   for_each = var.enable_apprunner ? toset(var.subdomains) : toset([])
 
-  domain_name = "${each.value}.${var.domain}"
-  service_arn = aws_apprunner_service.web[0].arn
+  domain_name          = "${each.value}.${var.domain}"
+  service_arn          = aws_apprunner_service.web[0].arn
+  enable_www_subdomain = false # avoid conflict on www.bilouro.com
 }
 
 output "dns_records_for_locaweb" {

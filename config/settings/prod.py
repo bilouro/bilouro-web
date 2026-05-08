@@ -8,6 +8,8 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 # ─── Security headers ──────────────────────────────────────────────
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_SSL_REDIRECT = env.bool("SECURE_SSL_REDIRECT", default=True)
+# App Runner's internal health probe hits /healthz over HTTP — exempt from SSL redirect
+SECURE_REDIRECT_EXEMPT = [r"^healthz/?$"]
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_HSTS_SECONDS = env.int("SECURE_HSTS_SECONDS", default=31536000)
