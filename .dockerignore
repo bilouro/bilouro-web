@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+*.log
+local_settings.py
+/staticfiles/
+/media/
+
+# Env
+.env
+.env.*
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+*.swp
+
+# Tests
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Docker
+docker-compose.yml
+docker-compose.override.yml
+Dockerfile
+.dockerignore
+
+# Git
+.git/
+.gitignore
+.github/
+
+# Terraform
+infra/
+
+# Scripts (not needed in container)
+scripts/
+
+# Docs
+README.md
+DEPLOY_REPORT.md
+*.md
+
+# Pre-commit
+.pre-commit-config.yaml
+.pre-commit-cache/
