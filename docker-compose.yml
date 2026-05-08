@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: bilouro-db
+    environment:
+      POSTGRES_DB: bilouro
+      POSTGRES_USER: bilouro
+      POSTGRES_PASSWORD: bilouro
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bilouro -d bilouro"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Optional: full app in container (use `docker compose --profile full up`)
+  web:
+    profiles: ["full"]
+    build:
+      context: .
+      target: runtime
+    container_name: bilouro-web
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.dev
+      DATABASE_URL: postgres://bilouro:bilouro@db:5432/bilouro
+      SECRET_KEY: dev-only-change-in-prod
+      DEBUG: "True"
+      ALLOWED_HOSTS: "*"
+      WAGTAILADMIN_BASE_URL: http://localhost:8000
+    volumes:
+      - .:/app
+    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+volumes:
+  postgres_data:

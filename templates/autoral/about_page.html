@@ -1,0 +1,25 @@
+{% extends "autoral/base.html" %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+<article class="about">
+  <h1>{{ page.title }}</h1>
+  {% if page.headline %}<p class="headline">{{ page.headline }}</p>{% endif %}
+
+  {% if page.bio %}
+    <section><h2>Bio</h2>{{ page.bio|richtext }}</section>
+  {% endif %}
+
+  {% if page.skills %}
+    <section><h2>Stack &amp; Skills</h2>{{ page.skills|richtext }}</section>
+  {% endif %}
+
+  {% if page.experience %}
+    <section><h2>Experience</h2>{{ page.experience|richtext }}</section>
+  {% endif %}
+
+  {% if page.contact_links %}
+    <section class="contact"><h2>Contact</h2>{{ page.contact_links|richtext }}</section>
+  {% endif %}
+</article>
+{% endblock %}

@@ -1,0 +1,79 @@
+/* Autoral — editorial / calmo */
+:root {
+  --bg: #fdfcf9;
+  --fg: #2a2a2a;
+  --muted: #6a6a6a;
+  --accent: #1f3a5a;
+  --rule: #e6e2d8;
+}
+
+body.autoral {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "Crimson Pro", "Source Serif Pro", Georgia, "Times New Roman", serif;
+  font-size: 19px;
+  line-height: 1.7;
+}
+
+body.autoral .site-header {
+  border-bottom: 1px solid var(--rule);
+  padding: 1.25rem 0;
+  margin-bottom: 3rem;
+}
+
+body.autoral .site-header .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+body.autoral .brand {
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-decoration: none;
+  letter-spacing: 0.01em;
+}
+
+body.autoral .nav a {
+  margin-left: 1.5rem;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+body.autoral .nav a:hover { color: var(--accent); }
+
+body.autoral h1 {
+  font-size: 2.4rem;
+  line-height: 1.15;
+  font-weight: 600;
+  margin: 0 0 1rem;
+  letter-spacing: -0.01em;
+}
+
+body.autoral h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 2.5rem 0 1rem;
+  border-top: 1px solid var(--rule);
+  padding-top: 1.5rem;
+}
+
+body.autoral .hero .intro,
+body.autoral .about .headline {
+  font-size: 1.2rem;
+  color: var(--muted);
+  margin-bottom: 2rem;
+}
+
+body.autoral p { margin: 0 0 1.2rem; }
+
+body.autoral a { color: var(--accent); }
+
+body.autoral .site-footer {
+  margin-top: 5rem;
+  padding: 2rem 0;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  text-align: center;
+}

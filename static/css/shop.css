@@ -1,0 +1,104 @@
+/* Shop — editorial-product hybrid */
+:root {
+  --bg: #fdfcf9;
+  --fg: #2a2a2a;
+  --muted: #6a6a6a;
+  --accent: #1f3a5a;
+  --rule: #e6e2d8;
+  --btn: #1f3a5a;
+  --btn-fg: #fff;
+}
+
+body.shop {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "Crimson Pro", "Source Serif Pro", Georgia, serif;
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+body.shop .site-header {
+  border-bottom: 1px solid var(--rule);
+  padding: 1.25rem 0;
+  margin-bottom: 3rem;
+}
+
+body.shop .brand {
+  font-weight: 600;
+  text-decoration: none;
+  letter-spacing: 0.01em;
+}
+
+body.shop h1 {
+  font-size: 2.2rem;
+  font-weight: 600;
+  line-height: 1.15;
+  margin: 0 0 1rem;
+}
+
+body.shop .book-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 2.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+body.shop .book-card a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+body.shop .book-card img {
+  width: 100%;
+  border-radius: 4px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+  margin-bottom: 1rem;
+}
+
+body.shop .book-card h2 { font-size: 1.2rem; margin: 0; }
+body.shop .book-card .subtitle { color: var(--muted); margin: 0.3rem 0 0; font-size: 0.95rem; }
+
+body.shop .book-detail {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+}
+
+@media (min-width: 720px) {
+  body.shop .book-detail { grid-template-columns: 320px 1fr; }
+}
+
+body.shop .book-detail .cover img {
+  border-radius: 4px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+}
+
+body.shop .price {
+  font-size: 1.4rem;
+  margin: 1.5rem 0;
+}
+
+body.shop .btn-buy {
+  display: inline-block;
+  background: var(--btn);
+  color: var(--btn-fg);
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+body.shop .btn-buy:hover { opacity: 0.9; }
+
+body.shop .muted { color: var(--muted); font-style: italic; }
+
+body.shop .site-footer {
+  margin-top: 5rem;
+  padding: 2rem 0;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  text-align: center;
+}

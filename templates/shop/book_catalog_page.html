@@ -1,0 +1,25 @@
+{% extends "shop/base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block content %}
+<header class="page-head">
+  <h1>{{ page.title }}</h1>
+  {% if page.intro %}<div class="intro">{{ page.intro|richtext }}</div>{% endif %}
+</header>
+
+<ul class="book-grid">
+  {% for book in books %}
+    <li class="book-card">
+      <a href="{% pageurl book %}">
+        {% if book.cover_image %}
+          {% image book.cover_image fill-400x600 %}
+        {% endif %}
+        <h2>{{ book.title }}</h2>
+        {% if book.subtitle %}<p class="subtitle">{{ book.subtitle }}</p>{% endif %}
+      </a>
+    </li>
+  {% empty %}
+    <li class="empty">Catálogo em breve.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

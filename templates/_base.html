@@ -1,0 +1,17 @@
+{% load static wagtailcore_tags wagtailuserbar %}
+<!DOCTYPE html>
+<html lang="{{ request.LANGUAGE_CODE|default:'pt' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% if page.title %}{{ page.title }} · {% endif %}{{ wagtail_site_name|default:"bilouro.com" }}{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}{{ page.search_description|default:"" }}{% endblock %}">
+  <link rel="stylesheet" href="{% static 'css/_base.css' %}">
+  {% block extra_css %}{% endblock %}
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  {% wagtailuserbar %}
+  {% block body %}{% endblock %}
+</body>
+</html>

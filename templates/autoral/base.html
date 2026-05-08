@@ -1,0 +1,26 @@
+{% extends "_base.html" %}
+{% load static %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/autoral.css' %}">{% endblock %}
+{% block body_class %}autoral{% endblock %}
+
+{% block body %}
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/">Victor H. Bilouro</a>
+    <nav class="nav">
+      <a href="/about/">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <small>&copy; {% now "Y" %} Victor H. Bilouro · <a href="https://www.linkedin.com/in/bilouro" target="_blank" rel="noopener">LinkedIn</a></small>
+  </div>
+</footer>
+{% endblock %}

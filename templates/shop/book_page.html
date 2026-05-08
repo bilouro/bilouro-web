@@ -1,0 +1,26 @@
+{% extends "shop/base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block content %}
+<article class="book-detail">
+  <div class="cover">
+    {% if page.cover_image %}{% image page.cover_image fill-600x900 %}{% endif %}
+  </div>
+  <div class="info">
+    <h1>{{ page.title }}</h1>
+    {% if page.subtitle %}<p class="subtitle">{{ page.subtitle }}</p>{% endif %}
+
+    {% if page.description %}<div class="description">{{ page.description|richtext }}</div>{% endif %}
+
+    {% if page.price_eur and page.price_eur > 0 %}
+      <p class="price">€ {{ page.price_eur }}</p>
+    {% endif %}
+
+    {% if page.buy_url %}
+      <a class="btn-buy" href="{{ page.buy_url }}" target="_blank" rel="noopener">Comprar</a>
+    {% else %}
+      <p class="muted">Em breve.</p>
+    {% endif %}
+  </div>
+</article>
+{% endblock %}

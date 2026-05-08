@@ -1,0 +1,62 @@
+[project]
+name = "bilouro"
+version = "0.1.0"
+description = "bilouro.com — Wagtail multi-site (autoral + tech) com i18n PT/EN"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "Django>=5.2,<6.0",
+    "wagtail>=7.0,<8.0",
+    "wagtail-localize>=1.13",
+    "django-environ>=0.11",
+    "psycopg[binary]>=3.2",
+    "gunicorn>=23.0",
+    "whitenoise>=6.7",
+    "django-storages[s3]>=1.14",
+    "boto3>=1.35",
+    "Pillow>=10.0",
+    "django-ses>=4.1",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.7",
+    "djlint>=1.36",
+    "pre-commit>=4.0",
+    "pytest>=8.0",
+    "pytest-django>=4.9",
+    "django-debug-toolbar>=4.4",
+    "ipython>=8.27",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+extend-exclude = ["**/migrations/*", "static/", "media/"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # bugbear
+    "DJ",  # django
+    "N",   # naming
+    "UP",  # pyupgrade
+]
+ignore = ["E501"]  # line too long — handled by formatter
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.djlint]
+profile = "django"
+indent = 2
+max_line_length = 120
+ignore = "H006,H030,H031"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.dev"
+python_files = ["tests.py", "test_*.py", "*_tests.py"]

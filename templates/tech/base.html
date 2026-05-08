@@ -1,0 +1,27 @@
+{% extends "_base.html" %}
+{% load static %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/tech.css' %}">{% endblock %}
+{% block body_class %}tech{% endblock %}
+
+{% block body %}
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/">tech<span class="dot">.</span>bilouro</a>
+    <nav class="nav">
+      <a href="/feed/">RSS</a>
+      <a href="https://github.com/bilouro" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <small>tech.bilouro.com · {% now "Y" %}</small>
+  </div>
+</footer>
+{% endblock %}

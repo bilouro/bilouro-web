@@ -1,0 +1,23 @@
+{% extends "tech/base.html" %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+<header class="page-head">
+  <h1>{{ page.title }}</h1>
+  {% if page.intro %}<div class="intro">{{ page.intro|richtext }}</div>{% endif %}
+</header>
+
+<ul class="post-list">
+  {% for post in posts %}
+    <li>
+      <a class="post-link" href="{% pageurl post %}">
+        <time datetime="{{ post.date|date:'Y-m-d' }}">{{ post.date|date:"Y-m-d" }}</time>
+        <h2>{{ post.title }}</h2>
+        {% if post.intro %}<p class="excerpt">{{ post.intro }}</p>{% endif %}
+      </a>
+    </li>
+  {% empty %}
+    <li class="empty">No posts yet.</li>
+  {% endfor %}
+</ul>
+{% endblock %}
