@@ -79,14 +79,22 @@ São strings esquisitas (com `_<hash>` no início). Copia **exactamente** como a
 
 Locaweb e a maioria dos DNS **não permitem CNAME no apex** (limitação RFC 1034). Solução recomendada:
 
-### Opção A — URL Forwarding (mais simples)
-No painel Locaweb procura **"Redirecionamento de URL"** ou **"URL Forwarding"** e configura:
+### Opção A — Redirecionamento via painel Locaweb (suportado nativamente)
 
-```
-De:   bilouro.com
-Para: https://www.bilouro.com
-Tipo: 301 (Permanent)
-```
+Caminho exacto no painel Locaweb:
+
+1. **Central do Cliente** → **Início**
+2. Clica no produto de **Hospedagem de Sites** → **Administrar**
+3. **Domínios** (lado direito da página inicial)
+4. Encontra `bilouro.com` (sem `www`) na lista
+5. Clica nos **três pontinhos** (`⋮`) ao lado do domínio
+6. **"Alterar tipo de domínio"**
+7. Selecciona **"Apontamento"**
+8. Selecciona a opção **"Redirecionamento"**
+9. URL de destino: `https://www.bilouro.com`
+10. **Alterar** (gravar)
+
+Propagação: 30 min a 1h.
 
 ### Opção B — Não fazer nada
 Aceitar que `bilouro.com` (sem `www`) não funciona. Visitantes que escrevam só "bilouro.com" não chegam ao site.
