@@ -51,5 +51,5 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
     CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:${PORT}/healthz/').read()" || exit 1
 
-# Collect static at startup (idempotent), then run gunicorn
-CMD ["sh", "-c", "python manage.py collectstatic --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:${PORT} --workers 3 --access-logfile - --error-logfile -"]
+# Migrate + collectstatic + bootstrap (all idempotent), then gunicorn
+CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py collectstatic --noinput && python manage.py bootstrap_sites --prod && gunicorn config.wsgi:application --bind 0.0.0.0:${PORT} --workers 3 --access-logfile - --error-logfile -"]

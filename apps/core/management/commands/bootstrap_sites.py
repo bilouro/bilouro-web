@@ -111,13 +111,56 @@ class Command(BaseCommand):
             about = AboutPage(
                 title="About",
                 slug="about",
-                headline="Hands-on Tech Lead & Solutions Architect",
-                bio="<p>22+ years delivering and leading engineering teams. Currently in Porto, Portugal.</p>",
-                skills="<p>Python · Java · AWS · GenAI · Postgres · Architecture</p>",
+                headline=(
+                    "Hands-on Tech Lead &amp; Solutions Architect · Python · Java · AWS · "
+                    "Gen-AI · 22+ yrs Delivering &amp; Leading Engineering Teams"
+                ),
+                bio=(
+                    "<p>I code and I lead — and I'm good at making each one strengthen the other.</p>"
+                    "<p>22+ years in engineering, the last 15 leading teams and products across "
+                    "logistics, insurance, retail and financial services. Never stopped being "
+                    "hands-on: ~200 commits across 14 new repos last year, including production "
+                    "Gen-AI agent stacks for real small businesses.</p>"
+                    "<p>Where I operate best: the seam between tech strategy and execution.</p>"
+                ),
+                skills=(
+                    "<p><strong>Architect and build:</strong> Python (Django, Flask, SQLAlchemy), "
+                    "Java (Spring Boot), Kafka, Postgres/Oracle/MySQL, Docker/Kubernetes, AWS "
+                    "(Lambda, ECS Fargate, RDS, EKS), Pulumi/Terraform.</p>"
+                    "<p><strong>Modernize legacy:</strong> strangler pattern, data-model redesign, "
+                    "platform migrations (OpenShift → AWS EKS).</p>"
+                    "<p><strong>Release engineering at scale:</strong> Control-M, Jenkins, XL "
+                    "Deploy, XL Release on heterogeneous Java/C/Perl/Shell stacks — automated "
+                    "end-to-end.</p>"
+                    "<p><strong>Applied AI:</strong> voice + email agents in production (Vapi + "
+                    "Vonage + OpenAI · Gmail + OpenAI).</p>"
+                    "<p><strong>Lead teams:</strong> Scrum, Kanban, SAFe, Lean, Management 3.0. "
+                    "Coach leads and engineers; build psychologically safe, data-driven cultures.</p>"
+                ),
+                experience=(
+                    "<p><strong>Currently:</strong> Release Manager on an 80+ engineer program, "
+                    "where I built (solo, in Python) the full automation stack we run releases on "
+                    "— Control-M orchestration, Jira/Confluence integrations, paramiko-based Linux "
+                    "ops, a Sybase QA framework, and a bash daemon framework.</p>"
+                    "<p><strong>Recent (Kuehne+Nagel, 2022–2025):</strong> led modernization of a "
+                    "mission-critical Customer Master Data monolith into Java/Spring microservices "
+                    "with Elasticsearch and Angular, using a strangler layer for legacy consumers "
+                    "— while migrating from OpenShift to AWS EKS. Recognized internally as a "
+                    "modernization success case.</p>"
+                    "<p><strong>Earlier:</strong> Leroy Merlin (Ytech), Azul Seguros, Bradesco "
+                    "Seguros, Natixis. CI/CD, containerization, cloud adoption for order-management "
+                    "and insurance products.</p>"
+                    "<p><strong>Certifications:</strong> PMP · CSPO · CSM · Kanban · "
+                    "Management 3.0 · AWS Cloud Practitioner · SCJP.</p>"
+                    "<p><strong>Languages:</strong> Portuguese (native), English (C1), "
+                    "Spanish (B1).</p>"
+                    "<p><strong>Based in Porto, Portugal.</strong> Open to remote or on-site in PT.</p>"
+                ),
                 contact_links=(
                     "<p>"
-                    "<a href='https://www.linkedin.com/in/bilouro' target='_blank'>LinkedIn</a> · "
-                    "<a href='https://github.com/bilouro' target='_blank'>GitHub</a>"
+                    "<a href='https://www.linkedin.com/in/bilouro' target='_blank' rel='noopener'>LinkedIn</a> · "
+                    "<a href='https://github.com/bilouro' target='_blank' rel='noopener'>GitHub</a> · "
+                    "<a href='mailto:hello@bilouro.com'>hello@bilouro.com</a>"
                     "</p>"
                 ),
             )
