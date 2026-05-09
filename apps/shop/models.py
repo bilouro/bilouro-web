@@ -10,10 +10,14 @@ class BookCatalogPage(Page):
     """Catalogue page that lists BookPage children."""
 
     intro = RichTextField(blank=True)
+    intro_pt = RichTextField(blank=True)
 
     template = "shop/book_catalog_page.html"
 
-    content_panels = Page.content_panels + [FieldPanel("intro")]
+    content_panels = Page.content_panels + [
+        FieldPanel("intro"),
+        FieldPanel("intro_pt"),
+    ]
 
     subpage_types = ["shop.BookPage"]
     parent_page_types = ["wagtailcore.Page"]
@@ -38,8 +42,10 @@ class BookPage(Page):
     LANGUAGE_CHOICES = [("pt", "Português"), ("en", "English")]
 
     subtitle = models.CharField(max_length=200, blank=True)
+    subtitle_pt = models.CharField(max_length=200, blank=True)
     language = models.CharField(max_length=2, choices=LANGUAGE_CHOICES, default="pt")
     description = RichTextField(blank=True)
+    description_pt = RichTextField(blank=True)
     price_eur = models.DecimalField(max_digits=8, decimal_places=2, default=0)
     coming_soon = models.BooleanField(
         default=True,
@@ -70,7 +76,12 @@ class BookPage(Page):
             heading="Meta",
         ),
         FieldPanel("cover_image"),
-        FieldPanel("description"),
+        MultiFieldPanel(
+            [FieldPanel("subtitle"), FieldPanel("description")], heading="EN content"
+        ),
+        MultiFieldPanel(
+            [FieldPanel("subtitle_pt"), FieldPanel("description_pt")], heading="PT content"
+        ),
         FieldPanel("buy_url"),
     ]
 

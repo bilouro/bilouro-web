@@ -13,10 +13,14 @@ class BlogIndexPage(Page):
     """Listing of tech blog posts."""
 
     intro = RichTextField(blank=True)
+    intro_pt = RichTextField(blank=True)
 
     template = "tech/blog_index_page.html"
 
-    content_panels = Page.content_panels + [FieldPanel("intro")]
+    content_panels = Page.content_panels + [
+        FieldPanel("intro"),
+        FieldPanel("intro_pt"),
+    ]
 
     subpage_types = ["tech.BlogPostPage", "tech.ProjectIndexPage"]
     parent_page_types = ["wagtailcore.Page"]
@@ -35,10 +39,14 @@ class ProjectIndexPage(Page):
     """Catalogue of projects (OSS + professional + side)."""
 
     intro = RichTextField(blank=True)
+    intro_pt = RichTextField(blank=True)
 
     template = "tech/project_index_page.html"
 
-    content_panels = Page.content_panels + [FieldPanel("intro")]
+    content_panels = Page.content_panels + [
+        FieldPanel("intro"),
+        FieldPanel("intro_pt"),
+    ]
 
     subpage_types = ["tech.ProjectPage"]
     parent_page_types = ["tech.BlogIndexPage", "wagtailcore.Page"]
@@ -63,7 +71,9 @@ class ProjectPage(Page):
     kind = models.CharField(max_length=20, choices=KIND_CHOICES, default="oss")
     period = models.CharField(max_length=100, blank=True, help_text="e.g. '2022-2025'")
     summary = models.CharField(max_length=300, help_text="One-line description shown on cards")
+    summary_pt = models.CharField(max_length=300, blank=True)
     description = RichTextField(blank=True)
+    description_pt = RichTextField(blank=True)
     tech_stack = models.CharField(
         max_length=300, blank=True, help_text="Comma-separated, e.g. 'Python, AWS, Postgres'"
     )
@@ -97,8 +107,12 @@ class ProjectPage(Page):
             heading="Meta",
         ),
         FieldPanel("image"),
-        FieldPanel("summary"),
-        FieldPanel("description"),
+        MultiFieldPanel(
+            [FieldPanel("summary"), FieldPanel("description")], heading="EN content"
+        ),
+        MultiFieldPanel(
+            [FieldPanel("summary_pt"), FieldPanel("description_pt")], heading="PT content"
+        ),
         MultiFieldPanel(
             [FieldPanel("github_url"), FieldPanel("live_url")], heading="Links"
         ),
@@ -121,6 +135,8 @@ class BlogPostPage(Page):
     date = models.DateField("Post date")
     intro = models.CharField(max_length=400, blank=True)
     body_md = models.TextField(blank=True, help_text="Markdown source.")
+    intro_pt = models.CharField(max_length=400, blank=True)
+    body_md_pt = models.TextField(blank=True)
     image = models.ForeignKey(
         "wagtailimages.Image",
         null=True,
@@ -143,8 +159,12 @@ class BlogPostPage(Page):
             heading="Meta",
         ),
         FieldPanel("image"),
-        FieldPanel("intro"),
-        FieldPanel("body_md"),
+        MultiFieldPanel(
+            [FieldPanel("intro"), FieldPanel("body_md")], heading="EN content"
+        ),
+        MultiFieldPanel(
+            [FieldPanel("intro_pt"), FieldPanel("body_md_pt")], heading="PT content"
+        ),
     ]
 
     parent_page_types = ["tech.BlogIndexPage"]

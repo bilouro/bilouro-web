@@ -1,5 +1,5 @@
 {% extends "autoral/base.html" %}
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags i18n_fields i18n %}
 
 {% block jsonld %}
 <script type="application/ld+json">
@@ -20,38 +20,40 @@
 {% endblock %}
 
 {% block content %}
+{% get_current_language as cur %}
 <section class="hero hero-home">
-  <p class="kicker">Hands-on Tech Lead · Solutions Architect</p>
-  <h1>Engineering, leadership and notes from <em>both</em> sides of the keyboard.</h1>
-  {% if page.intro %}<div class="intro">{{ page.intro|richtext }}</div>{% endif %}
+  <p class="kicker">{% if cur == 'pt' %}Hands-on Tech Lead · Arquiteto de Soluções{% else %}Hands-on Tech Lead · Solutions Architect{% endif %}</p>
+  <h1>{% if cur == 'pt' %}Engenharia, liderança e notas dos <em>dois</em> lados do teclado.{% else %}Engineering, leadership and notes from <em>both</em> sides of the keyboard.{% endif %}</h1>
+
+  {% tr_richtext page "intro" as intro_html %}
+  {% if intro_html %}<div class="intro">{{ intro_html }}</div>{% endif %}
 
   <div class="hero-cta">
-    <a class="btn" href="/about/">Read the long version →</a>
-    <a class="btn btn-secondary" href="https://tech.bilouro.com/">Tech blog</a>
-    <a class="btn btn-secondary" href="https://books.bilouro.com/">Books</a>
+    <a class="btn" href="/about/">{% if cur == 'pt' %}Ler a versão longa →{% else %}Read the long version →{% endif %}</a>
+    <a class="btn btn-secondary" href="https://tech.bilouro.com/">{% if cur == 'pt' %}Tech blog{% else %}Tech blog{% endif %}</a>
+    <a class="btn btn-secondary" href="https://books.bilouro.com/">{% if cur == 'pt' %}Livros{% else %}Books{% endif %}</a>
   </div>
 </section>
 
-{% if page.body %}
-  <section class="hero-body">{{ page.body|richtext }}</section>
-{% endif %}
+{% tr_richtext page "body" as body_html %}
+{% if body_html %}<section class="hero-body">{{ body_html }}</section>{% endif %}
 
 <section class="cards">
   <article class="card">
     <h3>Tech</h3>
-    <p>Notes on engineering leadership, modernizing legacy, and building production AI agents at SMB scale.</p>
+    <p>{% if cur == 'pt' %}Notas sobre engineering leadership, modernização de legacy e construção de agentes de IA em produção à escala SMB.{% else %}Notes on engineering leadership, modernizing legacy, and building production AI agents at SMB scale.{% endif %}</p>
     <a class="card-link" href="https://tech.bilouro.com/">tech.bilouro.com →</a>
   </article>
 
   <article class="card">
-    <h3>Books</h3>
-    <p>Working on a leadership book using Jesus' example as the case study. Weekly reflections on the way to the launch.</p>
+    <h3>{% if cur == 'pt' %}Livros{% else %}Books{% endif %}</h3>
+    <p>{% if cur == 'pt' %}A trabalhar num livro de liderança usando o exemplo de Jesus como caso de estudo. Reflexões semanais até ao lançamento.{% else %}Working on a leadership book using Jesus' example as the case study. Weekly reflections on the way to the launch.{% endif %}</p>
     <a class="card-link" href="https://books.bilouro.com/">books.bilouro.com →</a>
   </article>
 
   <article class="card">
     <h3>About</h3>
-    <p>22+ years in engineering, last 15 leading. Currently in Porto, Portugal.</p>
+    <p>{% if cur == 'pt' %}22+ anos em engenharia, os últimos 15 a liderar. Atualmente em Porto, Portugal.{% else %}22+ years in engineering, last 15 leading. Currently in Porto, Portugal.{% endif %}</p>
     <a class="card-link" href="/about/">CV / About →</a>
   </article>
 </section>

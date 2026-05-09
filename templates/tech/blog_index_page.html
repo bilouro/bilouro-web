@@ -1,11 +1,11 @@
 {% extends "tech/base.html" %}
-{% load wagtailcore_tags wagtailimages_tags %}
+{% load wagtailcore_tags wagtailimages_tags i18n_fields %}
 
 {% block content %}
 <header class="page-head">
   <p class="kicker">tech.bilouro.com</p>
   <h1>Notes from the seam between code and leadership.</h1>
-  {% if page.intro %}<div class="intro">{{ page.intro|richtext }}</div>{% endif %}
+  {% tr_richtext page "intro" as intro_html %}{% if intro_html %}<div class="intro">{{ intro_html }}</div>{% endif %}
 </header>
 
 <ul class="post-list">

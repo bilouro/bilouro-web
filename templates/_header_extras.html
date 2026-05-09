@@ -1,5 +1,5 @@
 {# search form + language switcher — included in each vertical's header #}
-{% load i18n %}
+{% load i18n %}{% get_current_language as cur %}
 <form action="/search/" method="get" class="header-search" role="search">
   <input type="search" name="q" placeholder="Search…" aria-label="Search">
 </form>

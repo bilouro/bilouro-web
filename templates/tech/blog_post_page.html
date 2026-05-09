@@ -1,5 +1,5 @@
 {% extends "tech/base.html" %}
-{% load wagtailcore_tags wagtailimages_tags %}
+{% load wagtailcore_tags wagtailimages_tags i18n_fields %}
 
 {% block og_type %}article{% endblock %}
 
@@ -38,7 +38,8 @@
       · by <a rel="author" href="https://www.bilouro.com/about/">Victor H. Bilouro</a>
     </p>
     <h1>{{ page.title }}</h1>
-    {% if page.intro %}<p class="lede">{{ page.intro }}</p>{% endif %}
+    {% tr page "intro" as intro_text %}
+    {% if intro_text %}<p class="lede">{{ intro_text }}</p>{% endif %}
   </header>
 
   {% if page.image %}
@@ -46,7 +47,8 @@
   {% endif %}
 
   <div class="body">
-    {{ page.body_md|linebreaks }}
+    {% tr page "body_md" as body_text %}
+    {{ body_text|linebreaks }}
   </div>
 
   {% if page.tags.all %}

@@ -1,5 +1,5 @@
 {% extends "shop/base.html" %}
-{% load wagtailcore_tags wagtailimages_tags %}
+{% load wagtailcore_tags wagtailimages_tags i18n_fields %}
 
 {% block og_type %}book{% endblock %}
 
@@ -28,9 +28,10 @@
   </div>
   <div class="info">
     <h1>{{ page.title }}</h1>
-    {% if page.subtitle %}<p class="subtitle">{{ page.subtitle }}</p>{% endif %}
+    {% tr page "subtitle" as subtitle_text %}{% if subtitle_text %}<p class="subtitle">{{ subtitle_text }}</p>{% endif %}
 
-    {% if page.description %}<div class="description">{{ page.description|richtext }}</div>{% endif %}
+    {% tr_richtext page "description" as desc_html %}{% if desc_html %}<div class="description">{{ desc_html }}</div>{% endif %}
+    <p class="muted small">{% if request.LANGUAGE_CODE == 'pt' %}Livro escrito em {% if page.language == 'pt' %}Português{% else %}Inglês{% endif %}.{% else %}Written in {% if page.language == 'pt' %}Portuguese{% else %}English{% endif %}.{% endif %}</p>
 
     {% if page.coming_soon %}
       <p class="coming-soon"><strong>Em breve.</strong> Os posts abaixo são parte do percurso até ao lançamento.</p>

@@ -1,5 +1,5 @@
 {% extends "tech/base.html" %}
-{% load wagtailcore_tags wagtailimages_tags %}
+{% load wagtailcore_tags wagtailimages_tags i18n_fields %}
 
 {% block content %}
 <article class="project">
@@ -11,12 +11,13 @@
       {% if page.period %} · <span class="period">{{ page.period }}</span>{% endif %}
     </p>
     <h1>{{ page.title }}</h1>
-    <p class="summary">{{ page.summary }}</p>
+    {% tr page "summary" as summary_text %}<p class="summary">{{ summary_text }}</p>
   </header>
 
-  {% if page.image %}<figure class="hero">{% image page.image width-1200 %}</figure>{% endif %}
+  {% if page.image %}<figure class="hero">{% image page.image width-1200 loading="lazy" %}</figure>{% endif %}
 
-  <div class="body">{{ page.description|richtext }}</div>
+  {% tr_richtext page "description" as desc_html %}
+  <div class="body">{{ desc_html }}</div>
 
   {% if page.tech_stack %}
     <section class="stack-detail">

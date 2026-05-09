@@ -1,6 +1,5 @@
 {# Giscus comments — only renders if GISCUS_REPO_ID is set in settings #}
-{% load wagtailsettings_tags %}
-{% if GISCUS_REPO_ID|default:None %}
+{% if GISCUS_REPO_ID %}
 <section class="comments">
   <h3>Comments</h3>
   <script src="https://giscus.app/client.js"

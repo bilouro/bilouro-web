@@ -1,10 +1,10 @@
 {% extends "tech/base.html" %}
-{% load wagtailcore_tags wagtailimages_tags %}
+{% load wagtailcore_tags wagtailimages_tags i18n_fields %}
 
 {% block content %}
 <header class="page-head">
   <h1>{{ page.title }}</h1>
-  {% if page.intro %}<div class="intro">{{ page.intro|richtext }}</div>{% endif %}
+  {% tr_richtext page "intro" as intro_html %}{% if intro_html %}<div class="intro">{{ intro_html }}</div>{% endif %}
 </header>
 
 <ul class="project-grid">
@@ -20,7 +20,7 @@
             {% if project.period %}<span class="period">· {{ project.period }}</span>{% endif %}
           </header>
           <h2>{{ project.title }}</h2>
-          <p class="summary">{{ project.summary }}</p>
+          {% tr project "summary" as summary_text %}<p class="summary">{{ summary_text }}</p>
           {% if project.tech_stack %}
             <p class="stack">
               {% for t in project.tech_stack|cut:" "|stringformat:"s"|slice:":300"|wordwrap:1 %}{% endfor %}
