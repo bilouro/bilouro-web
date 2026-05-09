@@ -148,3 +148,12 @@ class BookPostPage(Page):
     ]
 
     parent_page_types = ["shop.BookPage"]
+
+    @property
+    def display_title(self):
+        """Title in the post's NATIVE language (book posts don't translate)."""
+        return self.title_pt or self.title
+
+    @property
+    def display_summary(self):
+        return self.summary_pt or self.summary
