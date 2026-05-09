@@ -95,6 +95,89 @@ body.shop .btn-buy:hover { opacity: 0.9; }
 
 body.shop .muted { color: var(--muted); font-style: italic; }
 
+body.shop .coming-soon {
+  background: #f7f3eb;
+  border-left: 3px solid var(--accent);
+  padding: 0.75rem 1rem;
+  margin: 1.5rem 0;
+}
+
+body.shop .book-posts {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--rule);
+}
+
+body.shop .book-posts h2 {
+  font-size: 1.4rem;
+  margin: 0 0 1.5rem;
+}
+
+body.shop .post-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+body.shop .post-list li {
+  border-bottom: 1px solid var(--rule);
+  padding: 1.25rem 0;
+}
+
+body.shop .post-list .post-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+body.shop .post-list h3 {
+  margin: 0.3rem 0 0.4rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+body.shop .post-list time {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+body.shop .post-list .ref {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-style: italic;
+}
+
+body.shop .book-post .breadcrumb {
+  margin: 0 0 1rem;
+}
+
+body.shop .book-post .breadcrumb a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+body.shop .book-post .meta {
+  color: var(--muted);
+  margin: 0 0 1.5rem;
+  font-size: 0.95rem;
+}
+
+body.shop .book-post .hero {
+  margin: 2rem 0;
+}
+
+body.shop .book-post .hero img {
+  width: 100%;
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+body.shop .book-post .body {
+  white-space: pre-wrap;
+}
+
 body.shop .site-footer {
   margin-top: 5rem;
   padding: 2rem 0;

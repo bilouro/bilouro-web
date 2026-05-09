@@ -12,15 +12,33 @@
 
     {% if page.description %}<div class="description">{{ page.description|richtext }}</div>{% endif %}
 
-    {% if page.price_eur and page.price_eur > 0 %}
-      <p class="price">€ {{ page.price_eur }}</p>
-    {% endif %}
-
-    {% if page.buy_url %}
-      <a class="btn-buy" href="{{ page.buy_url }}" target="_blank" rel="noopener">Comprar</a>
+    {% if page.coming_soon %}
+      <p class="coming-soon"><strong>Em breve.</strong> Os posts abaixo são parte do percurso até ao lançamento.</p>
     {% else %}
-      <p class="muted">Em breve.</p>
+      {% if page.price_eur and page.price_eur > 0 %}
+        <p class="price">€ {{ page.price_eur }}</p>
+      {% endif %}
+      {% if page.buy_url %}
+        <a class="btn-buy" href="{{ page.buy_url }}" target="_blank" rel="noopener">Comprar</a>
+      {% endif %}
     {% endif %}
   </div>
 </article>
+
+{% if posts %}
+<section class="book-posts">
+  <h2>Reflexões pré-lançamento</h2>
+  <ul class="post-list">
+    {% for post in posts %}
+      <li>
+        <a class="post-link" href="{% pageurl post %}">
+          <time datetime="{{ post.date|date:'Y-m-d' }}">{{ post.date|date:"j M Y" }}</time>
+          <h3>{{ post.title }}</h3>
+          {% if post.ref %}<p class="ref">{{ post.ref }}</p>{% endif %}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
 {% endblock %}

@@ -107,6 +107,16 @@ body.tech .post .lede {
 
 body.tech .post .body { white-space: pre-wrap; }
 
+body.tech .post .hero {
+  margin: 2rem 0;
+}
+
+body.tech .post .hero img {
+  width: 100%;
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
 body.tech .tags { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
 body.tech .tag {
   display: inline-block;

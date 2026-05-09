@@ -169,22 +169,47 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("  + AboutPage created"))
 
         catalog = BookCatalogPage.objects.first()
-        if catalog and not BookPage.objects.exists():
-            book = BookPage(
-                title="Jesus, o Líder",
-                slug="jesus-o-lider",
-                subtitle="Reflexões sobre liderança a partir do exemplo de Jesus",
-                language="pt",
-                description=(
-                    "<p>Reflexões semanais sobre liderança moderna a partir de "
-                    "passagens dos Evangelhos. Aplicação prática para gestores, "
-                    "tech leads e fundadores.</p>"
-                ),
-                price_eur=0,
-                buy_url="",
-            )
-            catalog.add_child(instance=book)
-            book.save_revision().publish()
-            self.stdout.write(self.style.SUCCESS("  + BookPage 'Jesus, o Líder' created"))
+        if catalog:
+            books = [
+                {
+                    "title": "Jesus, o Líder",
+                    "slug": "jesus-o-lider",
+                    "subtitle": "Reflexões sobre liderança a partir do exemplo de Jesus",
+                    "language": "pt",
+                    "description": (
+                        "<p>Reflexões semanais sobre liderança moderna à luz do exemplo "
+                        "de Jesus. Aplicação prática para gestores, tech leads e fundadores.</p>"
+                        "<p>Os posts pré-lançamento abaixo são parte do percurso até o livro.</p>"
+                    ),
+                },
+                {
+                    "title": "Jesus, the Leader",
+                    "slug": "jesus-the-leader",
+                    "subtitle": "Reflections on modern leadership through Jesus' example",
+                    "language": "en",
+                    "description": (
+                        "<p>Weekly reflections on modern leadership, drawn from passages of "
+                        "the Gospels. Practical application for managers, tech leads and founders.</p>"
+                        "<p>The pre-launch posts below are part of the journey to the book.</p>"
+                    ),
+                },
+            ]
+            for spec in books:
+                if BookPage.objects.filter(slug=spec["slug"]).exists():
+                    self.stdout.write(f"  ~ BookPage {spec['slug']} exists")
+                    continue
+                book = BookPage(
+                    title=spec["title"],
+                    slug=spec["slug"],
+                    subtitle=spec["subtitle"],
+                    language=spec["language"],
+                    description=spec["description"],
+                    price_eur=0,
+                    coming_soon=True,
+                    buy_url="",
+                )
+                catalog.add_child(instance=book)
+                book.save_revision().publish()
+                self.stdout.write(self.style.SUCCESS(f"  + BookPage '{spec['title']}' created"))
 
         self.stdout.write(self.style.SUCCESS("\nbootstrap_sites complete."))

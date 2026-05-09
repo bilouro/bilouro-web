@@ -1,5 +1,5 @@
 {% extends "tech/base.html" %}
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags wagtailimages_tags %}
 
 {% block content %}
 <article class="post">
@@ -8,6 +8,10 @@
     <h1>{{ page.title }}</h1>
     {% if page.intro %}<p class="lede">{{ page.intro }}</p>{% endif %}
   </header>
+
+  {% if page.image %}
+    <figure class="hero">{% image page.image width-1200 %}</figure>
+  {% endif %}
 
   <div class="body">
     {# body_md is plain markdown — render at template time via the markdown filter #}

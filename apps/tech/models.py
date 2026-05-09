@@ -45,6 +45,13 @@ class BlogPostPage(Page):
     date = models.DateField("Post date")
     intro = models.CharField(max_length=400, blank=True)
     body_md = models.TextField(blank=True, help_text="Markdown source.")
+    image = models.ForeignKey(
+        "wagtailimages.Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
     tags = ClusterTaggableManager(through=BlogPostTag, blank=True)
 
     template = "tech/blog_post_page.html"
@@ -59,6 +66,7 @@ class BlogPostPage(Page):
             [FieldPanel("date"), FieldPanel("tags")],
             heading="Meta",
         ),
+        FieldPanel("image"),
         FieldPanel("intro"),
         FieldPanel("body_md"),
     ]
