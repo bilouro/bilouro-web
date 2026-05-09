@@ -16,6 +16,8 @@ dependencies = [
     "boto3>=1.35",
     "Pillow>=10.0",
     "django-ses>=4.1",
+    "wagtail-cache>=3.0.0",
+    "wagtail-metadata>=5.0.0",
 ]
 
 [dependency-groups]

@@ -56,7 +56,9 @@ dependencies = [
     { name = "pillow" },
     { name = "psycopg", extra = ["binary"] },
     { name = "wagtail" },
+    { name = "wagtail-cache" },
     { name = "wagtail-localize" },
+    { name = "wagtail-metadata" },
     { name = "whitenoise" },
 ]
 
@@ -82,7 +84,9 @@ requires-dist = [
     { name = "pillow", specifier = ">=10.0" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.2" },
     { name = "wagtail", specifier = ">=7.0,<8.0" },
+    { name = "wagtail-cache", specifier = ">=3.0.0" },
     { name = "wagtail-localize", specifier = ">=1.13" },
+    { name = "wagtail-metadata", specifier = ">=5.0.0" },
     { name = "whitenoise", specifier = ">=6.7" },
 ]
 
@@ -1320,6 +1324,18 @@ wheels = [
 ]
 
 [[package]]
+name = "wagtail-cache"
+version = "3.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "wagtail" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/03/de/30e9441b66e9f679198ff5046b6bb6fa3dffe5e1a8268ac5b0847356ab89/wagtail_cache-3.0.0.tar.gz", hash = "sha256:a12b9f7dbd41b560b7fa77be08a6c7ab292536e37296dc910275b99c198ddd1e", size = 12318, upload-time = "2025-07-09T22:18:59.137Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/19/92/1c83f4c93e015034666ac192a7e7716236c9595331a8db45fa7b43d159ea/wagtail_cache-3.0.0-py3-none-any.whl", hash = "sha256:2bbb8d1bc5c4c9d7755113c0c8b91b3ec8a0c90bd560ef62aab99698961114fa", size = 14981, upload-time = "2025-07-09T22:18:57.637Z" },
+]
+
+[[package]]
 name = "wagtail-localize"
 version = "1.13"
 source = { registry = "https://pypi.org/simple" }
@@ -1332,6 +1348,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/6c/19/781b910e3ee3b1f955376efe92c6f192e8e43130dd2ec892592aaac27073/wagtail_localize-1.13.tar.gz", hash = "sha256:48ecfcd6d002009697b84d77ebcb042451a68da916a1f5ca0e161b472c2b74c8", size = 285949, upload-time = "2026-01-25T16:46:42.592Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/27/ab/18535934b8503000ef0bcd892f505f728a44cbb9499ae3d4e052647e1ef9/wagtail_localize-1.13-py3-none-any.whl", hash = "sha256:48296cb90eb3317bea62ecd5f23cc57088c9c9d39aca3b2261e4f19fa15de2cf", size = 511068, upload-time = "2026-01-25T16:46:40.628Z" },
+]
+
+[[package]]
+name = "wagtail-metadata"
+version = "5.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "wagtail" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/44/ad/f77f4d394eec667236db9c7d80c12c3f721b495373c4616539dd3fc3bfa5/wagtail-metadata-5.0.0.tar.gz", hash = "sha256:3b9109928bad53306b21b64cf9205d84cbb88fc625bac0a38305bebb9c26e64a", size = 10217, upload-time = "2023-09-07T00:12:28.634Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6a/5c/0326104a7606c076a99eb59cb0fb200e22fc54b449a71ed719b92e098c07/wagtail_metadata-5.0.0-py2.py3-none-any.whl", hash = "sha256:fcc2bbb71e83b353ceef05d69a4cde3f2fbe645c9e5035e46f7829fc234a6405", size = 12616, upload-time = "2023-09-07T00:12:26.797Z" },
 ]
 
 [[package]]

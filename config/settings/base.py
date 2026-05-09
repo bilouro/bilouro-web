@@ -47,6 +47,8 @@ WAGTAIL_APPS = [
     "wagtail",
     "wagtail_localize",
     "wagtail_localize.locales",
+    "wagtailmetadata",
+    "wagtailcache",
     "modelcluster",
     "taggit",
 ]
@@ -67,6 +69,7 @@ INSTALLED_APPS = LOCAL_APPS + WAGTAIL_APPS + DJANGO_APPS
 # ─── Middleware ─────────────────────────────────────────────────────
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "wagtailcache.cache.UpdateCacheMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
@@ -76,7 +79,20 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
+    "wagtailcache.cache.FetchFromCacheMiddleware",
 ]
+
+# wagtail-cache settings
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "wagtailcache",
+        "TIMEOUT": 60 * 60,  # 1h default
+    }
+}
+WAGTAIL_CACHE_BACKEND = "default"
+WAGTAIL_CACHE_HEADER = "X-Wagtail-Cache"
+WAGTAIL_CACHE_IGNORE_QS = ["utm_*", "fbclid", "gclid", "ref"]
 
 
 # ─── Templates ──────────────────────────────────────────────────────
@@ -91,6 +107,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "apps.core.context_processors.site_globals",
             ],
         },
     },
@@ -118,14 +135,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # ─── i18n / l10n ────────────────────────────────────────────────────
-LANGUAGE_CODE = "pt-br"
+LANGUAGE_CODE = "en"
 TIME_ZONE = "Europe/Lisbon"
 USE_I18N = True
 USE_TZ = True
 
 LANGUAGES = [
-    ("pt", "Português"),
     ("en", "English"),
+    ("pt", "Português"),
 ]
 
 LOCALE_PATHS = [BASE_DIR / "locale"]
@@ -133,6 +150,9 @@ LOCALE_PATHS = [BASE_DIR / "locale"]
 # Wagtail i18n
 WAGTAIL_I18N_ENABLED = True
 WAGTAIL_CONTENT_LANGUAGES = LANGUAGES
+
+# wagtail-localize machine translator (using our OpenAI prompt below)
+WAGTAILLOCALIZE_MACHINE_TRANSLATORS = []  # we run translations via custom command, not the admin button
 
 
 # ─── Static & media ─────────────────────────────────────────────────
@@ -153,6 +173,17 @@ WAGTAILSEARCH_BACKENDS = {
         "BACKEND": "wagtail.search.backends.database",
     }
 }
+
+
+# ─── Comments / Analytics (optional, set via env) ─────────────────
+# Giscus (GitHub Discussions). Get IDs from giscus.app after enabling
+# Discussions on bilouro/bilouro-comments.
+GISCUS_REPO_ID = env("GISCUS_REPO_ID", default="")
+GISCUS_CATEGORY_ID = env("GISCUS_CATEGORY_ID", default="")
+
+# Plausible Analytics — set PLAUSIBLE_DOMAIN to enable.
+PLAUSIBLE_DOMAIN = env("PLAUSIBLE_DOMAIN", default="")
+PLAUSIBLE_SCRIPT = env("PLAUSIBLE_SCRIPT", default="https://plausible.io/js/script.js")
 
 
 # ─── Email ──────────────────────────────────────────────────────────

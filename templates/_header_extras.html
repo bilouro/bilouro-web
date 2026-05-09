@@ -1,0 +1,10 @@
+{# search form + language switcher — included in each vertical's header #}
+{% load i18n %}
+<form action="/search/" method="get" class="header-search" role="search">
+  <input type="search" name="q" placeholder="Search…" aria-label="Search">
+</form>
+<div class="lang-switcher" aria-label="Language">
+  {% get_current_language as cur %}
+  <a href="/i18n/setlang/?lang=en&next={{ request.path|urlencode }}" {% if cur == 'en' %}class="active"{% endif %} title="English">🇬🇧</a>
+  <a href="/i18n/setlang/?lang=pt&next={{ request.path|urlencode }}" {% if cur == 'pt' %}class="active"{% endif %} title="Português">🇵🇹</a>
+</div>

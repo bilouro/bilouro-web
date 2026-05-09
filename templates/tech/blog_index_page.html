@@ -13,7 +13,7 @@
     <li>
       <a class="post-link" href="{% pageurl post %}">
         {% if post.image %}
-          <div class="thumb">{% image post.image fill-400x240 %}</div>
+          <div class="thumb">{% image post.image fill-400x240 loading="lazy" %}</div>
         {% endif %}
         <div class="post-link-body">
           <time datetime="{{ post.date|date:'Y-m-d' }}">{{ post.date|date:"j M Y" }}</time>

@@ -81,3 +81,40 @@ button, input, textarea {
 
 .cross-nav-bottom a { text-decoration: none; }
 .cross-nav-bottom .social a { margin-left: 1rem; }
+
+/* Header extras: search + lang switcher (shared across verticals) */
+.header-search {
+  margin-left: 1rem;
+  display: inline-flex;
+  align-items: center;
+}
+.header-search input[type=search] {
+  border: 1px solid var(--rule, #e6e2d8);
+  background: transparent;
+  border-radius: 4px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.88rem;
+  font-family: inherit;
+  width: 140px;
+  color: inherit;
+}
+.header-search input[type=search]::placeholder { color: var(--muted, #6a6a6a); }
+.lang-switcher {
+  display: inline-flex;
+  gap: 0.2rem;
+  margin-left: 0.6rem;
+  font-size: 1rem;
+}
+.lang-switcher a {
+  text-decoration: none;
+  padding: 0.05rem 0.2rem;
+  border-radius: 3px;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+.lang-switcher a:hover { opacity: 1; }
+.lang-switcher a.active { opacity: 1; outline: 1px solid var(--accent, #1f3a5a); }
+
+@media (max-width: 720px) {
+  .header-search { display: none; }
+}

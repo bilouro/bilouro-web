@@ -1,0 +1,52 @@
+{% extends "_base.html" %}
+{% load static wagtailcore_tags %}
+
+{% block title %}{% if query %}{{ query }} · {% endif %}Search · {{ wagtail_site_name }}{% endblock %}
+{% block meta_robots %}noindex, follow{% endblock %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/autoral.css' %}">
+{% endblock %}
+{% block body_class %}autoral{% endblock %}
+
+{% block body %}
+<header class="site-header">
+  <div class="container-wide">
+    <a class="brand" href="/">{{ wagtail_site_name }}</a>
+  </div>
+</header>
+
+<main class="container">
+  <header class="page-head">
+    <h1>Search</h1>
+    <form method="get" action="/search/" class="search-form">
+      <input type="search" name="q" value="{{ query }}" placeholder="Type and hit enter…" autofocus>
+      <button type="submit">Search</button>
+    </form>
+  </header>
+
+  {% if query %}
+    <p class="muted">{{ total }} result{{ total|pluralize }} for &ldquo;{{ query }}&rdquo;.</p>
+
+    <ul class="post-list search-results">
+      {% for r in results %}
+        <li>
+          <a class="post-link" href="{% pageurl r %}">
+            <div class="post-link-body">
+              <h3>{{ r.title }}</h3>
+              {% if r.specific.intro %}<p class="excerpt">{{ r.specific.intro|truncatechars:160 }}</p>
+              {% elif r.specific.summary %}<p class="excerpt">{{ r.specific.summary|truncatechars:160 }}</p>
+              {% elif r.specific.body_md %}<p class="excerpt">{{ r.specific.body_md|striptags|truncatechars:160 }}</p>
+              {% endif %}
+              <p class="muted small">{{ r.url }}</p>
+            </div>
+          </a>
+        </li>
+      {% empty %}
+        <li class="empty">No results.</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</main>
+
+{% include "_cross_nav.html" %}
+{% endblock %}

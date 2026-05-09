@@ -1,6 +1,26 @@
 {% extends "shop/base.html" %}
 {% load wagtailcore_tags wagtailimages_tags %}
 
+{% block og_type %}book{% endblock %}
+
+{% block jsonld %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Book",
+  "name": "{{ page.title|escapejs }}",
+  "alternateName": "{{ page.subtitle|escapejs|default:page.title|escapejs }}",
+  "author": { "@type": "Person", "name": "Victor H. Bilouro", "url": "https://www.bilouro.com/about/" },
+  "inLanguage": "{{ page.language }}",
+  "description": "{{ page.description|striptags|escapejs|truncatechars:300 }}",
+  "url": "{{ request.scheme }}://{{ request.get_host }}{{ request.path }}"{% if page.cover_image %},
+  {% image page.cover_image fill-600x900 as cover %}
+  "image": "{{ request.scheme }}://{{ request.get_host }}{{ cover.url }}"{% endif %},
+  "offers": { "@type": "Offer", "availability": "https://schema.org/PreOrder", "price": "{{ page.price_eur }}", "priceCurrency": "EUR" }
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <article class="book-detail">
   <div class="cover">
@@ -33,7 +53,7 @@
       <li>
         <a class="post-link" href="{% pageurl post %}">
           {% if post.image %}
-            <div class="thumb">{% image post.image fill-400x240 %}</div>
+            <div class="thumb">{% image post.image fill-400x240 loading="lazy" %}</div>
           {% endif %}
           <div class="post-link-body">
             <time datetime="{{ post.date|date:'Y-m-d' }}">{{ post.date|date:"j M Y" }}</time>

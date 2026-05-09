@@ -15,6 +15,7 @@ from wagtail.contrib.sitemaps.sitemap_generator import Sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 
 from apps.core.feeds import BooksFeed, CombinedFeed, TechBlogFeed
+from apps.core.views import search as search_view, set_language as set_lang_view
 
 
 def healthz(_request):
@@ -57,6 +58,8 @@ urlpatterns = [
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="sitemap"),
     path("feed/", feed_dispatch, name="feed"),
     path("feed", feed_dispatch),
+    path("search/", search_view, name="search"),
+    path("i18n/setlang/", set_lang_view, name="set_language"),
     path("django-admin/", admin.site.urls),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),

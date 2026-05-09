@@ -1,23 +1,29 @@
-{% load static wagtailcore_tags wagtailuserbar %}
+{% load static wagtailcore_tags wagtailuserbar wagtailimages_tags %}{% spaceless %}{% endspaceless %}
 <!DOCTYPE html>
-<html lang="{{ request.LANGUAGE_CODE|default:'pt' }}">
+<html lang="{% block html_lang %}{{ request.LANGUAGE_CODE|default:'en' }}{% endblock %}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}{% if page.title and page.url != '/' %}{{ page.title }} · {% endif %}{{ wagtail_site_name|default:"bilouro.com" }}{% endblock %}</title>
+
+  <title>{% block title %}{% if page %}{{ page.seo_title|default:page.title }} · {% endif %}{{ wagtail_site_name|default:"bilouro.com" }}{% endblock %}</title>
 
   <meta name="description" content="{% block meta_description %}{% firstof page.search_description page.summary page.intro|striptags page.bio|striptags|truncatechars:160 'Victor H. Bilouro — Hands-on Tech Lead, Solutions Architect & writer. Notes on engineering leadership, modern systems, and Jesus as a leadership case study.' %}{% endblock %}">
 
   <link rel="canonical" href="{% block canonical %}{{ request.scheme }}://{{ request.get_host }}{{ request.path }}{% endblock %}">
-  <meta name="robots" content="{% block meta_robots %}index, follow{% endblock %}">
+  <meta name="robots" content="{% block meta_robots %}index, follow, max-image-preview:large, max-snippet:-1{% endblock %}">
+
+  {# hreflang for multilingual pages — populated when wagtail-localize is enabled #}
+  {% block hreflang %}{% endblock %}
 
   {# Open Graph #}
-  <meta property="og:title" content="{% block og_title %}{% if page.title %}{{ page.title }} · {% endif %}{{ wagtail_site_name|default:"bilouro.com" }}{% endblock %}">
+  <meta property="og:title" content="{% block og_title %}{% if page %}{{ page.seo_title|default:page.title }} · {% endif %}{{ wagtail_site_name|default:"bilouro.com" }}{% endblock %}">
   <meta property="og:description" content="{% block og_description %}{{ block.super }}{% endblock %}">
   <meta property="og:type" content="{% block og_type %}website{% endblock %}">
   <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
   <meta property="og:site_name" content="{{ wagtail_site_name|default:"bilouro.com" }}">
-  {% block og_image %}{% endblock %}
+  {% block og_image %}{# pages with .image override; fallback below #}
+    {% if page.image %}{% image page.image fill-1200x630 as og_img %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ og_img.url }}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">{% endif %}
+  {% endblock %}
 
   {# Twitter #}
   <meta name="twitter:card" content="{% block twitter_card %}summary_large_image{% endblock %}">
@@ -33,6 +39,7 @@
 
   {% block jsonld %}{% endblock %}
   {% block extra_head %}{% endblock %}
+  {% if PLAUSIBLE_DOMAIN %}<script defer data-domain="{{ PLAUSIBLE_DOMAIN }}" src="{{ PLAUSIBLE_SCRIPT }}"></script>{% endif %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
   {% wagtailuserbar %}

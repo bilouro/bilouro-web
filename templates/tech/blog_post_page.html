@@ -1,20 +1,51 @@
 {% extends "tech/base.html" %}
 {% load wagtailcore_tags wagtailimages_tags %}
 
+{% block og_type %}article{% endblock %}
+
+{% block jsonld %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "{{ page.title|escapejs }}",
+  "description": "{{ page.intro|escapejs|default:page.title|escapejs }}",
+  "datePublished": "{{ page.date|date:'Y-m-d' }}",
+  "dateModified": "{{ page.last_published_at|date:'c'|default:page.date|date:'Y-m-d' }}",
+  "author": {
+    "@type": "Person",
+    "name": "Victor H. Bilouro",
+    "url": "https://www.bilouro.com/about/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "bilouro.com",
+    "logo": { "@type": "ImageObject", "url": "https://www.bilouro.com/static/favicon.png" }
+  },
+  "mainEntityOfPage": "{{ request.scheme }}://{{ request.get_host }}{{ request.path }}"{% if page.image %},
+  {% image page.image fill-1200x630 as hero %}
+  "image": "{{ request.scheme }}://{{ request.get_host }}{{ hero.url }}"{% endif %}{% if page.tags.all %},
+  "keywords": "{% for tag in page.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"{% endif %}
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <article class="post">
   <header>
-    <time datetime="{{ page.date|date:'Y-m-d' }}">{{ page.date|date:"F j, Y" }}</time>
+    <p class="byline">
+      <time datetime="{{ page.date|date:'Y-m-d' }}">{{ page.date|date:"F j, Y" }}</time>
+      · by <a rel="author" href="https://www.bilouro.com/about/">Victor H. Bilouro</a>
+    </p>
     <h1>{{ page.title }}</h1>
     {% if page.intro %}<p class="lede">{{ page.intro }}</p>{% endif %}
   </header>
 
   {% if page.image %}
-    <figure class="hero">{% image page.image width-1200 %}</figure>
+    <figure class="hero">{% image page.image width-1200 loading="lazy" %}</figure>
   {% endif %}
 
   <div class="body">
-    {# body_md is plain markdown — render at template time via the markdown filter #}
     {{ page.body_md|linebreaks }}
   </div>
 
@@ -23,5 +54,24 @@
       {% for tag in page.tags.all %}<span class="tag">#{{ tag.name }}</span>{% endfor %}
     </footer>
   {% endif %}
+
+  {# Related posts (most recent siblings, excl. self) #}
+  {% with siblings=page.get_siblings.live.specific|slice:":4" %}
+    {% if siblings %}
+      <aside class="related">
+        <h3>Read next</h3>
+        <ul>
+          {% for sibling in siblings %}
+            {% if sibling.id != page.id %}
+              <li><a href="{% pageurl sibling %}">{{ sibling.title }}</a></li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </aside>
+    {% endif %}
+  {% endwith %}
+
+  {# Comments (Giscus) — wired to bilouro/bilouro-comments via env var #}
+  {% include "_giscus.html" %}
 </article>
 {% endblock %}

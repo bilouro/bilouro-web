@@ -170,6 +170,49 @@ body.autoral .card-link {
   font-size: 0.93rem;
 }
 
+/* ─── Search ─── */
+body.autoral .search-form {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1.5rem 0 2rem;
+}
+body.autoral .search-form input[type=search] {
+  flex: 1;
+  padding: 0.6rem 0.8rem;
+  font-size: 1rem;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  font-family: inherit;
+}
+body.autoral .search-form button {
+  padding: 0.6rem 1.2rem;
+  background: var(--accent);
+  color: #fff;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+}
+body.autoral .small { font-size: 0.85rem; }
+
+/* ─── Language switcher (flag) ─── */
+body.autoral .lang-switcher {
+  display: inline-flex;
+  gap: 0.25rem;
+  margin-left: 1rem;
+  font-size: 0.95rem;
+}
+body.autoral .lang-switcher a {
+  text-decoration: none;
+  color: var(--muted);
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+}
+body.autoral .lang-switcher a.active {
+  color: var(--accent);
+  font-weight: 700;
+}
+
 /* ─── About page ─── */
 body.autoral .about > section {
   margin: 2.5rem 0;
