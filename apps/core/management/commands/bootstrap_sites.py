@@ -92,11 +92,12 @@ class Command(BaseCommand):
             else:
                 self.stdout.write(f"  ~ page {slug} exists")
 
-            # Create or update Site
+            # Create or update Site — port 443 in prod (HTTPS), 80 locally
+            port = 443 if opts["prod"] else 80
             site, created = Site.objects.update_or_create(
                 hostname=hostname,
                 defaults={
-                    "port": 80,
+                    "port": port,
                     "root_page": page,
                     "is_default_site": spec["is_default"],
                     "site_name": spec["page_data"]["title"],
