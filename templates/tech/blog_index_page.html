@@ -17,7 +17,7 @@
         {% endif %}
         <div class="post-link-body">
           <time datetime="{{ post.date|date:'Y-m-d' }}">{{ post.date|date:"j M Y" }}</time>
-          <h2>{{ post.title }}</h2>
+          {% tr post "title" as post_title %}<h2>{{ post_title }}</h2>
           {% if post.intro %}<p class="excerpt">{{ post.intro|truncatechars:160 }}</p>{% endif %}
         </div>
       </a>

@@ -33,6 +33,7 @@ class AboutPage(Page):
     experience = RichTextField(blank=True, help_text="Career highlights, no employer-PII.")
     contact_links = RichTextField(blank=True, help_text="LinkedIn / GitHub / email-button.")
 
+    title_pt = models.CharField(max_length=255, blank=True)
     headline_pt = models.CharField(max_length=200, blank=True)
     bio_pt = RichTextField(blank=True)
     skills_pt = RichTextField(blank=True)
@@ -48,8 +49,8 @@ class AboutPage(Page):
             heading="EN",
         ),
         MultiFieldPanel(
-            [FieldPanel("headline_pt"), FieldPanel("bio_pt"), FieldPanel("skills_pt"),
-             FieldPanel("experience_pt"), FieldPanel("contact_links_pt")],
+            [FieldPanel("title_pt"), FieldPanel("headline_pt"), FieldPanel("bio_pt"),
+             FieldPanel("skills_pt"), FieldPanel("experience_pt"), FieldPanel("contact_links_pt")],
             heading="PT",
         ),
     ]

@@ -9,6 +9,7 @@ from wagtail.search import index
 class BookCatalogPage(Page):
     """Catalogue page that lists BookPage children."""
 
+    title_pt = models.CharField(max_length=255, blank=True)
     intro = RichTextField(blank=True)
     intro_pt = RichTextField(blank=True)
 
@@ -16,7 +17,7 @@ class BookCatalogPage(Page):
 
     content_panels = Page.content_panels + [
         FieldPanel("intro"),
-        FieldPanel("intro_pt"),
+        MultiFieldPanel([FieldPanel("title_pt"), FieldPanel("intro_pt")], heading="PT"),
     ]
 
     subpage_types = ["shop.BookPage"]

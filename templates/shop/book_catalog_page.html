@@ -4,7 +4,7 @@
 {% block content %}
 <header class="page-head">
   <p class="kicker">books.bilouro.com</p>
-  <h1>{{ page.title }}</h1>
+  {% tr page "title" as page_title %}<h1>{{ page_title }}</h1>
   {% tr_richtext page "intro" as intro_html %}{% if intro_html %}<div class="intro">{{ intro_html }}</div>{% endif %}
 </header>
 

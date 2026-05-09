@@ -70,6 +70,7 @@ class ProjectPage(Page):
 
     kind = models.CharField(max_length=20, choices=KIND_CHOICES, default="oss")
     period = models.CharField(max_length=100, blank=True, help_text="e.g. '2022-2025'")
+    title_pt = models.CharField(max_length=255, blank=True)
     summary = models.CharField(max_length=300, help_text="One-line description shown on cards")
     summary_pt = models.CharField(max_length=300, blank=True)
     description = RichTextField(blank=True)
@@ -111,7 +112,8 @@ class ProjectPage(Page):
             [FieldPanel("summary"), FieldPanel("description")], heading="EN content"
         ),
         MultiFieldPanel(
-            [FieldPanel("summary_pt"), FieldPanel("description_pt")], heading="PT content"
+            [FieldPanel("title_pt"), FieldPanel("summary_pt"), FieldPanel("description_pt")],
+            heading="PT content",
         ),
         MultiFieldPanel(
             [FieldPanel("github_url"), FieldPanel("live_url")], heading="Links"
@@ -133,6 +135,7 @@ class BlogPostPage(Page):
     """A single blog post (markdown body rendered to HTML at template time)."""
 
     date = models.DateField("Post date")
+    title_pt = models.CharField(max_length=255, blank=True)
     intro = models.CharField(max_length=400, blank=True)
     body_md = models.TextField(blank=True, help_text="Markdown source.")
     intro_pt = models.CharField(max_length=400, blank=True)
@@ -163,7 +166,8 @@ class BlogPostPage(Page):
             [FieldPanel("intro"), FieldPanel("body_md")], heading="EN content"
         ),
         MultiFieldPanel(
-            [FieldPanel("intro_pt"), FieldPanel("body_md_pt")], heading="PT content"
+            [FieldPanel("title_pt"), FieldPanel("intro_pt"), FieldPanel("body_md_pt")],
+            heading="PT content",
         ),
     ]
 

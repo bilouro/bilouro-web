@@ -5,7 +5,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>{% block title %}{% if page %}{{ page.seo_title|default:page.title }} · {% endif %}{{ wagtail_site_name|default:"bilouro.com" }}{% endblock %}</title>
+  {% load i18n_fields %}
+  <title>{% block title %}{% if page %}{% tr page "title" as page_title %}{{ page.seo_title|default:page_title }} · {% endif %}{{ wagtail_site_name|default:"bilouro.com" }}{% endblock %}</title>
 
   <meta name="description" content="{% block meta_description %}{% firstof page.search_description page.summary page.intro|striptags page.bio|striptags|truncatechars:160 'Victor H. Bilouro — Hands-on Tech Lead, Solutions Architect & writer. Notes on engineering leadership, modern systems, and Jesus as a leadership case study.' %}{% endblock %}">
 

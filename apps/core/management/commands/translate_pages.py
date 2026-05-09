@@ -32,6 +32,7 @@ TRANSLATABLE = {
     "AboutPage": (
         "about",
         [
+            ("title", "title_pt"),
             ("headline", "headline_pt"),
             ("bio", "bio_pt"),
             ("skills", "skills_pt"),
@@ -42,17 +43,17 @@ TRANSLATABLE = {
     "BlogIndexPage": ("blog_index", [("intro", "intro_pt")]),
     "BlogPostPage": (
         "blog_post",
-        [("intro", "intro_pt"), ("body_md", "body_md_pt")],
+        [("title", "title_pt"), ("intro", "intro_pt"), ("body_md", "body_md_pt")],
     ),
     "ProjectIndexPage": ("project_index", [("intro", "intro_pt")]),
     "ProjectPage": (
         "project",
-        [("summary", "summary_pt"), ("description", "description_pt")],
+        [("title", "title_pt"), ("summary", "summary_pt"), ("description", "description_pt")],
     ),
-    "BookCatalogPage": ("book_catalog", [("intro", "intro_pt")]),
+    "BookCatalogPage": ("book_catalog", [("title", "title_pt"), ("intro", "intro_pt")]),
     "BookPage": (
         "book",
-        [("subtitle", "subtitle_pt"), ("description", "description_pt")],
+        [("subtitle", "subtitle_pt"), ("description", "description_pt")],  # NOT title — book name same in both
     ),
     # BookPostPage: NOT translated.
 }

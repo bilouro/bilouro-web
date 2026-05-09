@@ -19,7 +19,7 @@
             <span class="kind">{{ project.get_kind_display }}</span>
             {% if project.period %}<span class="period">· {{ project.period }}</span>{% endif %}
           </header>
-          <h2>{{ project.title }}</h2>
+          {% tr project "title" as project_title %}<h2>{{ project_title }}</h2>
           {% tr project "summary" as summary_text %}<p class="summary">{{ summary_text }}</p>
           {% if project.tech_stack %}
             <p class="stack">
