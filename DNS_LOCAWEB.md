@@ -1,185 +1,232 @@
-# DNS — Configuração na Locaweb
+# DNS — Migração para Lightsail (substitui App Runner)
 
-Instruções para apontar **bilouro.com** ao site App Runner sem partir o Google Workspace.
-
----
-
-## 🎯 Objetivo
-
-Adicionar **9 registos CNAME** no painel DNS da Locaweb para que:
-- `www.bilouro.com` → site (vertente autoral + CV)
-- `tech.bilouro.com` → blog tech
-- `books.bilouro.com` → catálogo de livros
-- HTTPS funcione automaticamente (cert AWS ACM)
-
-E **NÃO mexer** em nada do Google Workspace (email continua a funcionar).
+Este doc cobre **a migração** de DNS do App Runner para o Lightsail.
+Estavas a apontar para `5isq839us4.eu-west-1.awsapprunner.com` (App Runner).
+Vamos passar a apontar para o **IP estático Lightsail**: `3.251.103.83`.
 
 ---
 
-## ⚠️ O que NUNCA tocar
+## ✅ Estado actual da nova infra
 
-Estes registos pertencem ao **Google Workspace** — se removeres, o email pára:
+| Item | Estado |
+|---|---|
+| Lightsail VM `bilouro-prod` | ✅ ligada (Ubuntu 24.04, micro_3_0, 1GB RAM, $7/mês) |
+| IP estático | ✅ `3.251.103.83` (anexado, free enquanto attached) |
+| Postgres 16 + Wagtail | ✅ a correr (gunicorn @ systemd) |
+| nginx | ✅ HTTP only por agora (HTTPS depois do DNS) |
+| 3 sites Wagtail | ✅ www / tech / books configurados com hostnames de prod |
+| Apex redirect | ✅ `bilouro.com` → `www.bilouro.com` (301) |
+| Backup semanal SQL → S3 | ✅ cron domingo 02:00 UTC, retém 12 semanas |
+| Snapshots automáticos | ⚠️ é só configurar via console (1 clique — passos abaixo) |
+| Lightsail alarmes | ✅ CPU>80%, StatusCheckFailed, BurstCapacity<20% — emails para `bilouro@bilouro.com` (precisa **confirmar** subscrição via email) |
+| Superuser admin | ✅ `admin` / `Bilouro!2026Admin` (muda já após login) |
 
-- `MX` records (`aspmx.l.google.com`, `alt1.aspmx…`, etc.)
-- `TXT` com `v=spf1 include:_spf.google.com`
-- `CNAME` que começam com `google._domainkey…` ou `default._domainkey…` (DKIM do Google)
-- `TXT` com nome `_dmarc.bilouro.com`
-
-> **Regra de ouro:** só vais **adicionar** registos novos. Nunca editar nem apagar os existentes.
-
----
-
-## 1️⃣ Registos de ROUTING (3 CNAMEs)
-
-Estes mandam tráfego dos visitantes para o App Runner.
-
-| Tipo | Nome | Valor | TTL |
-|---|---|---|---|
-| CNAME | `www` | `5isq839us4.eu-west-1.awsapprunner.com` | 300 |
-| CNAME | `tech` | `5isq839us4.eu-west-1.awsapprunner.com` | 300 |
-| CNAME | `books` | `5isq839us4.eu-west-1.awsapprunner.com` | 300 |
-
-> Conforme o painel da Locaweb, em "Nome" pode pedir só `www` ou o domínio completo `www.bilouro.com`. As duas formas equivalem ao mesmo. Usa o que pede.
+> ⚠️ App Runner continua a correr e a ser servido via HTTPS válido. Custo continua. Só é desligado **depois** de validares que o Lightsail está a servir tudo bem.
 
 ---
 
-## 2️⃣ Registos de VALIDAÇÃO SSL (6 CNAMEs)
+## 🧪 Como testar o Lightsail antes do DNS migrar
 
-Sem isto, o cert HTTPS não é emitido pela AWS e os 3 subdomínios mostrarão erro de certificado.
+A nova VM serve via Host header. Testa pelos comandos:
 
-São strings esquisitas (com `_<hash>` no início). Copia **exactamente** como abaixo, atenção a maiúsculas/minúsculas e pontos.
-
-### www.bilouro.com (2 registos)
-
-| Tipo | Nome | Valor |
-|---|---|---|
-| CNAME | `_7f4c62ea8e794fc66336a43962c578c2.www` | `_42c1bdd73b3b6ac86267e4e3852d47a9.jkddzztszm.acm-validations.aws` |
-| CNAME | `_d4706e20c5e5901a76a74d42ea2cd26b.t0hm6ijkwws122arvaerpez6tn11kwu.www` | `_9988b2c1f72e95116f8a8c795343e3ca.jkddzztszm.acm-validations.aws` |
-
-### tech.bilouro.com (2 registos)
-
-| Tipo | Nome | Valor |
-|---|---|---|
-| CNAME | `_7091d8667060c89a9be00f1e73adac04.tech` | `_bc20ae49564c6c2a343a4087d6db00ab.jkddzztszm.acm-validations.aws` |
-| CNAME | `_7adbeafa2bcd586ca0dc999941097484.1h661xmj5py1fyz9pjrpb7pdt3d98wc.tech` | `_1b81f6ae87f37a296eaa0b41c734347f.jkddzztszm.acm-validations.aws` |
-
-### books.bilouro.com (2 registos)
-
-| Tipo | Nome | Valor |
-|---|---|---|
-| CNAME | `_62e8a4b3c125e7e3b53b14a4a8e1ebf1.9iam05c5ut3dyhpz3ykorpfdtc987eq.books` | `_d1c9f12f500583bd1e6a673b603753fc.jkddzztszm.acm-validations.aws` |
-| CNAME | `_d871a27d2940bc6c675b8229057dfba3.books` | `_18ee596c92afea8b1baf43f103820d3a.jkddzztszm.acm-validations.aws` |
-
-> Se o painel Locaweb não aceitar `_underscore` no início, contacta o suporte. Os modernos aceitam normalmente.
-> Se o painel exigir o **nome completo**, junta `.bilouro.com` no fim de cada "Nome" (ex.: `_7f4c62ea8e794fc66336a43962c578c2.www.bilouro.com`).
-
----
-
-## 3️⃣ Apex `bilouro.com` (sem `www`) — opcional
-
-Locaweb e a maioria dos DNS **não permitem CNAME no apex** (limitação RFC 1034). Solução recomendada:
-
-### Opção A — Redirecionamento via painel Locaweb (suportado nativamente)
-
-Caminho exacto no painel Locaweb:
-
-1. **Central do Cliente** → **Início**
-2. Clica no produto de **Hospedagem de Sites** → **Administrar**
-3. **Domínios** (lado direito da página inicial)
-4. Encontra `bilouro.com` (sem `www`) na lista
-5. Clica nos **três pontinhos** (`⋮`) ao lado do domínio
-6. **"Alterar tipo de domínio"**
-7. Selecciona **"Apontamento"**
-8. Selecciona a opção **"Redirecionamento"**
-9. URL de destino: `https://www.bilouro.com`
-10. **Alterar** (gravar)
-
-Propagação: 30 min a 1h.
-
-### Opção B — Não fazer nada
-Aceitar que `bilouro.com` (sem `www`) não funciona. Visitantes que escrevam só "bilouro.com" não chegam ao site.
-
----
-
-## ✅ Como verificar que está tudo certo
-
-### 1. Após adicionar os 9 registos, espera 5-30 minutos para propagação.
-
-### 2. Testa a propagação:
 ```bash
-# Roteamento
-dig www.bilouro.com CNAME +short
-dig tech.bilouro.com CNAME +short
-dig books.bilouro.com CNAME +short
-# Devem responder: 5isq839us4.eu-west-1.awsapprunner.com.
-
-# Validação ACM
-dig _7f4c62ea8e794fc66336a43962c578c2.www.bilouro.com CNAME +short
-# Deve responder: _42c1bdd73b3b6ac86267e4e3852d47a9.jkddzztszm.acm-validations.aws.
+curl -I -H "Host: www.bilouro.com" http://3.251.103.83/
+curl -I -H "Host: tech.bilouro.com" http://3.251.103.83/
+curl -I -H "Host: books.bilouro.com" http://3.251.103.83/
+curl -I -H "Host: bilouro.com" http://3.251.103.83/   # esperado 301 para www
 ```
 
-### 3. Confirma estado dos certs no AWS (de 5 em 5 min):
+Os 4 devem responder. Para testares no browser sem mexer no DNS, edita `/etc/hosts`:
+
 ```bash
-SVC_ARN="arn:aws:apprunner:eu-west-1:950701332313:service/bilouro-prod-web/cf1441b15acf4933ab2a472a71df146c"
-aws apprunner describe-custom-domains \
-  --service-arn "$SVC_ARN" \
-  --profile bilouro --region eu-west-1 \
-  --query 'CustomDomains[].[DomainName,Status]' --output table
+sudo tee -a /etc/hosts >/dev/null <<EOF
+3.251.103.83 www.bilouro.com tech.bilouro.com books.bilouro.com bilouro.com
+EOF
 ```
 
-Procuras `active` em todos. Estados intermédios:
-- `pending_certificate_dns_validation` → ainda à espera dos teus DNS
-- `binding_certificate` → cert emitido, a ligar ao serviço (~5 min)
-- `active` → ✅ pronto
+(Lembra-te de remover esta linha do `/etc/hosts` antes de migrar DNS.)
 
-### 4. Smoke test final:
+---
+
+## 🔵 Passo 1 — DNS na Locaweb (substitui os 9 registos App Runner)
+
+### Registos a APAGAR (App Runner antigos)
+
+Estes 9 registos estão actualmente no painel — todos com valor que aponta para `awsapprunner.com` ou `acm-validations.aws`:
+
+```
+www                           CNAME  5isq839us4.eu-west-1.awsapprunner.com
+tech                          CNAME  5isq839us4.eu-west-1.awsapprunner.com
+books                         CNAME  5isq839us4.eu-west-1.awsapprunner.com
+_<hash>.www                   CNAME  _<hash>.acm-validations.aws         (×2)
+_<hash>.tech                  CNAME  _<hash>.acm-validations.aws         (×2)
+_<hash>.books                 CNAME  _<hash>.acm-validations.aws         (×2)
+```
+
+**Apaga os 9.** Os de validação ACM já não fazem sentido (Lightsail usa Let's Encrypt).
+
+### Registos a CRIAR (Lightsail)
+
+```
+www      A      3.251.103.83
+tech     A      3.251.103.83
+books    A      3.251.103.83
+@/.      A      3.251.103.83     ← apex bilouro.com (registo "raiz")
+```
+
+**TTL**: 300 ou 1h. **4 registos A** apenas. Sem CNAMEs novos. Sem `_underscore`.
+
+> 🔑 No painel da Locaweb, "Nome" pode ser `www` ou `www.bilouro.com` conforme o painel. Para o apex, costuma ser `@`, `.` ou deixar em branco. Se ficar em dúvida, contacta o suporte ("preciso de adicionar um registo A no domínio raiz `bilouro.com` apontando para `3.251.103.83`").
+
+### Registos a NÃO TOCAR
+
+❌ MX (`aspmx.l.google.com` etc.)
+❌ TXT `v=spf1 include:_spf.google.com`
+❌ CNAMEs `google._domainkey…` ou `default._domainkey…`
+❌ TXT `_dmarc`
+
+---
+
+## 🟡 Passo 2 — Esperar propagação (~5-30 min)
+
+```bash
+# Verifica que cada subdomínio resolve para 3.251.103.83
+dig +short www.bilouro.com A @1.1.1.1
+dig +short tech.bilouro.com A @1.1.1.1
+dig +short books.bilouro.com A @1.1.1.1
+dig +short bilouro.com A @1.1.1.1
+# Todos devem responder: 3.251.103.83
+```
+
+Quando `dig` mostrar `3.251.103.83` em todos, podes prosseguir.
+
+---
+
+## 🟢 Passo 3 — Emitir certs HTTPS no Lightsail
+
+SSH para a VM e corre o script de Certbot:
+
+```bash
+ssh -i ~/.ssh/lightsail-bilouro.pem ubuntu@3.251.103.83
+./lightsail_run_certbot.sh
+```
+
+O script:
+1. Pede certs Let's Encrypt para `www`, `tech`, `books` (uma SAN cert) e para `bilouro.com`
+2. Substitui o config nginx para o HTTPS-completo
+3. Reinicia o app com `SECURE_SSL_REDIRECT=True`
+4. Reload nginx
+
+Cron de auto-renovação (Certbot já configura via apt; corre 2x/dia, renova 30 dias antes de expirar).
+
+### Verifica HTTPS
+
 ```bash
 curl -I https://www.bilouro.com/
 curl -I https://tech.bilouro.com/
 curl -I https://books.bilouro.com/
-# Todos devem responder HTTP 200
+curl -I http://bilouro.com/        # 301 → https://www.bilouro.com/
 ```
 
 ---
 
-## 🟢 Quando estiver tudo `active`
+## 🔻 Passo 4 — Desligar App Runner (só DEPOIS de validares Passo 3)
 
-Os 3 sites passam a funcionar via:
-- https://www.bilouro.com/
-- https://tech.bilouro.com/
-- https://books.bilouro.com/
+Os 3 subdomínios devem responder em HTTPS via Lightsail. Login admin deve funcionar em `https://www.bilouro.com/admin/` com `admin` / `Bilouro!2026Admin`.
 
-A URL provisória `https://5isq839us4.eu-west-1.awsapprunner.com/` continua a funcionar mas perde-se o sentido — usa os domínios reais.
+Quando confirmares que está tudo a funcionar:
 
----
-
-## 🆘 Troubleshooting
-
-**"Certificado inválido" no browser:**
-- Faltam registos de validação ou foram colados errado. Re-confirma cada `_<hash>` no painel.
-
-**"DNS_PROBE_FINISHED_NXDOMAIN":**
-- Propagação ainda não chegou. Espera mais 5-30 min.
-- Verifica que o registo está realmente no painel da Locaweb.
-
-**"Site can't be reached" (mas DNS resolve):**
-- O CNAME de routing está mal configurado. Confirma o valor `5isq839us4.eu-west-1.awsapprunner.com`.
-
-**"Bad Request" / "Server Error" no site (DNS+HTTPS funcionam):**
-- O Wagtail Site não tem este hostname configurado. O `bootstrap_sites --prod` deveria ter feito mas pode ter ficado para trás. Login no admin → Settings → Sites → confirma que existem 3 sites com hostnames `www.bilouro.com`, `tech.bilouro.com`, `books.bilouro.com`.
-
-**Quero apagar tudo e recomeçar:**
 ```bash
 cd /Users/victor/Documents/GitHub/bilouro-web/infra/terraform
+terraform apply -auto-approve -var enable_apprunner=false
+```
+
+Isto desliga App Runner + remove Custom Domain associations. **Mantém** RDS, S3, Secrets, ECR, CodeBuild, Budgets — em caso de querer voltar.
+
+Para desligar tudo:
+```bash
 terraform destroy
 ```
+(Antes vê `terraform plan -destroy` para perceberes o impacto.)
 
 ---
 
-## 📞 Suporte Locaweb
+## 🔔 Snapshots automáticos (1 clique no console)
 
-Se o painel der problemas com os registos `_underscore` (raro):
-- Telefone: 0800 014 1234 (BR) / +351 21 942 6500 (PT)
-- Chat: dentro do painel, ícone de chat
+Vai a https://lightsail.aws.amazon.com/ls/webapp/eu-west-1/instances/bilouro-prod
+- Tab **Snapshots**
+- "Enable automatic snapshots"
+- Hora preferida (UTC). Default 00:00 UTC.
+- Custo: ~$0.05/GB/mês × 7 dias retenção (default) ≈ $0.50/mês
 
-Diz-lhes: "Quero adicionar registos `CNAME` para validação ACM da AWS, com nomes que começam por underscore (`_`)."
+(Não consegui automatizar via CLI — Lightsail não expõe esse comando. Console-only.)
+
+---
+
+## 📂 Ficheiros úteis no repo
+
+| Path | Para quê |
+|---|---|
+| `scripts/lightsail_provision.sh` | bootstrap inicial Ubuntu (apt, postgres, uv, etc.) |
+| `scripts/lightsail_app_setup.sh` | clona repo, instala deps, systemd, nginx (run uma vez) |
+| `scripts/lightsail_run_certbot.sh` | passo 3 acima — emite cert e activa HTTPS |
+| `scripts/lightsail_backup.sh` | semanal pg_dump → S3 (instalado em `/usr/local/bin/bilouro-backup`) |
+
+## 🔁 Redeploy futuro (depois de mudar código)
+
+```bash
+ssh -i ~/.ssh/lightsail-bilouro.pem ubuntu@3.251.103.83 '
+sudo -u bilouro git -C /opt/bilouro/web pull --ff-only
+sudo -u bilouro bash -lc "cd /opt/bilouro/web && uv sync --no-dev"
+sudo -u bilouro bash -lc "cd /opt/bilouro/web && set -a && . /etc/bilouro.env && set +a && uv run python manage.py migrate --noinput && uv run python manage.py collectstatic --noinput"
+sudo systemctl restart bilouro-web
+'
+```
+
+(Idealmente isto vira um `scripts/lightsail_deploy.sh` ou um GitHub Actions later.)
+
+---
+
+## 💰 Custos comparados
+
+| Item | App Runner (atual) | Lightsail (novo) |
+|---|---|---|
+| Compute | $5-10/mês | $7/mês fixo |
+| RDS Postgres | $13/mês (ou free tier 12m) | $0 (na mesma VM) |
+| Secrets Manager | $0.80/mês | $0 (env file) |
+| S3 + ECR | <$1/mês | <$1/mês (S3 mantém-se) |
+| Snapshots | — | ~$0.50/mês |
+| Backups SQL → S3 | — | <$0.10/mês |
+| **Total** | **$18-25/mês** | **~$8/mês** |
+
+Poupança estimada: ~$10-15/mês (pós free tier).
+
+---
+
+## ⚠️ Limitações vs App Runner
+
+- **Sem auto-scaling**: se viralizar, sobe traffic à mão (resize bundle no Lightsail).
+- **Cold start ausente** (Lightsail nunca dorme).
+- **Single point of failure**: se a VM cair, site cai. Snapshots + alarmes mitigam.
+- **Postgres self-managed**: tu fazes backup (cron já configurado), recovery, upgrades major.
+
+Para a tua escala atual (~10-100 visitas/dia), trade-off vale a pena.
+
+---
+
+## 🧯 Troubleshooting
+
+**"Site can't be reached" após migração DNS**:
+- DNS ainda a propagar. `dig +short www.bilouro.com` deve mostrar `3.251.103.83`.
+
+**Certbot falha com "Failed authorization procedure"**:
+- DNS não propagou completamente; espera mais 10-30 min.
+
+**HTTP 502 no site**:
+- gunicorn não está a correr. SSH e `sudo systemctl status bilouro-web` + `sudo journalctl -u bilouro-web -n 50`.
+
+**HTTPS dá "Your connection is not private"**:
+- Cert não foi emitido ainda. Corre `./lightsail_run_certbot.sh` no VM.
+
+**Email Lightsail não chega**:
+- Confirma a subscrição no email "AWS Lightsail Notifications - Subscription Confirmation" (verifica spam).
