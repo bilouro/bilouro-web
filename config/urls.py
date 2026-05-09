@@ -1,7 +1,7 @@
 """Top-level URLs.
 
 Wagtail handles routing per-Site at the lowest level (catch-all). Health,
-admin, sitemaps and locale-aware routes go above that.
+admin, sitemaps, RSS and locale-aware routes go above that.
 """
 from django.conf import settings
 from django.conf.urls.static import static
@@ -14,9 +14,25 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps.sitemap_generator import Sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 
+from apps.core.feeds import BooksFeed, CombinedFeed, TechBlogFeed
+
 
 def healthz(_request):
     return HttpResponse("ok", content_type="text/plain")
+
+
+def feed_dispatch(request, *args, **kwargs):
+    """Pick the right feed by hostname:
+    - books.* → BooksFeed
+    - tech.*  → TechBlogFeed
+    - other (www, apex) → CombinedFeed (everything)
+    """
+    host = request.get_host().split(":")[0]
+    if host.startswith("books"):
+        return BooksFeed()(request, *args, **kwargs)
+    if host.startswith("tech"):
+        return TechBlogFeed()(request, *args, **kwargs)
+    return CombinedFeed()(request, *args, **kwargs)
 
 
 def robots_txt(request):
@@ -39,6 +55,8 @@ urlpatterns = [
     path("healthz", healthz),
     path("robots.txt", robots_txt, name="robots"),
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="sitemap"),
+    path("feed/", feed_dispatch, name="feed"),
+    path("feed", feed_dispatch),
     path("django-admin/", admin.site.urls),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
