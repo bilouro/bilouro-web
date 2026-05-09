@@ -6,12 +6,11 @@ admin, sitemaps, RSS and locale-aware routes go above that.
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.contrib.sitemaps.views import sitemap
 from django.http import HttpResponse
 from django.urls import include, path
 from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
-from wagtail.contrib.sitemaps.sitemap_generator import Sitemap
+from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 
 from apps.core.feeds import BooksFeed, CombinedFeed, TechBlogFeed
@@ -49,13 +48,11 @@ def robots_txt(request):
     return HttpResponse(body, content_type="text/plain")
 
 
-sitemaps = {"wagtail": Sitemap}
-
 urlpatterns = [
     path("healthz/", healthz, name="healthz"),
     path("healthz", healthz),
     path("robots.txt", robots_txt, name="robots"),
-    path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="sitemap"),
+    path("sitemap.xml", sitemap, name="sitemap"),
     path("feed/", feed_dispatch, name="feed"),
     path("feed", feed_dispatch),
     path("search/", search_view, name="search"),
