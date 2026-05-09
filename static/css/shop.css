@@ -257,6 +257,20 @@ body.shop .post-list .ref {
   font-style: italic;
 }
 
+body.shop .post-list .excerpt {
+  margin: 0.5rem 0 0;
+  color: var(--fg);
+  font-size: 0.97rem;
+  line-height: 1.5;
+}
+
+body.shop .book-post .lede {
+  font-size: 1.15rem;
+  color: var(--muted);
+  margin: 0.5rem 0 1.5rem;
+  font-style: italic;
+}
+
 body.shop .post-list .book-of {
   margin: 0.3rem 0 0;
   color: var(--accent);

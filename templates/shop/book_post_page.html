@@ -1,5 +1,5 @@
 {% extends "shop/base.html" %}
-{% load wagtailcore_tags wagtailimages_tags %}
+{% load wagtailcore_tags wagtailimages_tags i18n_fields i18n %}
 
 {% block content %}
 <article class="book-post">
@@ -7,11 +7,12 @@
     <p class="breadcrumb">
       <a href="{% pageurl page.get_parent.specific %}">← {{ page.get_parent.specific.title }}</a>
     </p>
-    <h1>{{ page.title }}</h1>
+    <h1>{{ page.display_title }}</h1>
     <p class="meta">
       <time datetime="{{ page.date|date:'Y-m-d' }}">{{ page.date|date:"j F Y" }}</time>
       {% if page.ref %} · <span class="ref">{{ page.ref }}</span>{% endif %}
     </p>
+    {% if page.display_summary %}<p class="lede">{{ page.display_summary }}</p>{% endif %}
   </header>
 
   {% if page.image %}

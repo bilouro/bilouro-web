@@ -43,8 +43,9 @@
           {% endif %}
           <div class="post-link-body">
             <time datetime="{{ post.date|date:'Y-m-d' }}">{{ post.date|date:"j M Y" }}</time>
-            <h3>{{ post.title }}</h3>
+            <h3>{{ post.display_title }}</h3>
             {% if post.ref %}<p class="ref">{{ post.ref }}</p>{% endif %}
+            {% if post.display_summary %}<p class="excerpt">{{ post.display_summary }}</p>{% endif %}
             <p class="book-of">↳ {{ post.get_parent.title }}</p>
           </div>
         </a>
