@@ -126,7 +126,7 @@ Admin → Pages → tech → Projects → Add child → ProjectPage
 ### Imediato
 - [ ] **Confirmar email Lightsail** (verifica spam, "AWS Notification - Subscription Confirmation")
 - [ ] **Activar snapshots automáticos** (1 clique em https://lightsail.aws.amazon.com/ls/webapp/eu-west-1/instances/bilouro-prod, Snapshots tab)
-- [ ] **Login admin** e **mudar password** de `Bilouro!2026Admin` para algo robusto
+- [ ] **Login admin** com a password actual (gere fora do repo) e muda para algo memorável
 - [ ] **Submeter sitemap ao Google Search Console** (passos em `SUGGESTIONS.md` §4.1)
 
 ### Esta semana

@@ -268,16 +268,6 @@ class Command(BaseCommand):
                     "sort_order": 40,
                 },
                 {
-                    "title": "BookBuilder — LinkedIn post generator",
-                    "slug": "bookbuilder",
-                    "kind": "personal", "period": "2026",
-                    "summary": "Generates a weekly book of LinkedIn-style devotional posts from Bible passages using OpenAI Responses API. Markdown output, S3 image generation, idempotent commit/push pipeline.",
-                    "description": "<p>The pipeline that produces the posts you see on books.bilouro.com.</p><p>Reads a backlog.md, fetches verses from a JSON Bible repo, calls a curated OpenAI prompt with similar past entries (RAG-lite), formats Markdown with Unicode superscripts, writes per-post JSON cache, and commits+pushes per item.</p>",
-                    "tech_stack": "Python, OpenAI, GitHub, Markdown",
-                    "github_url": "https://github.com/bilouro/BookBuilder",
-                    "sort_order": 50,
-                },
-                {
                     "title": "bilouro-web — this site",
                     "slug": "bilouro-web",
                     "kind": "personal", "period": "2026",

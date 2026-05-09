@@ -16,7 +16,11 @@ APP_USER=bilouro
 : "${DJANGO_SECRET_KEY:=$(openssl rand -hex 64)}"
 : "${DB_PASSWORD:=$(openssl rand -hex 16)}"
 : "${SUPERUSER_USERNAME:=admin}"
-: "${SUPERUSER_PASSWORD:=Bilouro!2026Admin}"
+if [ -z "${SUPERUSER_PASSWORD:-}" ]; then
+  SUPERUSER_PASSWORD=$(openssl rand -base64 24 | tr -d '/+=' | head -c 24)
+  echo ">>> Generated random superuser password: $SUPERUSER_PASSWORD"
+  echo ">>> Store this NOW or set SUPERUSER_PASSWORD env var before running."
+fi
 : "${SUPERUSER_EMAIL:=bilouro@bilouro.com}"
 
 echo "==> set Postgres password"

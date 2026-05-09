@@ -19,7 +19,7 @@ Vamos passar a apontar para o **IP estático Lightsail**: `3.251.103.83`.
 | Backup semanal SQL → S3 | ✅ cron domingo 02:00 UTC, retém 12 semanas |
 | Snapshots automáticos | ⚠️ é só configurar via console (1 clique — passos abaixo) |
 | Lightsail alarmes | ✅ CPU>80%, StatusCheckFailed, BurstCapacity<20% — emails para `bilouro@bilouro.com` (precisa **confirmar** subscrição via email) |
-| Superuser admin | ✅ `admin` / `Bilouro!2026Admin` (muda já após login) |
+| Superuser admin | ✅ `admin` / `<see your password store>` (muda já após login) |
 
 > ⚠️ App Runner continua a correr e a ser servido via HTTPS válido. Custo continua. Só é desligado **depois** de validares que o Lightsail está a servir tudo bem.
 
@@ -132,7 +132,7 @@ curl -I http://bilouro.com/        # 301 → https://www.bilouro.com/
 
 ## 🔻 Passo 4 — Desligar App Runner (só DEPOIS de validares Passo 3)
 
-Os 3 subdomínios devem responder em HTTPS via Lightsail. Login admin deve funcionar em `https://www.bilouro.com/admin/` com `admin` / `Bilouro!2026Admin`.
+Os 3 subdomínios devem responder em HTTPS via Lightsail. Login admin deve funcionar em `https://www.bilouro.com/admin/` com `admin` / `<see your password store>`.
 
 Quando confirmares que está tudo a funcionar:
 
