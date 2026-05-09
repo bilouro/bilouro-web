@@ -1,7 +1,7 @@
 {% extends "_base.html" %}
-{% load static wagtailcore_tags %}
+{% load static wagtailcore_tags i18n %}
 
-{% block title %}{% if query %}{{ query }} · {% endif %}Search · {{ wagtail_site_name }}{% endblock %}
+{% block title %}{% if query %}{{ query }} · {% endif %}{% trans "Search" %} · {{ wagtail_site_name }}{% endblock %}
 {% block meta_robots %}noindex, follow{% endblock %}
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/autoral.css' %}">
@@ -17,15 +17,17 @@
 
 <main class="container">
   <header class="page-head">
-    <h1>Search</h1>
+    <h1>{% trans "Search" %}</h1>
     <form method="get" action="/search/" class="search-form">
-      <input type="search" name="q" value="{{ query }}" placeholder="Type and hit enter…" autofocus>
-      <button type="submit">Search</button>
+      <input type="search" name="q" value="{{ query }}" placeholder="{% trans 'Type and hit enter…' %}" autofocus>
+      <button type="submit">{% trans "Search" %}</button>
     </form>
   </header>
 
   {% if query %}
-    <p class="muted">{{ total }} result{{ total|pluralize }} for &ldquo;{{ query }}&rdquo;.</p>
+    <p class="muted">
+      {% blocktrans count counter=total %}{{ counter }} result for &ldquo;{{ query }}&rdquo;.{% plural %}{{ counter }} results for &ldquo;{{ query }}&rdquo;.{% endblocktrans %}
+    </p>
 
     <ul class="post-list search-results">
       {% for r in results %}
@@ -42,7 +44,7 @@
           </a>
         </li>
       {% empty %}
-        <li class="empty">No results.</li>
+        <li class="empty">{% trans "No results." %}</li>
       {% endfor %}
     </ul>
   {% endif %}

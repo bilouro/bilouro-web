@@ -1,5 +1,5 @@
 {% extends "tech/base.html" %}
-{% load wagtailcore_tags wagtailimages_tags i18n_fields %}
+{% load wagtailcore_tags wagtailimages_tags i18n_fields i18n %}
 
 {% block og_type %}article{% endblock %}
 
@@ -35,7 +35,7 @@
   <header>
     <p class="byline">
       <time datetime="{{ page.date|date:'Y-m-d' }}">{{ page.date|date:"F j, Y" }}</time>
-      · by <a rel="author" href="https://www.bilouro.com/about/">Victor H. Bilouro</a>
+      · {% trans "by" %} <a rel="author" href="https://www.bilouro.com/about/">Victor H. Bilouro</a>
     </p>
     {% tr page "title" as page_title %}<h1>{{ page_title }}</h1>
     {% tr page "intro" as intro_text %}
@@ -61,11 +61,11 @@
   {% with siblings=page.get_siblings.live.specific|slice:":4" %}
     {% if siblings %}
       <aside class="related">
-        <h3>Read next</h3>
+        <h3>{% trans "Read next" %}</h3>
         <ul>
           {% for sibling in siblings %}
             {% if sibling.id != page.id %}
-              <li><a href="{% pageurl sibling %}">{{ sibling.title }}</a></li>
+              {% tr sibling "title" as sib_title %}<li><a href="{% pageurl sibling %}">{{ sib_title }}</a></li>
             {% endif %}
           {% endfor %}
         </ul>

@@ -19,6 +19,7 @@ dependencies = [
     "wagtail-cache>=3.0.0",
     "wagtail-metadata>=5.0.0",
     "openai>=2.36.0",
+    "django-rosetta>=0.10.3",
 ]
 
 [dependency-groups]
@@ -30,6 +31,7 @@ dev = [
     "pytest-django>=4.9",
     "django-debug-toolbar>=4.4",
     "ipython>=8.27",
+    "polib>=1.2.0",
 ]
 
 [tool.ruff]

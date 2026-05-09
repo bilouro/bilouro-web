@@ -1,0 +1,173 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-09 11:16+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: OpenAI Responses API\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Autoral"
+msgstr "Autoral"
+
+msgid "Home"
+msgstr "Início"
+
+msgid "About / CV"
+msgstr "Sobre / CV"
+
+msgid "Books"
+msgstr "Livros"
+
+msgid "All books"
+msgstr "Todos os livros"
+
+msgid "Blog"
+msgstr "Blog"
+
+msgid "Projects"
+msgstr "Projetos"
+
+msgid "Elsewhere"
+msgstr "Noutras paragens"
+
+msgid "Comments"
+msgstr "Comentários"
+
+msgid "Bio"
+msgstr "Bio"
+
+msgid "Stack & Skills"
+msgstr "Stack & competências"
+
+msgid "Experience"
+msgstr "Experiência"
+
+msgid "Contact"
+msgstr "Contacto"
+
+msgid "About"
+msgstr "Sobre"
+
+msgid "Hands-on Tech Lead · Solutions Architect"
+msgstr "Hands-on Tech Lead · Arquiteto de Soluções"
+
+msgid ""
+"Engineering, leadership and notes from <em>both</em> sides of the keyboard."
+msgstr "Engenharia, liderança e notas de <em>ambos</em> os lados do teclado."
+
+msgid "Read the long version"
+msgstr "Ler a versão longa"
+
+msgid "Tech blog"
+msgstr "Blog técnico"
+
+msgid ""
+"Notes on engineering leadership, modernizing legacy, and building production"
+" AI agents at SMB scale."
+msgstr ""
+"Notas sobre liderança de engenharia, modernização de legado e construção de "
+"agentes de IA em produção à escala de PME."
+
+msgid ""
+"Working on a leadership book using Jesus' example as the case study. Weekly "
+"reflections on the way to the launch."
+msgstr ""
+"A trabalhar num livro sobre liderança usando o exemplo de Jesus como estudo "
+"de caso. Reflexões semanais no caminho até ao lançamento."
+
+msgid ""
+"22+ years in engineering, last 15 leading. Currently in Porto, Portugal."
+msgstr ""
+"Mais de 22 anos em engenharia, os últimos 15 em liderança. Atualmente no "
+"Porto, Portugal."
+
+msgid "CV / About"
+msgstr "CV / Sobre"
+
+msgid "Search"
+msgstr "Pesquisar"
+
+msgid "Type and hit enter…"
+msgstr "Escreve e prime Enter…"
+
+#, python-format
+msgid "%(counter)s result for &ldquo;%(query)s&rdquo;."
+msgid_plural "%(counter)s results for &ldquo;%(query)s&rdquo;."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "No results."
+msgstr "Sem resultados."
+
+msgid "Catalogue"
+msgstr "Catálogo"
+
+msgid "Coming soon"
+msgstr "Em breve"
+
+msgid "Catalogue coming soon."
+msgstr "Catálogo em breve."
+
+msgid "Pre-launch reflections"
+msgstr "Reflexões pré-lançamento"
+
+msgid ""
+"Every Tuesday in English and every Thursday in Portuguese, I share a "
+"reflection from the book in progress."
+msgstr ""
+"Todas as terças-feiras em inglês e todas as quintas-feiras em português, "
+"partilho uma reflexão do livro em progresso."
+
+msgid "Written in Portuguese."
+msgstr "Escrito em português."
+
+msgid "Written in English."
+msgstr "Escrito em inglês."
+
+msgid "Coming soon."
+msgstr "Em breve."
+
+msgid "The posts below are part of the journey to the launch."
+msgstr "Os posts abaixo fazem parte da viagem até ao lançamento."
+
+msgid "Buy"
+msgstr "Comprar"
+
+msgid "Posts"
+msgstr "Publicações"
+
+msgid "Notes from the seam between code and leadership."
+msgstr "Notas da fronteira entre código e liderança."
+
+msgid "No posts yet."
+msgstr "Ainda não há publicações."
+
+msgid "by"
+msgstr "por"
+
+msgid "Read next"
+msgstr "Ler a seguir"
+
+msgid "No projects yet."
+msgstr "Ainda não há projetos."
+
+msgid "Stack"
+msgstr "Stack"
+
+msgid "View on GitHub"
+msgstr "Ver no GitHub"
+
+msgid "View live"
+msgstr "Ver online"

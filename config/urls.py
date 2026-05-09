@@ -58,6 +58,7 @@ urlpatterns = [
     path("search/", search_view, name="search"),
     path("i18n/setlang/", set_lang_view, name="set_language"),
     path("django-admin/", admin.site.urls),
+    path("admin/rosetta/", include("rosetta.urls")),  # /admin/rosetta/ for translation strings UI
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     # Wagtail catch-all (must be last)

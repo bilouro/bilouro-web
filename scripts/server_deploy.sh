@@ -41,10 +41,11 @@ echo "==> updating to $NEW_SHA"
 echo "==> uv sync"
 sudo -u "$APP_USER" bash -lc "cd $APP_DIR && uv sync --no-dev"
 
-echo "==> migrate + collectstatic"
+echo "==> migrate + collectstatic + compilemessages"
 sudo -u "$APP_USER" bash -lc "cd $APP_DIR && set -a && . /etc/bilouro.env && set +a && \
   uv run python manage.py migrate --noinput && \
-  uv run python manage.py collectstatic --noinput"
+  uv run python manage.py collectstatic --noinput && \
+  uv run python manage.py compilemessages --ignore=.venv"
 
 echo "==> bootstrap_sites (idempotent)"
 sudo -u "$APP_USER" bash -lc "cd $APP_DIR && set -a && . /etc/bilouro.env && set +a && \

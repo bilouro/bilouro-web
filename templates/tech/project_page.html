@@ -1,13 +1,13 @@
 {% extends "tech/base.html" %}
-{% load wagtailcore_tags wagtailimages_tags i18n_fields %}
+{% load wagtailcore_tags wagtailimages_tags i18n_fields i18n %}
 
 {% block content %}
 <article class="project">
-  <p class="breadcrumb"><a href="{% pageurl page.get_parent.specific %}">← Projects</a></p>
+  <p class="breadcrumb"><a href="{% pageurl page.get_parent.specific %}">← {% trans "Projects" %}</a></p>
 
   <header>
     <p class="meta">
-      <span class="kind kind--{{ page.kind }}">{{ page.get_kind_display }}</span>
+      <span class="kind kind--{{ page.kind }}">{% trans page.get_kind_display %}</span>
       {% if page.period %} · <span class="period">{{ page.period }}</span>{% endif %}
     </p>
     {% tr page "title" as page_title %}<h1>{{ page_title }}</h1>
@@ -21,14 +21,14 @@
 
   {% if page.tech_stack %}
     <section class="stack-detail">
-      <h3>Stack</h3>
+      <h3>{% trans "Stack" %}</h3>
       <p>{{ page.tech_stack }}</p>
     </section>
   {% endif %}
 
   <section class="links">
-    {% if page.github_url %}<a class="btn" href="{{ page.github_url }}" target="_blank" rel="noopener">View on GitHub</a>{% endif %}
-    {% if page.live_url %}<a class="btn btn-secondary" href="{{ page.live_url }}" target="_blank" rel="noopener">View live</a>{% endif %}
+    {% if page.github_url %}<a class="btn" href="{{ page.github_url }}" target="_blank" rel="noopener">{% trans "View on GitHub" %}</a>{% endif %}
+    {% if page.live_url %}<a class="btn btn-secondary" href="{{ page.live_url }}" target="_blank" rel="noopener">{% trans "View live" %}</a>{% endif %}
   </section>
 </article>
 {% endblock %}

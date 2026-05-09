@@ -1,5 +1,5 @@
 {% extends "autoral/base.html" %}
-{% load wagtailcore_tags i18n_fields %}
+{% load wagtailcore_tags i18n_fields i18n %}
 
 {% block content %}
 <article class="about">
@@ -7,15 +7,15 @@
   {% tr page "headline" as h %}{% if h %}<p class="headline">{{ h }}</p>{% endif %}
 
   {% tr_richtext page "bio" as bio_html %}
-  {% if bio_html %}<section><h2>Bio</h2>{{ bio_html }}</section>{% endif %}
+  {% if bio_html %}<section><h2>{% trans "Bio" %}</h2>{{ bio_html }}</section>{% endif %}
 
   {% tr_richtext page "skills" as skills_html %}
-  {% if skills_html %}<section><h2>{% if request.LANGUAGE_CODE == 'pt' %}Stack &amp; Skills{% else %}Stack &amp; Skills{% endif %}</h2>{{ skills_html }}</section>{% endif %}
+  {% if skills_html %}<section><h2>{% trans "Stack & Skills" %}</h2>{{ skills_html }}</section>{% endif %}
 
   {% tr_richtext page "experience" as exp_html %}
-  {% if exp_html %}<section><h2>{% if request.LANGUAGE_CODE == 'pt' %}Experiência{% else %}Experience{% endif %}</h2>{{ exp_html }}</section>{% endif %}
+  {% if exp_html %}<section><h2>{% trans "Experience" %}</h2>{{ exp_html }}</section>{% endif %}
 
   {% tr_richtext page "contact_links" as ct_html %}
-  {% if ct_html %}<section class="contact"><h2>{% if request.LANGUAGE_CODE == 'pt' %}Contacto{% else %}Contact{% endif %}</h2>{{ ct_html }}</section>{% endif %}
+  {% if ct_html %}<section class="contact"><h2>{% trans "Contact" %}</h2>{{ ct_html }}</section>{% endif %}
 </article>
 {% endblock %}

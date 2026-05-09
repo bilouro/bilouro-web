@@ -58,3 +58,4 @@ htmlcov/
 # Docker
 docker-compose.override.yml
 .github/workflows/
+*.mo

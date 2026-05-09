@@ -1,5 +1,5 @@
 {% extends "_base.html" %}
-{% load static %}
+{% load static i18n %}
 
 {% block extra_css %}<link rel="stylesheet" href="{% static 'css/autoral.css' %}">{% endblock %}
 {% block body_class %}autoral{% endblock %}
@@ -9,9 +9,9 @@
   <div class="container-wide">
     <a class="brand" href="/">Victor H. Bilouro</a>
     <nav class="nav">
-      <a href="/about/">About</a>
+      <a href="/about/">{% trans "About" %}</a>
       <a href="https://tech.bilouro.com/">Tech</a>
-      <a href="https://books.bilouro.com/">Books</a>
+      <a href="https://books.bilouro.com/">{% trans "Books" %}</a>
       {% include "_header_extras.html" %}
     </nav>
   </div>

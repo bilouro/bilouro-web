@@ -1,5 +1,5 @@
 {% extends "shop/base.html" %}
-{% load wagtailcore_tags wagtailimages_tags i18n_fields %}
+{% load wagtailcore_tags wagtailimages_tags i18n_fields i18n %}
 
 {% block og_type %}book{% endblock %}
 
@@ -31,16 +31,18 @@
     {% tr page "subtitle" as subtitle_text %}{% if subtitle_text %}<p class="subtitle">{{ subtitle_text }}</p>{% endif %}
 
     {% tr_richtext page "description" as desc_html %}{% if desc_html %}<div class="description">{{ desc_html }}</div>{% endif %}
-    <p class="muted small">{% if request.LANGUAGE_CODE == 'pt' %}Livro escrito em {% if page.language == 'pt' %}Português{% else %}Inglês{% endif %}.{% else %}Written in {% if page.language == 'pt' %}Portuguese{% else %}English{% endif %}.{% endif %}</p>
+    <p class="muted small">
+      {% if page.language == 'pt' %}{% trans "Written in Portuguese." %}{% else %}{% trans "Written in English." %}{% endif %}
+    </p>
 
     {% if page.coming_soon %}
-      <p class="coming-soon"><strong>Em breve.</strong> Os posts abaixo são parte do percurso até ao lançamento.</p>
+      <p class="coming-soon"><strong>{% trans "Coming soon." %}</strong> {% trans "The posts below are part of the journey to the launch." %}</p>
     {% else %}
       {% if page.price_eur and page.price_eur > 0 %}
         <p class="price">€ {{ page.price_eur }}</p>
       {% endif %}
       {% if page.buy_url %}
-        <a class="btn-buy" href="{{ page.buy_url }}" target="_blank" rel="noopener">Comprar</a>
+        <a class="btn-buy" href="{{ page.buy_url }}" target="_blank" rel="noopener">{% trans "Buy" %}</a>
       {% endif %}
     {% endif %}
   </div>
@@ -48,7 +50,7 @@
 
 {% if posts %}
 <section class="book-posts">
-  <h2>Reflexões pré-lançamento</h2>
+  <h2>{% trans "Pre-launch reflections" %}</h2>
   <ul class="post-list">
     {% for post in posts %}
       <li>
