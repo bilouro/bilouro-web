@@ -25,7 +25,8 @@ SITE_SPECS = [
         "page_data": {
             "title": "Victor H. Bilouro",
             "slug": "home",
-            "intro": "<p>Engenheiro, Tech Lead, escritor. Notas, projetos e leitura.</p>",
+            "intro": "<p>Engineer, Tech Lead, writer. Notes, projects, and reading.</p>",
+            "intro_pt": "<p>Engenheiro, Tech Lead, escritor. Notas, projetos e leitura.</p>",
         },
     },
     {
@@ -36,7 +37,8 @@ SITE_SPECS = [
         "page_data": {
             "title": "tech.bilouro",
             "slug": "tech",
-            "intro": "<p>Notas técnicas, arquitectura e leadership hands-on.</p>",
+            "intro": "<p>Technical notes, architecture, and hands-on leadership.</p>",
+            "intro_pt": "<p>Notas técnicas, arquitectura e leadership hands-on.</p>",
         },
     },
     {
@@ -47,7 +49,8 @@ SITE_SPECS = [
         "page_data": {
             "title": "Books",
             "slug": "books",
-            "intro": "<p>Livros publicados.</p>",
+            "intro": "<p>Published books.</p>",
+            "intro_pt": "<p>Livros publicados.</p>",
         },
     },
 ]
