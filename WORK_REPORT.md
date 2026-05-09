@@ -1,219 +1,165 @@
-# Relatório de migração — App Runner → Lightsail
+# Relatório de migração + iteração — bilouro.com
 
-**Data:** 2026-05-09
-**Sessão:** Autónoma
+**Última actualização:** 2026-05-09
 
 ---
 
 ## TL;DR
 
-✅ **Site totalmente migrado e HTTPS LIVE em todos os domínios.** App Runner stack derrubado.
+✅ **Site totalmente live em HTTPS** com 3 subdomínios + apex redirect.
+✅ **Migração completa** App Runner → Lightsail.
+✅ **Content em produção:** 4 tech posts, 12 projects, 2 books com posts pré-lançamento.
+✅ **Deploy 1-comando**: `./scripts/deploy.sh` ou `git push` (com GH Actions activado).
+✅ **SEO ready**: robots.txt, sitemap.xml, OG cards, JSON-LD Person, canonical URLs.
 
-Endpoints funcionais:
-- https://www.bilouro.com/ — HTTP/2 200
-- https://tech.bilouro.com/ — HTTP/2 200
-- https://books.bilouro.com/ — HTTP/2 200
-- https://www.bilouro.com/admin/login/ — HTTP/2 200
-- http://bilouro.com/ → 301 → https://www.bilouro.com/ ✅
-- https://bilouro.com/ → 301 → https://www.bilouro.com/ ✅
-
-Custos atuais (mensal):
-- Lightsail micro_3_0: $7
-- S3 media: <$1
-- AWS Budgets + alarmes: $0
-- **Total**: ~$8/mês (vs $22-25 anterior do App Runner stack)
-
-Conteúdo expandido: 2 livros (PT+EN) "Jesus, o Líder" / "Jesus, the Leader" + 6 posts pré-lançamento (3 PT + 3 EN). 8 posts no tech blog (com imagens onde existem).
+Endpoints:
+- https://www.bilouro.com/  (home + about/CV)
+- https://tech.bilouro.com/  (4 posts) + /projects/ (12 projects)
+- https://books.bilouro.com/  (catálogo + 2 posts pré-lançamento agregados)
+- https://bilouro.com/  → 301 → www
+- https://www.bilouro.com/admin/  (admin Wagtail)
 
 ---
 
-## Infra ATUAL
+## Infra atual
 
-### Lightsail (novo, ATIVO)
-- **Instance**: `bilouro-prod` em eu-west-1a
-- **Plan**: `micro_3_0` (1GB RAM, 2 vCPU, 40GB SSD) → **$7/mês**
-- **OS**: Ubuntu 24.04 LTS
+### Lightsail (production)
+- **Instance**: `bilouro-prod` em eu-west-1a, Ubuntu 24.04, micro_3_0 (1GB RAM, 2 vCPU, 40GB SSD)
 - **IP estático**: `3.251.103.83`
 - **Stack**: Postgres 16 + Python 3.13 (uv) + gunicorn (systemd) + nginx + Certbot
-- **Apex redirect**: `bilouro.com` → `https://www.bilouro.com` (301 via nginx)
-- **Backup**: cron domingo 02:00 UTC, `pg_dump` → `s3://bilouro-prod-media-eu-west-1/backups/postgres/`, retém 12 semanas
-- **Alarmes Lightsail**: CPU>80%, StatusCheckFailed, BurstCapacity<20% → email `bilouro@bilouro.com`
-- **Contact email**: `PendingVerification` ⚠️ — **precisas confirmar** subscription via email enviado pela AWS
+- **HTTPS**: Let's Encrypt, 4 certs (`www`, `tech`, `books`, `bilouro.com`)
+- **Apex redirect**: nginx 301 `bilouro.com` → `www.bilouro.com`
+- **Backup**: cron domingo 02:00 UTC, pg_dump → S3 (12-week retention)
+- **Alarmes**: 3 (CPU, status check, burst capacity) → email `bilouro@bilouro.com` (precisa confirmar subscrição)
 
-### App Runner (antigo, AINDA ATIVO até validação)
-- Service `bilouro-prod-web` em eu-west-1
-- Custom domains www/tech/books — agora sem tráfego (DNS já aponta para Lightsail)
-- Custo: ~$5-10/mês enquanto não desligares
-
-### Recursos AWS partilhados (ficam)
-- **S3 bucket** `bilouro-prod-media-eu-west-1` — media files do Wagtail (continua a funcionar do Lightsail)
-- **RDS Postgres** `bilouro-prod-pg` — não usado pelo Lightsail (Postgres está local na VM); **podes destruir** depois de validares migração
-- **ECR** `bilouro-prod-web` — não usado pelo Lightsail; **podes destruir** depois
-- **Secrets Manager** entries — não usados pelo Lightsail; **podes destruir** depois
-- **CloudWatch alarms** (4) — só relevantes para App Runner; **podes apagar** depois
-- **AWS Budget** $20/$50 — manter sempre
+### Recursos AWS partilhados
+- **S3 media** `bilouro-prod-media-eu-west-1` (Wagtail media files + backups SQL)
+- **AWS Budgets** $20/$50 → alertas mensais
+- **IAM user** `bilouro-cli-admin`
 
 ---
 
-## Conteúdo do site
+## O que está no site
 
 ### `www.bilouro.com` (autoral)
-- HomePage com headline + bio
-- AboutPage com CV curado (sem PII): bio, stack, experience, contact links
+- HomePage com hero (kicker + h1 + CTAs + 3-card grid)
+- AboutPage com bio + stack/skills + experience + contacts (curado, sem PII)
 
 ### `tech.bilouro.com` (developer blog)
-- 8 posts importados de `linkedin/knowledge-base/posts/` (com imagens onde os PNGs existem):
-  - `01-still-coding-after-15-years` (post01.png)
-  - `02-voice-agent-overview` (post-2.png)
-  - `02b-voice-agent-smb-teaser`
-  - `03-voice-agent-architecture` (post-03.png)
-  - `03b-voice-agent-model-decisions-teaser`
-  - `04-voice-agent-build-vs-buy` (post04.png)
-  - `04b-voice-agent-build-vs-buy-teaser`
-  - `05-strangler-pattern` (sem PNG associado)
+- 4 posts publicados (still-coding + voice-agent series)
+- ProjectIndexPage `/projects/` com 12 cards
+- 4 posts em DRAFT (teasers + strangler-pattern) — manuais para publicar quando estiveres pronto
+- RSS feed em `/feed/`
 
 ### `books.bilouro.com` (catálogo + blog pré-lançamento)
-- **2 livros**, ambos `coming_soon=True`:
-  - **"Jesus, o Líder"** (PT) com 3 posts importados de `book_jesus_lider/posts/pt/`
-  - **"Jesus, the Leader"** (EN) com 3 posts importados de `book_jesus_leader/posts/en/`
-- Cada post tem imagem (PNG do mesmo dia da publicação LinkedIn)
+- BookCatalogPage com 2 livros (`Jesus, o Líder` PT + `Jesus, the Leader` EN)
+- Agregação de posts pré-lançamento na homepage
+- Cada `/books/<livro>/` mostra os posts daquele livro
+- Cadência LinkedIn → blog: a cada post LinkedIn, importas via `manage.py import_posts`
+- 4 posts em DRAFT prontos (Mateus 4 + Lucas 6 PT+EN) para publicação semanal
 
-### Workflow definido
-A cada post LinkedIn publicado, fazes:
+---
+
+## Deploy process
+
+### Atual (depois de instalado)
+
+**1-comando local:**
 ```bash
+./scripts/deploy.sh
+```
+
+Faz: `git push` → SSH para Lightsail → `sudo bilouro-deploy` → pull/sync/migrate/collectstatic/bootstrap/restart/health-check (com rollback automático se falha).
+
+**GitHub Actions (auto-deploy on push):**
+Workflow definido em `.github/workflows/deploy.yml` (gitignored localmente — PAT precisa de scope `workflow`).
+
+Para activar:
+```bash
+gh auth refresh -s workflow
+git rm --cached .github/workflows/  # remove from gitignore
+# edit .gitignore to remove .github/workflows/ line
+git add .github/workflows/deploy.yml .gitignore
+git commit -m "ci: enable auto-deploy on push to main"
+git push
+```
+
+E adicionar **2 secrets** no repo (Settings → Secrets → Actions):
+- `LIGHTSAIL_SSH_KEY` = conteúdo de `~/.ssh/lightsail-bilouro.pem`
+- `LIGHTSAIL_HOST` = `3.251.103.83`
+
+Depois disso, qualquer `git push origin main` faz deploy automático com smoke test.
+
+### Hotfix manual via SSH
+
+Se precisares de mexer directamente:
+```bash
+ssh -i ~/.ssh/lightsail-bilouro.pem ubuntu@3.251.103.83
+sudo bilouro-deploy           # ou commands manuais
+```
+
+---
+
+## Comandos úteis para conteúdo
+
+### Importar posts (LinkedIn-style ou frontmatter-style)
+```bash
+# Tech blog
 ssh -i ~/.ssh/lightsail-bilouro.pem ubuntu@3.251.103.83 \
-  'sudo -u bilouro bash -lc "cd /opt/bilouro/web && set -a && . /etc/bilouro.env && set +a && \
-  uv run python manage.py import_posts /path/to/new/post --parent-slug jesus-o-lider"'
+  "scp ... /tmp/import-posts/ && sudo -u bilouro bash -lc 'cd /opt/bilouro/web && set -a && . /etc/bilouro.env && set +a && uv run python manage.py import_posts /tmp/import-posts --parent-slug tech'"
+
+# Books (pt/en)
+... --parent-slug jesus-o-lider     # PT
+... --parent-slug jesus-the-leader  # EN
 ```
-(idealmente automatiza via GitHub Actions ou outro processo).
+
+### Publicar/despublicar posts em produção
+Login no admin: https://www.bilouro.com/admin/ → Pages → encontrar post → "Publish" / "Unpublish"
+
+### Adicionar projetos novos
+Admin → Pages → tech → Projects → Add child → ProjectPage
 
 ---
 
-## O que tu fazes para finalizar
+## TODOs que ficam contigo
 
-### 1️⃣ Confirmar email Lightsail (agora)
-Vai ao inbox `bilouro@bilouro.com` e clica em "Confirm subscription" no email "AWS Notification - Subscription Confirmation" (vai para 2 emails: 1 do CloudWatch SNS + 1 do Lightsail).
+### Imediato
+- [ ] **Confirmar email Lightsail** (verifica spam, "AWS Notification - Subscription Confirmation")
+- [ ] **Activar snapshots automáticos** (1 clique em https://lightsail.aws.amazon.com/ls/webapp/eu-west-1/instances/bilouro-prod, Snapshots tab)
+- [ ] **Login admin** e **mudar password** de `Bilouro!2026Admin` para algo robusto
+- [ ] **Submeter sitemap ao Google Search Console** (passos em `SUGGESTIONS.md` §4.1)
 
-### 2️⃣ Activar snapshots automáticos (1 clique)
-🔗 https://lightsail.aws.amazon.com/ls/webapp/eu-west-1/instances/bilouro-prod
-- Tab **Snapshots** → "Enable automatic snapshots"
-- Mantém o default (00:00 UTC, 7 dias retenção)
-- Custo: ~$0.50/mês
+### Esta semana
+- [ ] **Activar GitHub Actions deploy** (passos acima)
+- [ ] **Comprimir imagens dos posts** (PNG ~1MB → WebP <200KB) — vê `SUGGESTIONS.md` §5
+- [ ] **Adicionar JSON-LD BlogPosting/Book** nos templates (eu posso fazer; ~30 min)
 
-### 3️⃣ Esperar propagação DNS + Certbot (em curso)
-A propagação DNS final está em curso no momento da escrita deste relatório. O retry loop do Certbot está activo e vai emitir os certs assim que o Let's Encrypt resolver chegar a `3.251.103.83` em todos os 3 subdomínios.
-
-Quando vires o site responder em `https://www.bilouro.com/` no browser, está pronto.
-
-### 4️⃣ Validar HTTPS
-```bash
-curl -I https://www.bilouro.com/
-curl -I https://tech.bilouro.com/
-curl -I https://books.bilouro.com/
-curl -I http://bilouro.com/        # 301 → https://www.bilouro.com/
-```
-Todos devem responder `HTTP/2 200` (ou 301 para o apex).
-
-### 5️⃣ Desligar App Runner (depois de validares)
-```bash
-cd /Users/victor/Documents/GitHub/bilouro-web/infra/terraform
-terraform apply -auto-approve -var enable_apprunner=false
-```
-Isto remove App Runner Service + Custom Domain Associations + VPC Connector.
-
-### 6️⃣ (Opcional) Destruir recursos AWS não-usados
-Depois de uns dias a confirmar que tudo funciona:
-```bash
-# Destrói RDS, ECR, Secrets — perde-os
-terraform destroy -target aws_db_instance.main \
-                  -target aws_ecr_repository.web \
-                  -target aws_secretsmanager_secret.db_url \
-                  -target aws_secretsmanager_secret.django_secret_key
-```
-Ou destruir tudo:
-```bash
-terraform destroy
-```
-
-### 7️⃣ Login admin e MUDAR PASSWORD
-```
-URL:      https://www.bilouro.com/admin/
-Username: admin
-Password: Bilouro!2026Admin
-```
-Vai a Settings → Users → admin → Change password. **Faz isto já**.
+### Próximo mês
+- [ ] Publicar 4-6 posts a partir do `linkedin/knowledge_gap/*` (ver `SUGGESTIONS.md` §2)
+- [ ] Adicionar `/cv/` page com link para PDF
+- [ ] Definir plano newsletter (Buttondown / Resend)
 
 ---
 
-## Arquivos importantes do repo
+## Custos mensais
 
-| Path | Para quê |
-|---|---|
-| `DNS_LOCAWEB.md` | Instruções DNS detalhadas (passo a passo) |
-| `WORK_REPORT.md` | Este ficheiro — visão geral |
-| `scripts/lightsail_provision.sh` | Bootstrap inicial Ubuntu |
-| `scripts/lightsail_app_setup.sh` | Clone + venv + systemd + nginx |
-| `scripts/lightsail_run_certbot.sh` | Emitir certs Let's Encrypt + swap nginx para HTTPS |
-| `scripts/lightsail_backup.sh` | Cron `pg_dump` → S3 (instalado em `/usr/local/bin/bilouro-backup`) |
-| `scripts/cloud_build.sh` | Para App Runner (legacy) — descontinuar quando shutdown |
-| `apps/core/management/commands/import_posts.py` | Importar posts LinkedIn-style ou frontmatter-style com imagens |
-| `apps/core/management/commands/bootstrap_sites.py` | Idempotente — cria 3 sites + 2 livros + AboutPage |
-| `infra/terraform/` | Toda a infra App Runner — vai-se descontinuar gradualmente |
+```
+Lightsail micro_3_0:        $7.00
+Lightsail snapshots auto:   $0.50  (após activares)
+S3 media + backups SQL:     <$0.50
+AWS Budgets/alarms:         $0
+─────────────────────────────────
+TOTAL:                      ~$8/mês
+```
+
+vs. App Runner stack ~$22-25/mês. **Poupança de ~60%.**
 
 ---
 
-## Custos estimados (pós-migração)
+## Documentos relacionados
 
-### Imediato (App Runner ainda a correr)
-- App Runner: ~$5-10/mês
-- Lightsail: $7/mês
-- Outros: ~$1/mês
-- **Total**: ~$13-18/mês — temporário durante validação
-
-### Após desligar App Runner
-- Lightsail: $7/mês
-- Snapshots: $0.50/mês
-- Backup S3: <$0.10/mês
-- S3 (media): <$1/mês
-- Domain registration (Locaweb): ~$1/mês equivalente
-- **Total**: ~$9/mês
-
-### Após `terraform destroy` (cleanup completo)
-- Lightsail + S3 media + Snapshots: ~$8/mês
-- Domain registration: ~$1/mês
-- **Total**: ~$9/mês
-
-Poupança vs. App Runner stack: ~$10-15/mês (~30%).
-
----
-
-## Decisões / Trade-offs assumidos
-
-1. **Lightsail VM em vez de Container Service**: 4× mais barato, sem auto-scaling. Aceitável para tráfego baixo/médio.
-2. **Postgres local, não managed**: $13/mês de poupança vs RDS. Backup semanal mitiga risco.
-3. **Sem CloudFront**: latência directa para a VM em Irlanda (ok para PT/EU). Adicionar CloudFront depois se necessário.
-4. **HTTPS via Let's Encrypt + Certbot**, não AWS ACM: gratuito, auto-renew via cron Certbot.
-5. **Apex redirect via nginx 301**, não DNS-level: rápido, sem dependência de outro provedor.
-6. **Backup via cron na VM**, não Lambda: Postgres está local na VM, Lambda exigiria expor a porta — cron mais simples.
-
----
-
-## Limitações que o utilizador deve saber
-
-- **Sem auto-scaling**: se viralizar, sobe traffic à mão (resize bundle no Lightsail). Hint: $10/mês plan é 2GB RAM + same vCPUs.
-- **Single point of failure**: se a VM cair, site cai. Snapshots permitem recovery.
-- **Postgres self-managed**: tu (ou cron + alarmes) responsabilizas por upgrades major.
-- **Apex** `bilouro.com` mantém um cert separado (Let's Encrypt). Renovação automática via Certbot.
-
----
-
-## TODOs futuros (não bloqueantes)
-
-- [ ] Adicionar GitHub Actions para auto-deploy on push (substituir cloud_build.sh + manual SSH)
-- [ ] Sentry ou similar para tracking de erros
-- [ ] Plausible Analytics ($9/mês ou self-host)
-- [ ] Newsletter (Buttondown / Resend) — fase 5 do plano original
-- [ ] Loja real (Gumroad/Lemon Squeezy) quando o livro lançar
-- [ ] i18n PT/EN com `wagtail-localize` — está instalado, ainda não configurado nos modelos
-- [ ] CloudFront na frente do Lightsail (se quiseres CDN global)
-- [ ] Migrar DNS para Route 53 ou Cloudflare se decidires deixar Locaweb
+- [README.md](README.md) — desenvolvimento local
+- [DNS_LOCAWEB.md](DNS_LOCAWEB.md) — instruções DNS Locaweb (referência)
+- [SUGGESTIONS.md](SUGGESTIONS.md) — sugestões de conteúdo, SEO, novas secções
+- [scripts/](scripts/) — provisioning, deploy, backup, certbot
+- [infra/terraform/](infra/terraform/) — apenas S3 media + Budgets (App Runner stack destroyed)
