@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+# scripts/lightsail_nginx_https.sh — switch nginx to HTTPS using per-domain certs.
+# Run after all 4 certs (www/tech/books/bilouro) exist in /etc/letsencrypt/live/.
+
+set -euo pipefail
+
+sudo tee /etc/nginx/sites-available/bilouro >/dev/null <<'NGINX'
+# Apex bilouro.com → 301 to www
+server {
+    listen 80;
+    listen [::]:80;
+    server_name bilouro.com;
+    location /.well-known/acme-challenge/ { root /var/www/html; }
+    location / { return 301 https://www.bilouro.com$request_uri; }
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name bilouro.com;
+    ssl_certificate     /etc/letsencrypt/live/bilouro.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/bilouro.com/privkey.pem;
+    return 301 https://www.bilouro.com$request_uri;
+}
+
+# Subdomains: HTTP → 301 to HTTPS
+server {
+    listen 80;
+    listen [::]:80;
+    server_name www.bilouro.com tech.bilouro.com books.bilouro.com;
+    location /.well-known/acme-challenge/ { root /var/www/html; }
+    location / { return 301 https://$host$request_uri; }
+}
+
+# www subdomain HTTPS
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name www.bilouro.com;
+    ssl_certificate     /etc/letsencrypt/live/www.bilouro.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/www.bilouro.com/privkey.pem;
+    include /etc/nginx/snippets/bilouro-app.conf;
+}
+
+# tech subdomain HTTPS
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name tech.bilouro.com;
+    ssl_certificate     /etc/letsencrypt/live/tech.bilouro.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/tech.bilouro.com/privkey.pem;
+    include /etc/nginx/snippets/bilouro-app.conf;
+}
+
+# books subdomain HTTPS
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name books.bilouro.com;
+    ssl_certificate     /etc/letsencrypt/live/books.bilouro.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/books.bilouro.com/privkey.pem;
+    include /etc/nginx/snippets/bilouro-app.conf;
+}
+
+# Default catch-all (no cert, returns 404 — protects against random requests)
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name _;
+    return 444;
+}
+NGINX
+
+sudo mkdir -p /etc/nginx/snippets
+sudo tee /etc/nginx/snippets/bilouro-app.conf >/dev/null <<'SNIP'
+client_max_body_size 25m;
+
+location /static/ {
+    alias /opt/bilouro/web/staticfiles/;
+    expires 30d;
+    add_header Cache-Control "public, immutable";
+}
+
+location /healthz {
+    proxy_pass http://127.0.0.1:8000/healthz;
+    access_log off;
+}
+
+location / {
+    proxy_pass http://127.0.0.1:8000;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_redirect off;
+    proxy_read_timeout 60s;
+}
+SNIP
+
+sudo nginx -t
+sudo systemctl reload nginx
+
+# Enable SSL redirect in Django
+sudo sed -i 's/^SECURE_SSL_REDIRECT=.*/SECURE_SSL_REDIRECT=True/' /etc/bilouro.env
+sudo systemctl restart bilouro-web
+
+echo "==> nginx HTTPS active. Test:"
+echo "  curl -I https://www.bilouro.com/"
+echo "  curl -I https://tech.bilouro.com/"
+echo "  curl -I https://books.bilouro.com/"
+echo "  curl -I http://bilouro.com/"
