@@ -69,7 +69,6 @@ INSTALLED_APPS = LOCAL_APPS + WAGTAIL_APPS + DJANGO_APPS
 # ─── Middleware ─────────────────────────────────────────────────────
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "wagtailcache.cache.UpdateCacheMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
@@ -79,20 +78,14 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
-    "wagtailcache.cache.FetchFromCacheMiddleware",
 ]
 
-# wagtail-cache settings
+# wagtail-cache disabled while we use cookie-based language switching.
+# (cache key doesn't include the language cookie, so PT visitors would see
+# cached EN responses). Re-enable when we move to URL-prefix i18n routing.
 CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-        "LOCATION": "wagtailcache",
-        "TIMEOUT": 60 * 60,  # 1h default
-    }
+    "default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
 }
-WAGTAIL_CACHE_BACKEND = "default"
-WAGTAIL_CACHE_HEADER = "X-Wagtail-Cache"
-WAGTAIL_CACHE_IGNORE_QS = ["utm_*", "fbclid", "gclid", "ref"]
 
 
 # ─── Templates ──────────────────────────────────────────────────────
