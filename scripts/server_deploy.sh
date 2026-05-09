@@ -35,10 +35,10 @@ UNIT
 
 sudo tee /etc/systemd/system/bilouro-publish-scheduled.timer >/dev/null <<'UNIT'
 [Unit]
-Description=Run Wagtail publish_scheduled_pages hourly
+Description=Run Wagtail publish_scheduled_pages every 15 minutes
 
 [Timer]
-OnCalendar=hourly
+OnCalendar=*:0/15
 Persistent=true
 Unit=bilouro-publish-scheduled.service
 
