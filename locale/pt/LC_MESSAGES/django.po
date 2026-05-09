@@ -142,7 +142,7 @@ msgstr "Sem resultados."
 
 #: templates/shop/base.html:11 templates/tech/base.html:11
 msgid "Back to bilouro.com"
-msgstr ""
+msgstr "Voltar a bilouro.com"
 
 #: templates/shop/base.html:14 templates/shop/book_catalog_page.html:12
 msgid "Catalogue"
