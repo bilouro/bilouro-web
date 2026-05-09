@@ -7,7 +7,9 @@
 {% block body %}
 <header class="site-header">
   <div class="container-wide">
-    <a class="brand" href="/">books<span class="dot">.</span>bilouro</a>
+    <span class="brand">
+      <a class="brand-self" href="/">books</a><span class="dot">.</span><a class="brand-parent" href="https://www.bilouro.com/" aria-label="{% trans 'Back to bilouro.com' %}">bilouro</a>
+    </span>
     <nav class="nav">
       <a href="/">{% trans "Catalogue" %}</a>
       <a href="https://www.bilouro.com/about/">{% trans "About" %}</a>

@@ -42,9 +42,17 @@ body.tech .brand {
   font-family: "JetBrains Mono", Menlo, monospace;
   font-weight: 700;
   font-size: 1.05rem;
-  text-decoration: none;
   letter-spacing: -0.01em;
 }
+
+body.tech .brand a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+body.tech .brand a:hover { color: var(--accent); border-bottom-color: var(--accent); }
 
 body.tech .brand .dot { color: var(--accent); }
 

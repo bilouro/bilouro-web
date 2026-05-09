@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-09 11:16+0100\n"
+"POT-Creation-Date: 2026-05-09 14:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: OpenAI Responses API\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,68 +18,91 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: templates/_cross_nav.html:6
 msgid "Autoral"
 msgstr "Autoral"
 
+#: templates/_cross_nav.html:8
 msgid "Home"
 msgstr "Início"
 
+#: templates/_cross_nav.html:9
 msgid "About / CV"
 msgstr "Sobre / CV"
 
+#: templates/_cross_nav.html:13 templates/autoral/base.html:14
+#: templates/autoral/home_page.html:33 templates/autoral/home_page.html:48
 msgid "Books"
 msgstr "Livros"
 
+#: templates/_cross_nav.html:15
 msgid "All books"
 msgstr "Todos os livros"
 
+#: templates/_cross_nav.html:23
 msgid "Blog"
 msgstr "Blog"
 
+#: templates/_cross_nav.html:24 templates/tech/base.html:15
+#: templates/tech/project_page.html:6
 msgid "Projects"
 msgstr "Projetos"
 
+#: templates/_cross_nav.html:29
 msgid "Elsewhere"
 msgstr "Noutras paragens"
 
+#: templates/_giscus.html:5
 msgid "Comments"
 msgstr "Comentários"
 
+#: templates/autoral/about_page.html:10
 msgid "Bio"
 msgstr "Bio"
 
+#: templates/autoral/about_page.html:13
 msgid "Stack & Skills"
 msgstr "Stack & competências"
 
+#: templates/autoral/about_page.html:16
 msgid "Experience"
 msgstr "Experiência"
 
+#: templates/autoral/about_page.html:19
 msgid "Contact"
 msgstr "Contacto"
 
+#: templates/autoral/base.html:12 templates/autoral/home_page.html:54
+#: templates/shop/base.html:15 templates/tech/base.html:16
 msgid "About"
 msgstr "Sobre"
 
+#: templates/autoral/home_page.html:24
 msgid "Hands-on Tech Lead · Solutions Architect"
 msgstr "Hands-on Tech Lead · Arquiteto de Soluções"
 
+#: templates/autoral/home_page.html:25
 msgid ""
 "Engineering, leadership and notes from <em>both</em> sides of the keyboard."
 msgstr "Engenharia, liderança e notas de <em>ambos</em> os lados do teclado."
 
+#: templates/autoral/home_page.html:31
 msgid "Read the long version"
 msgstr "Ler a versão longa"
 
+#: templates/autoral/home_page.html:32
 msgid "Tech blog"
 msgstr "Blog técnico"
 
+#: templates/autoral/home_page.html:43
 msgid ""
-"Notes on engineering leadership, modernizing legacy, and building production"
-" AI agents at SMB scale."
+"Notes on engineering leadership, modernizing legacy, and building production "
+"AI agents at SMB scale."
 msgstr ""
 "Notas sobre liderança de engenharia, modernização de legado e construção de "
 "agentes de IA em produção à escala de PME."
 
+#: templates/autoral/home_page.html:49
 msgid ""
 "Working on a leadership book using Jesus' example as the case study. Weekly "
 "reflections on the way to the launch."
@@ -87,42 +110,57 @@ msgstr ""
 "A trabalhar num livro sobre liderança usando o exemplo de Jesus como estudo "
 "de caso. Reflexões semanais no caminho até ao lançamento."
 
+#: templates/autoral/home_page.html:55
 msgid ""
 "22+ years in engineering, last 15 leading. Currently in Porto, Portugal."
 msgstr ""
 "Mais de 22 anos em engenharia, os últimos 15 em liderança. Atualmente no "
 "Porto, Portugal."
 
+#: templates/autoral/home_page.html:56
 msgid "CV / About"
 msgstr "CV / Sobre"
 
+#: templates/search.html:4 templates/search.html:20 templates/search.html:23
 msgid "Search"
 msgstr "Pesquisar"
 
+#: templates/search.html:22
 msgid "Type and hit enter…"
 msgstr "Escreve e prime Enter…"
 
+#: templates/search.html:29
 #, python-format
 msgid "%(counter)s result for &ldquo;%(query)s&rdquo;."
 msgid_plural "%(counter)s results for &ldquo;%(query)s&rdquo;."
 msgstr[0] ""
 msgstr[1] ""
 
+#: templates/search.html:47
 msgid "No results."
 msgstr "Sem resultados."
 
+#: templates/shop/base.html:11 templates/tech/base.html:11
+msgid "Back to bilouro.com"
+msgstr ""
+
+#: templates/shop/base.html:14 templates/shop/book_catalog_page.html:12
 msgid "Catalogue"
 msgstr "Catálogo"
 
+#: templates/shop/book_catalog_page.html:24
 msgid "Coming soon"
 msgstr "Em breve"
 
+#: templates/shop/book_catalog_page.html:28
 msgid "Catalogue coming soon."
 msgstr "Catálogo em breve."
 
+#: templates/shop/book_catalog_page.html:35 templates/shop/book_page.html:53
 msgid "Pre-launch reflections"
 msgstr "Reflexões pré-lançamento"
 
+#: templates/shop/book_catalog_page.html:36
 msgid ""
 "Every Tuesday in English and every Thursday in Portuguese, I share a "
 "reflection from the book in progress."
@@ -130,44 +168,58 @@ msgstr ""
 "Todas as terças-feiras em inglês e todas as quintas-feiras em português, "
 "partilho uma reflexão do livro em progresso."
 
+#: templates/shop/book_page.html:35
 msgid "Written in Portuguese."
 msgstr "Escrito em português."
 
+#: templates/shop/book_page.html:35
 msgid "Written in English."
 msgstr "Escrito em inglês."
 
+#: templates/shop/book_page.html:39
 msgid "Coming soon."
 msgstr "Em breve."
 
+#: templates/shop/book_page.html:39
 msgid "The posts below are part of the journey to the launch."
 msgstr "Os posts abaixo fazem parte da viagem até ao lançamento."
 
+#: templates/shop/book_page.html:45
 msgid "Buy"
 msgstr "Comprar"
 
+#: templates/tech/base.html:14
 msgid "Posts"
 msgstr "Publicações"
 
+#: templates/tech/blog_index_page.html:7
 msgid "Notes from the seam between code and leadership."
 msgstr "Notas da fronteira entre código e liderança."
 
+#: templates/tech/blog_index_page.html:26
 msgid "No posts yet."
 msgstr "Ainda não há publicações."
 
+#: templates/tech/blog_post_page.html:38
 msgid "by"
 msgstr "por"
 
+#: templates/tech/blog_post_page.html:64
 msgid "Read next"
 msgstr "Ler a seguir"
 
+#: templates/tech/project_index_page.html:38
 msgid "No projects yet."
 msgstr "Ainda não há projetos."
 
+#: templates/tech/project_page.html:24
 msgid "Stack"
 msgstr "Stack"
 
+#: templates/tech/project_page.html:30
 msgid "View on GitHub"
 msgstr "Ver no GitHub"
 
+#: templates/tech/project_page.html:31
 msgid "View live"
 msgstr "Ver online"
