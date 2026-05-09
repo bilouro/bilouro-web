@@ -7,11 +7,21 @@
 
 ## TL;DR
 
-Site **bilouro.com** migrado de AWS App Runner (~$22/mês) para **AWS Lightsail VM** (~$8/mês).
-DNS já apontado para o Lightsail. Apenas falta:
-1. Aguardar propagação DNS final (em curso) → Certbot emite certs HTTPS
-2. Validares HTTPS nos 3 subdomínios + apex
-3. Desligar App Runner com 1 comando Terraform
+✅ **Site totalmente migrado e HTTPS LIVE em todos os domínios.** App Runner stack derrubado.
+
+Endpoints funcionais:
+- https://www.bilouro.com/ — HTTP/2 200
+- https://tech.bilouro.com/ — HTTP/2 200
+- https://books.bilouro.com/ — HTTP/2 200
+- https://www.bilouro.com/admin/login/ — HTTP/2 200
+- http://bilouro.com/ → 301 → https://www.bilouro.com/ ✅
+- https://bilouro.com/ → 301 → https://www.bilouro.com/ ✅
+
+Custos atuais (mensal):
+- Lightsail micro_3_0: $7
+- S3 media: <$1
+- AWS Budgets + alarmes: $0
+- **Total**: ~$8/mês (vs $22-25 anterior do App Runner stack)
 
 Conteúdo expandido: 2 livros (PT+EN) "Jesus, o Líder" / "Jesus, the Leader" + 6 posts pré-lançamento (3 PT + 3 EN). 8 posts no tech blog (com imagens onde existem).
 

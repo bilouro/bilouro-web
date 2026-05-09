@@ -6,10 +6,12 @@ admin, sitemaps and locale-aware routes go above that.
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap
 from django.http import HttpResponse
 from django.urls import include, path
 from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
+from wagtail.contrib.sitemaps.sitemap_generator import Sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 
 
@@ -17,9 +19,26 @@ def healthz(_request):
     return HttpResponse("ok", content_type="text/plain")
 
 
+def robots_txt(request):
+    host = request.get_host()
+    body = (
+        "User-agent: *\n"
+        "Disallow: /admin/\n"
+        "Disallow: /django-admin/\n"
+        "Disallow: /documents/\n"
+        "Allow: /\n\n"
+        f"Sitemap: https://{host}/sitemap.xml\n"
+    )
+    return HttpResponse(body, content_type="text/plain")
+
+
+sitemaps = {"wagtail": Sitemap}
+
 urlpatterns = [
     path("healthz/", healthz, name="healthz"),
-    path("healthz", healthz),  # App Runner's probe omits trailing slash
+    path("healthz", healthz),
+    path("robots.txt", robots_txt, name="robots"),
+    path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="sitemap"),
     path("django-admin/", admin.site.urls),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),

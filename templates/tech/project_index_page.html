@@ -1,0 +1,41 @@
+{% extends "tech/base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block content %}
+<header class="page-head">
+  <h1>{{ page.title }}</h1>
+  {% if page.intro %}<div class="intro">{{ page.intro|richtext }}</div>{% endif %}
+</header>
+
+<ul class="project-grid">
+  {% for project in projects %}
+    <li class="project-card project-card--{{ project.kind }}">
+      <a href="{% pageurl project %}">
+        {% if project.image %}
+          <div class="thumb">{% image project.image fill-600x300 %}</div>
+        {% endif %}
+        <div class="card-body">
+          <header>
+            <span class="kind">{{ project.get_kind_display }}</span>
+            {% if project.period %}<span class="period">· {{ project.period }}</span>{% endif %}
+          </header>
+          <h2>{{ project.title }}</h2>
+          <p class="summary">{{ project.summary }}</p>
+          {% if project.tech_stack %}
+            <p class="stack">
+              {% for t in project.tech_stack|cut:" "|stringformat:"s"|slice:":300"|wordwrap:1 %}{% endfor %}
+              {{ project.tech_stack }}
+            </p>
+          {% endif %}
+        </div>
+      </a>
+      <footer class="card-foot">
+        {% if project.github_url %}<a href="{{ project.github_url }}" target="_blank" rel="noopener">GitHub →</a>{% endif %}
+        {% if project.live_url %}<a href="{{ project.live_url }}" target="_blank" rel="noopener">Live →</a>{% endif %}
+      </footer>
+    </li>
+  {% empty %}
+    <li class="empty">No projects yet.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

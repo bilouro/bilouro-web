@@ -1,10 +1,58 @@
 {% extends "autoral/base.html" %}
 {% load wagtailcore_tags %}
 
+{% block jsonld %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Victor H. Bilouro",
+  "url": "https://www.bilouro.com/",
+  "sameAs": [
+    "https://www.linkedin.com/in/bilouro",
+    "https://github.com/bilouro"
+  ],
+  "jobTitle": "Hands-on Tech Lead & Solutions Architect",
+  "worksFor": { "@type": "Organization", "name": "Independent" },
+  "address": { "@type": "PostalAddress", "addressLocality": "Porto", "addressCountry": "PT" }
+}
+</script>
+{% endblock %}
+
 {% block content %}
-<article class="hero">
-  <h1>{{ page.title }}</h1>
+<section class="hero hero-home">
+  <p class="kicker">Hands-on Tech Lead · Solutions Architect</p>
+  <h1>Engineering, leadership and notes from <em>both</em> sides of the keyboard.</h1>
   {% if page.intro %}<div class="intro">{{ page.intro|richtext }}</div>{% endif %}
-  {% if page.body %}<div class="body">{{ page.body|richtext }}</div>{% endif %}
-</article>
+
+  <div class="hero-cta">
+    <a class="btn" href="/about/">Read the long version →</a>
+    <a class="btn btn-secondary" href="https://tech.bilouro.com/">Tech blog</a>
+    <a class="btn btn-secondary" href="https://books.bilouro.com/">Books</a>
+  </div>
+</section>
+
+{% if page.body %}
+  <section class="hero-body">{{ page.body|richtext }}</section>
+{% endif %}
+
+<section class="cards">
+  <article class="card">
+    <h3>Tech</h3>
+    <p>Notes on engineering leadership, modernizing legacy, and building production AI agents at SMB scale.</p>
+    <a class="card-link" href="https://tech.bilouro.com/">tech.bilouro.com →</a>
+  </article>
+
+  <article class="card">
+    <h3>Books</h3>
+    <p>Working on a leadership book using Jesus' example as the case study. Weekly reflections on the way to the launch.</p>
+    <a class="card-link" href="https://books.bilouro.com/">books.bilouro.com →</a>
+  </article>
+
+  <article class="card">
+    <h3>About</h3>
+    <p>22+ years in engineering, last 15 leading. Currently in Porto, Portugal.</p>
+    <a class="card-link" href="/about/">CV / About →</a>
+  </article>
+</section>
 {% endblock %}

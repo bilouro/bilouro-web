@@ -18,7 +18,7 @@ class BlogIndexPage(Page):
 
     content_panels = Page.content_panels + [FieldPanel("intro")]
 
-    subpage_types = ["tech.BlogPostPage"]
+    subpage_types = ["tech.BlogPostPage", "tech.ProjectIndexPage"]
     parent_page_types = ["wagtailcore.Page"]
 
     def get_context(self, request, *args, **kwargs):
@@ -29,6 +29,82 @@ class BlogIndexPage(Page):
             .order_by("-date", "-first_published_at")
         )
         return context
+
+
+class ProjectIndexPage(Page):
+    """Catalogue of projects (OSS + professional + side)."""
+
+    intro = RichTextField(blank=True)
+
+    template = "tech/project_index_page.html"
+
+    content_panels = Page.content_panels + [FieldPanel("intro")]
+
+    subpage_types = ["tech.ProjectPage"]
+    parent_page_types = ["tech.BlogIndexPage", "wagtailcore.Page"]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["projects"] = (
+            ProjectPage.objects.live().descendant_of(self).order_by("sort_order")
+        )
+        return context
+
+
+class ProjectPage(Page):
+    """A single project — open source, professional, or personal."""
+
+    KIND_CHOICES = [
+        ("oss", "Open Source"),
+        ("work", "Professional"),
+        ("personal", "Personal / Side"),
+    ]
+
+    kind = models.CharField(max_length=20, choices=KIND_CHOICES, default="oss")
+    period = models.CharField(max_length=100, blank=True, help_text="e.g. '2022-2025'")
+    summary = models.CharField(max_length=300, help_text="One-line description shown on cards")
+    description = RichTextField(blank=True)
+    tech_stack = models.CharField(
+        max_length=300, blank=True, help_text="Comma-separated, e.g. 'Python, AWS, Postgres'"
+    )
+    github_url = models.URLField(blank=True)
+    live_url = models.URLField(blank=True)
+    image = models.ForeignKey(
+        "wagtailimages.Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+    sort_order = models.IntegerField(default=0)
+
+    template = "tech/project_page.html"
+
+    search_fields = Page.search_fields + [
+        index.SearchField("summary"),
+        index.SearchField("description"),
+        index.SearchField("tech_stack"),
+    ]
+
+    content_panels = Page.content_panels + [
+        MultiFieldPanel(
+            [
+                FieldPanel("kind"),
+                FieldPanel("period"),
+                FieldPanel("tech_stack"),
+                FieldPanel("sort_order"),
+            ],
+            heading="Meta",
+        ),
+        FieldPanel("image"),
+        FieldPanel("summary"),
+        FieldPanel("description"),
+        MultiFieldPanel(
+            [FieldPanel("github_url"), FieldPanel("live_url")], heading="Links"
+        ),
+    ]
+
+    parent_page_types = ["tech.ProjectIndexPage"]
 
 
 class BlogPostTag(TaggedItemBase):

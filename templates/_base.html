@@ -4,10 +4,34 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}{% if page.title %}{{ page.title }} · {% endif %}{{ wagtail_site_name|default:"bilouro.com" }}{% endblock %}</title>
-  <meta name="description" content="{% block meta_description %}{{ page.search_description|default:"" }}{% endblock %}">
+  <title>{% block title %}{% if page.title and page.url != '/' %}{{ page.title }} · {% endif %}{{ wagtail_site_name|default:"bilouro.com" }}{% endblock %}</title>
+
+  <meta name="description" content="{% block meta_description %}{% firstof page.search_description page.summary page.intro|striptags page.bio|striptags|truncatechars:160 'Victor H. Bilouro — Hands-on Tech Lead, Solutions Architect & writer. Notes on engineering leadership, modern systems, and Jesus as a leadership case study.' %}{% endblock %}">
+
+  <link rel="canonical" href="{% block canonical %}{{ request.scheme }}://{{ request.get_host }}{{ request.path }}{% endblock %}">
+  <meta name="robots" content="{% block meta_robots %}index, follow{% endblock %}">
+
+  {# Open Graph #}
+  <meta property="og:title" content="{% block og_title %}{% if page.title %}{{ page.title }} · {% endif %}{{ wagtail_site_name|default:"bilouro.com" }}{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}{{ block.super }}{% endblock %}">
+  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+  <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+  <meta property="og:site_name" content="{{ wagtail_site_name|default:"bilouro.com" }}">
+  {% block og_image %}{% endblock %}
+
+  {# Twitter #}
+  <meta name="twitter:card" content="{% block twitter_card %}summary_large_image{% endblock %}">
+  <meta name="twitter:site" content="@bilouro">
+  <meta name="twitter:creator" content="@bilouro">
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E📚%3C/text%3E%3C/svg%3E">
+
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed/">
+
   <link rel="stylesheet" href="{% static 'css/_base.css' %}">
   {% block extra_css %}{% endblock %}
+
+  {% block jsonld %}{% endblock %}
   {% block extra_head %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">

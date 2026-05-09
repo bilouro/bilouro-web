@@ -1,11 +1,13 @@
-/* Tech — developer / sans+mono */
+/* Tech — developer / sans+mono / refined */
 :root {
   --bg: #ffffff;
   --fg: #14171a;
   --muted: #5a6470;
   --accent: #0066cc;
+  --accent-soft: #4a90e2;
   --rule: #e6e8eb;
   --code-bg: #f4f5f7;
+  --warm: #fafbfc;
 }
 
 body.tech {
@@ -20,23 +22,26 @@ body.tech code, body.tech pre {
   font-family: "JetBrains Mono", Menlo, Consolas, monospace;
 }
 
+/* ─── Header ─── */
 body.tech .site-header {
   border-bottom: 1px solid var(--rule);
   padding: 1rem 0;
   margin-bottom: 3rem;
-  background: #fafbfc;
+  background: var(--warm);
 }
 
-body.tech .site-header .container {
+body.tech .site-header .container-wide {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 body.tech .brand {
   font-family: "JetBrains Mono", Menlo, monospace;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.05rem;
   text-decoration: none;
   letter-spacing: -0.01em;
 }
@@ -47,17 +52,22 @@ body.tech .nav a {
   margin-left: 1.25rem;
   color: var(--muted);
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   font-family: "JetBrains Mono", Menlo, monospace;
 }
 
 body.tech .nav a:hover { color: var(--accent); }
 
+@media (max-width: 600px) {
+  body.tech .nav a { margin-left: 0.75rem; font-size: 0.85rem; }
+}
+
+/* ─── Headings ─── */
 body.tech h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.18;
   margin: 0 0 1rem;
 }
 
@@ -65,9 +75,27 @@ body.tech h2 {
   font-size: 1.35rem;
   font-weight: 700;
   margin: 2.5rem 0 1rem;
+  letter-spacing: -0.01em;
 }
 
+body.tech h3 { font-size: 1.1rem; font-weight: 700; }
+
 body.tech a { color: var(--accent); }
+
+body.tech .page-head .kicker {
+  font-family: "JetBrains Mono", Menlo, monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin: 0 0 1rem;
+}
+
+body.tech .page-head .intro {
+  color: var(--muted);
+  font-size: 1.05rem;
+  margin: 1rem 0 2rem;
+}
 
 body.tech time {
   font-family: "JetBrains Mono", Menlo, monospace;
@@ -75,6 +103,7 @@ body.tech time {
   color: var(--muted);
 }
 
+/* ─── Post list ─── */
 body.tech .post-list {
   list-style: none;
   padding: 0;
@@ -89,23 +118,48 @@ body.tech .post-list li {
 body.tech .post-link {
   text-decoration: none;
   color: inherit;
-  display: block;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
 }
 
-body.tech .post-list h2 {
+body.tech .post-link .thumb img {
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+@media (min-width: 720px) {
+  body.tech .post-link { grid-template-columns: 220px 1fr; align-items: start; }
+}
+
+body.tech .post-link h2 {
   margin: 0.5rem 0 0.5rem;
   font-size: 1.3rem;
 }
 
-body.tech .excerpt { color: var(--muted); margin: 0; }
+body.tech .post-link:hover h2 { color: var(--accent); }
 
-body.tech .post .lede {
-  font-size: 1.1rem;
+body.tech .excerpt {
   color: var(--muted);
-  margin: 1rem 0 2rem;
+  margin: 0;
+  font-size: 0.97rem;
 }
 
-body.tech .post .body { white-space: pre-wrap; }
+/* ─── Single post ─── */
+body.tech .post header { margin-bottom: 2rem; }
+
+body.tech .post .lede {
+  font-size: 1.15rem;
+  color: var(--muted);
+  margin: 1rem 0 2rem;
+  line-height: 1.55;
+}
+
+body.tech .post .body {
+  white-space: pre-wrap;
+  font-size: 1.04rem;
+  line-height: 1.75;
+}
 
 body.tech .post .hero {
   margin: 2rem 0;
@@ -117,7 +171,12 @@ body.tech .post .hero img {
   box-shadow: 0 4px 16px rgba(0,0,0,0.06);
 }
 
-body.tech .tags { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+body.tech .tags {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+}
+
 body.tech .tag {
   display: inline-block;
   font-family: "JetBrains Mono", Menlo, monospace;
@@ -138,9 +197,144 @@ body.tech pre {
   overflow-x: auto;
 }
 
-body.tech .site-footer {
-  margin-top: 5rem;
-  padding: 2rem 0;
-  border-top: 1px solid var(--rule);
-  color: var(--muted);
+/* ─── Projects grid ─── */
+body.tech .project-grid {
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
 }
+
+body.tech .project-card {
+  background: var(--warm);
+  border-radius: 8px;
+  border: 1px solid var(--rule);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+body.tech .project-card a {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+body.tech .project-card .card-body { padding: 1.25rem; flex: 1; }
+
+body.tech .project-card header {
+  font-family: "JetBrains Mono", Menlo, monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+body.tech .project-card .kind {
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+body.tech .project-card--work .kind { color: #155f3a; }
+body.tech .project-card--personal .kind { color: #8a4a00; }
+
+body.tech .project-card h2 {
+  margin: 0.3rem 0 0.6rem;
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+}
+
+body.tech .project-card .summary {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.93rem;
+  line-height: 1.5;
+}
+
+body.tech .project-card .stack {
+  margin: 0.75rem 0 0;
+  font-family: "JetBrains Mono", Menlo, monospace;
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+body.tech .project-card .card-foot {
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--rule);
+  background: #fff;
+  display: flex;
+  gap: 1rem;
+  font-family: "JetBrains Mono", Menlo, monospace;
+  font-size: 0.82rem;
+}
+
+body.tech .project-card .card-foot a { text-decoration: none; color: var(--accent); }
+
+/* ─── Single project ─── */
+body.tech .project .breadcrumb a {
+  color: var(--muted);
+  text-decoration: none;
+  font-family: "JetBrains Mono", Menlo, monospace;
+  font-size: 0.88rem;
+}
+
+body.tech .project .meta {
+  font-family: "JetBrains Mono", Menlo, monospace;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 1rem 0 0.5rem;
+}
+
+body.tech .project .meta .kind { font-weight: 700; text-transform: uppercase; color: var(--accent); }
+body.tech .project .meta .kind--work { color: #155f3a; }
+body.tech .project .meta .kind--personal { color: #8a4a00; }
+
+body.tech .project .summary {
+  font-size: 1.15rem;
+  color: var(--muted);
+  margin: 0.5rem 0 1.5rem;
+  line-height: 1.55;
+}
+
+body.tech .project .hero img {
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+body.tech .project .stack-detail h3 { font-size: 0.88rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+body.tech .project .stack-detail p { font-family: "JetBrains Mono", Menlo, monospace; font-size: 0.92rem; color: var(--muted); }
+
+body.tech .project .links { margin-top: 2rem; display: flex; gap: 1rem; }
+
+body.tech .btn {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  padding: 0.55rem 1.2rem;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+body.tech .btn:hover { opacity: 0.9; }
+
+body.tech .btn-secondary {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent-soft);
+}
+
+body.tech .btn-secondary:hover { background: var(--warm); }
+
+/* ─── Cross-nav (footer) ─── */
+body.tech .cross-nav { background: var(--warm); }
+body.tech .cross-nav-grid h4 { color: var(--muted); }
+body.tech .cross-nav-grid a { color: var(--fg); font-family: "JetBrains Mono", Menlo, monospace; font-size: 0.9rem; }
+body.tech .cross-nav-grid a:hover { color: var(--accent); }

@@ -1,10 +1,12 @@
 /* Shop — editorial-product hybrid */
 :root {
   --bg: #fdfcf9;
-  --fg: #2a2a2a;
-  --muted: #6a6a6a;
+  --fg: #1f1d1a;
+  --muted: #6a6660;
   --accent: #1f3a5a;
+  --accent-soft: #6789a8;
   --rule: #e6e2d8;
+  --warm: #faf6ee;
   --btn: #1f3a5a;
   --btn-fg: #fff;
 }
@@ -13,58 +15,147 @@ body.shop {
   background: var(--bg);
   color: var(--fg);
   font-family: "Crimson Pro", "Source Serif Pro", Georgia, serif;
-  font-size: 18px;
+  font-size: 18.5px;
   line-height: 1.7;
 }
 
 body.shop .site-header {
   border-bottom: 1px solid var(--rule);
   padding: 1.25rem 0;
-  margin-bottom: 3rem;
+  margin-bottom: 4rem;
+}
+
+body.shop .site-header .container-wide {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 body.shop .brand {
   font-weight: 600;
   text-decoration: none;
   letter-spacing: 0.01em;
+  font-size: 1.2rem;
+  color: var(--fg);
+}
+
+body.shop .brand .dot { color: var(--accent); margin: 0 0.05em; }
+
+body.shop .nav a {
+  margin-left: 1.5rem;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+body.shop .nav a:hover { color: var(--accent); }
+
+body.shop .page-head { margin: 0 0 3rem; }
+
+body.shop .page-head .kicker {
+  font-size: 0.78rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 0.75rem;
+  font-weight: 600;
+  font-family: "JetBrains Mono", Menlo, monospace;
+}
+
+body.shop .page-head .intro {
+  font-size: 1.15rem;
+  color: var(--muted);
+  margin: 0;
+  max-width: 60ch;
 }
 
 body.shop h1 {
-  font-size: 2.2rem;
+  font-size: 2.4rem;
   font-weight: 600;
   line-height: 1.15;
   margin: 0 0 1rem;
+  letter-spacing: -0.015em;
 }
 
+body.shop h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 3rem 0 1rem;
+}
+
+body.shop section.catalog,
+body.shop section.all-posts,
+body.shop section.book-posts {
+  margin: 4rem 0;
+}
+
+/* ─── Books grid ─── */
 body.shop .book-grid {
   list-style: none;
   padding: 0;
   margin: 0;
   display: grid;
   gap: 2.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
 body.shop .book-card a {
   text-decoration: none;
   color: inherit;
   display: block;
+  position: relative;
 }
 
 body.shop .book-card img {
   width: 100%;
   border-radius: 4px;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.10);
+  margin-bottom: 1rem;
+  transition: transform 0.2s ease;
+}
+
+body.shop .book-card a:hover img { transform: translateY(-2px); }
+
+body.shop .book-card .cover-placeholder {
+  width: 100%;
+  aspect-ratio: 2/3;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  border-radius: 4px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.10);
   margin-bottom: 1rem;
 }
 
-body.shop .book-card h2 { font-size: 1.2rem; margin: 0; }
+body.shop .book-card h3 { font-size: 1.2rem; margin: 0; font-weight: 600; }
 body.shop .book-card .subtitle { color: var(--muted); margin: 0.3rem 0 0; font-size: 0.95rem; }
+body.shop .book-card .badge {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.2rem 0.6rem;
+  background: var(--warm);
+  color: var(--accent);
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-family: "JetBrains Mono", Menlo, monospace;
+}
 
+/* ─── Single book detail ─── */
 body.shop .book-detail {
   display: grid;
   grid-template-columns: 1fr;
   gap: 2.5rem;
+  margin-bottom: 3rem;
 }
 
 @media (min-width: 720px) {
@@ -73,7 +164,13 @@ body.shop .book-detail {
 
 body.shop .book-detail .cover img {
   border-radius: 4px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+}
+
+body.shop .book-detail .info .subtitle {
+  color: var(--muted);
+  font-size: 1.1rem;
+  margin: 0.5rem 0 1.5rem;
 }
 
 body.shop .price {
@@ -96,21 +193,19 @@ body.shop .btn-buy:hover { opacity: 0.9; }
 body.shop .muted { color: var(--muted); font-style: italic; }
 
 body.shop .coming-soon {
-  background: #f7f3eb;
+  background: var(--warm);
   border-left: 3px solid var(--accent);
   padding: 0.75rem 1rem;
   margin: 1.5rem 0;
+  font-style: italic;
 }
 
-body.shop .book-posts {
-  margin-top: 4rem;
-  padding-top: 2rem;
-  border-top: 1px solid var(--rule);
-}
-
-body.shop .book-posts h2 {
-  font-size: 1.4rem;
+/* ─── Post lists (catalog aggregate + per-book) ─── */
+body.shop .all-posts .lead,
+body.shop .book-posts .lead {
+  color: var(--muted);
   margin: 0 0 1.5rem;
+  font-size: 1rem;
 }
 
 body.shop .post-list {
@@ -121,33 +216,54 @@ body.shop .post-list {
 
 body.shop .post-list li {
   border-bottom: 1px solid var(--rule);
-  padding: 1.25rem 0;
+  padding: 1.5rem 0;
 }
 
-body.shop .post-list .post-link {
-  display: block;
+body.shop .post-link {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
   text-decoration: none;
   color: inherit;
 }
 
+@media (min-width: 600px) {
+  body.shop .post-link { grid-template-columns: 200px 1fr; align-items: start; }
+}
+
+body.shop .post-link .thumb img {
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
 body.shop .post-list h3 {
-  margin: 0.3rem 0 0.4rem;
+  margin: 0.4rem 0 0.4rem;
   font-size: 1.2rem;
   font-weight: 600;
 }
 
+body.shop .post-link:hover h3 { color: var(--accent); }
+
 body.shop .post-list time {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: var(--muted);
+  font-family: "JetBrains Mono", Menlo, monospace;
 }
 
 body.shop .post-list .ref {
-  margin: 0;
+  margin: 0.3rem 0 0;
   color: var(--muted);
   font-size: 0.95rem;
   font-style: italic;
 }
 
+body.shop .post-list .book-of {
+  margin: 0.3rem 0 0;
+  color: var(--accent);
+  font-size: 0.88rem;
+}
+
+/* ─── Single post page ─── */
 body.shop .book-post .breadcrumb {
   margin: 0 0 1rem;
 }
@@ -171,17 +287,21 @@ body.shop .book-post .hero {
 body.shop .book-post .hero img {
   width: 100%;
   border-radius: 4px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.08);
 }
 
 body.shop .book-post .body {
   white-space: pre-wrap;
+  font-size: 1.06rem;
+  line-height: 1.75;
 }
 
-body.shop .site-footer {
-  margin-top: 5rem;
-  padding: 2rem 0;
-  border-top: 1px solid var(--rule);
-  color: var(--muted);
-  text-align: center;
+/* Drop cap on book post body */
+body.shop .book-post .body::first-letter {
+  font-size: 3.4rem;
+  float: left;
+  line-height: 0.85;
+  margin: 0.4rem 0.6rem 0 -0.1rem;
+  font-weight: 700;
+  color: var(--accent);
 }

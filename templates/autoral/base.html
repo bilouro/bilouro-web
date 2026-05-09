@@ -6,10 +6,12 @@
 
 {% block body %}
 <header class="site-header">
-  <div class="container">
+  <div class="container-wide">
     <a class="brand" href="/">Victor H. Bilouro</a>
     <nav class="nav">
       <a href="/about/">About</a>
+      <a href="https://tech.bilouro.com/">Tech</a>
+      <a href="https://books.bilouro.com/">Books</a>
     </nav>
   </div>
 </header>
@@ -18,9 +20,5 @@
   {% block content %}{% endblock %}
 </main>
 
-<footer class="site-footer">
-  <div class="container">
-    <small>&copy; {% now "Y" %} Victor H. Bilouro · <a href="https://www.linkedin.com/in/bilouro" target="_blank" rel="noopener">LinkedIn</a></small>
-  </div>
-</footer>
+{% include "_cross_nav.html" %}
 {% endblock %}

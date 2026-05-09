@@ -13,7 +13,7 @@ from wagtail.models import Page, Site
 
 from apps.autoral.models import AboutPage, HomePage
 from apps.shop.models import BookCatalogPage, BookPage
-from apps.tech.models import BlogIndexPage
+from apps.tech.models import BlogIndexPage, ProjectIndexPage, ProjectPage
 
 
 SITE_SPECS = [
@@ -211,5 +211,147 @@ class Command(BaseCommand):
                 catalog.add_child(instance=book)
                 book.save_revision().publish()
                 self.stdout.write(self.style.SUCCESS(f"  + BookPage '{spec['title']}' created"))
+
+        # Tech projects index + projects
+        tech_index = BlogIndexPage.objects.first()
+        if tech_index:
+            project_index = ProjectIndexPage.objects.filter(slug="projects").first()
+            if not project_index:
+                project_index = ProjectIndexPage(
+                    title="Projects",
+                    slug="projects",
+                    intro=(
+                        "<p>Selected work — open-source, professional, and side projects "
+                        "across 20+ years. Public repos linked; private/work projects "
+                        "described without sensitive details.</p>"
+                    ),
+                )
+                tech_index.add_child(instance=project_index)
+                project_index.save_revision().publish()
+                self.stdout.write(self.style.SUCCESS("  + ProjectIndexPage created"))
+
+            projects = [
+                {
+                    "title": "Customer Master Data — Strangler Migration",
+                    "slug": "kuehne-nagel-cmd-modernization",
+                    "kind": "work", "period": "2022-2025",
+                    "summary": "Modernized a mission-critical Customer Master Data monolith into Java/Spring microservices via the strangler pattern, while migrating from OpenShift to AWS EKS. Zero ticket from legacy consumers.",
+                    "description": "<p>Three-and-a-half years inheriting a mission-critical CMD monolith and a plan: move to microservices without stopping global operations. Strangler pattern with adapter layer in front of the legacy API speaking the old contract verbatim, feature-by-feature routing (not endpoint-by-endpoint), parallel-write window during data migration with divergence metrics. PL/SQL migration AND rollback scripts from day one.</p><p>Result: monolith shrunk, team got an evolvable platform, legacy consumers never filed a ticket.</p>",
+                    "tech_stack": "Java, Spring Boot, Kafka, PostgreSQL, Oracle, Elasticsearch, AWS EKS, OpenShift, Pulumi",
+                    "sort_order": 10,
+                },
+                {
+                    "title": "Voice Agent for SMBs (Pilates studios)",
+                    "slug": "voice-agent-smb",
+                    "kind": "personal", "period": "2024-2026",
+                    "summary": "Production voice agent on real phone numbers for two pilates studios — Vapi + Vonage + OpenAI. Schedules, reschedules, takes intake, escalates to human.",
+                    "description": "<p>Built end-to-end on AWS with Pulumi-managed serverless infra. Custom dialog flow, integration with the studios' booking systems, voicemail-grade reliability. Detailed write-up across multiple LinkedIn posts (see blog).</p>",
+                    "tech_stack": "Python, OpenAI, Vapi, Vonage, AWS Lambda, RDS, Pulumi",
+                    "sort_order": 20,
+                },
+                {
+                    "title": "Email Agent — IMAP/SMTP + LLM",
+                    "slug": "email-agent",
+                    "kind": "personal", "period": "2024-2026",
+                    "summary": "Production email agent that reads/replies via Gmail IMAP/SMTP, classifies intent, drafts replies, and pulls context from internal data.",
+                    "description": "<p>Companion to the voice agent. Runs in the same AWS infrastructure. Used for SMB-scale automation where receptionist tier costs are prohibitive.</p>",
+                    "tech_stack": "Python, OpenAI, IMAP, SMTP, AWS Lambda",
+                    "sort_order": 30,
+                },
+                {
+                    "title": "Release Engineering Automation Stack",
+                    "slug": "release-automation-stack",
+                    "kind": "work", "period": "2025-current",
+                    "summary": "Solo-built (in Python) a full automation stack for an 80+ engineer release program: Control-M orchestration, Jira/Confluence integrations, paramiko-based Linux ops, Sybase QA framework, bash daemon framework.",
+                    "description": "<p>Currently used to run weekly releases across heterogeneous Java/C/Perl/Shell stacks. End-to-end automated.</p>",
+                    "tech_stack": "Python, paramiko, Control-M, Jenkins, XL Deploy, XL Release, Sybase, Jira, Confluence",
+                    "sort_order": 40,
+                },
+                {
+                    "title": "BookBuilder — LinkedIn post generator",
+                    "slug": "bookbuilder",
+                    "kind": "personal", "period": "2026",
+                    "summary": "Generates a weekly book of LinkedIn-style devotional posts from Bible passages using OpenAI Responses API. Markdown output, S3 image generation, idempotent commit/push pipeline.",
+                    "description": "<p>The pipeline that produces the posts you see on books.bilouro.com.</p><p>Reads a backlog.md, fetches verses from a JSON Bible repo, calls a curated OpenAI prompt with similar past entries (RAG-lite), formats Markdown with Unicode superscripts, writes per-post JSON cache, and commits+pushes per item.</p>",
+                    "tech_stack": "Python, OpenAI, GitHub, Markdown",
+                    "github_url": "https://github.com/bilouro/BookBuilder",
+                    "sort_order": 50,
+                },
+                {
+                    "title": "bilouro-web — this site",
+                    "slug": "bilouro-web",
+                    "kind": "personal", "period": "2026",
+                    "summary": "Wagtail multi-site (3 subdomains) on AWS Lightsail with nginx, Postgres, gunicorn, Certbot, S3 media. Migrated from App Runner mid-build for cost + simplicity.",
+                    "description": "<p>Single Wagtail project serving 3 subdomains via the multi-site feature. Apex 301-redirected to www. Postgres 16 local on the VM, weekly pg_dump → S3.</p>",
+                    "tech_stack": "Python, Django, Wagtail, Postgres, nginx, AWS Lightsail, S3, Terraform",
+                    "github_url": "https://github.com/bilouro/bilouro-web",
+                    "sort_order": 60,
+                },
+                {
+                    "title": "cookbook — personal recipe playground",
+                    "slug": "cookbook",
+                    "kind": "oss", "period": "ongoing",
+                    "summary": "Long-running personal repo of code recipes, snippets and experiments — AWS, Python, Django, integrations.",
+                    "description": "<p>Public dump of useful patterns I've found or built over the years. Updated when something interesting comes up.</p>",
+                    "tech_stack": "Python, Django, AWS, misc",
+                    "github_url": "https://github.com/bilouro/cookbook",
+                    "sort_order": 70,
+                },
+                {
+                    "title": "querysetget — auto-expose Django QuerySet via REST",
+                    "slug": "querysetget",
+                    "kind": "oss", "period": "2017",
+                    "summary": "A small library that auto-exposes Django QuerySet API via GET/querystring of all models in a project — REST-like format, zero config.",
+                    "description": "<p>Useful for quick admin-side data exploration without writing per-model views.</p>",
+                    "tech_stack": "Python, Django",
+                    "github_url": "https://github.com/bilouro/querysetget",
+                    "sort_order": 80,
+                },
+                {
+                    "title": "sgsb — Beauty Salon SaaS",
+                    "slug": "sgsb",
+                    "kind": "oss", "period": "2014",
+                    "summary": "Django application to manage beauty salons and hair salons — appointments, services, customers.",
+                    "description": "<p>Older Django project; published to GitHub for reference.</p>",
+                    "tech_stack": "Python, Django",
+                    "github_url": "https://github.com/bilouro/sgsb",
+                    "sort_order": 90,
+                },
+                {
+                    "title": "SGUI — Church management system",
+                    "slug": "sgui",
+                    "kind": "oss", "period": "2014",
+                    "summary": "Sistema de Gestão Unificado de Igrejas — Django app to administer church operations.",
+                    "description": "<p>Multi-tenant Django app for church management.</p>",
+                    "tech_stack": "Python, Django",
+                    "github_url": "https://github.com/bilouro/SGUI",
+                    "sort_order": 100,
+                },
+                {
+                    "title": "Arduino Coding Dojo Timer",
+                    "slug": "arduino-codingdojo",
+                    "kind": "oss", "period": "2012",
+                    "summary": "A simple Arduino gadget to control the Coding Dojo timebox.",
+                    "tech_stack": "Arduino, C++",
+                    "github_url": "https://github.com/bilouro/arduino_codingdojo",
+                    "sort_order": 110,
+                },
+                {
+                    "title": "GSoC 2008 — FreeBSD",
+                    "slug": "gsoc-2008-freebsd",
+                    "kind": "oss", "period": "2008",
+                    "summary": "Google Summer of Code 2008 contribution to FreeBSD. Documented at wiki.freebsd.org/SummerOfCode2008.",
+                    "tech_stack": "C, FreeBSD",
+                    "live_url": "https://wiki.freebsd.org/SummerOfCode2008",
+                    "sort_order": 120,
+                },
+            ]
+            for spec in projects:
+                if ProjectPage.objects.filter(slug=spec["slug"]).exists():
+                    continue
+                p = ProjectPage(**spec)
+                project_index.add_child(instance=p)
+                p.save_revision().publish()
+                self.stdout.write(self.style.SUCCESS(f"  + Project '{spec['title'][:50]}'"))
 
         self.stdout.write(self.style.SUCCESS("\nbootstrap_sites complete."))

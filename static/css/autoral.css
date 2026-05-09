@@ -1,10 +1,12 @@
-/* Autoral — editorial / calmo */
+/* Autoral — editorial / calmo / refined */
 :root {
   --bg: #fdfcf9;
-  --fg: #2a2a2a;
-  --muted: #6a6a6a;
+  --fg: #1f1d1a;
+  --muted: #6a6660;
   --accent: #1f3a5a;
+  --accent-soft: #6789a8;
   --rule: #e6e2d8;
+  --warm: #faf6ee;
 }
 
 body.autoral {
@@ -15,23 +17,28 @@ body.autoral {
   line-height: 1.7;
 }
 
+/* ─── Header ─── */
 body.autoral .site-header {
   border-bottom: 1px solid var(--rule);
   padding: 1.25rem 0;
-  margin-bottom: 3rem;
+  margin-bottom: 4rem;
+  background: var(--bg);
 }
 
-body.autoral .site-header .container {
+body.autoral .site-header .container-wide {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 body.autoral .brand {
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   text-decoration: none;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.005em;
+  color: var(--fg);
 }
 
 body.autoral .nav a {
@@ -43,37 +50,132 @@ body.autoral .nav a {
 
 body.autoral .nav a:hover { color: var(--accent); }
 
+/* ─── Headings ─── */
 body.autoral h1 {
-  font-size: 2.4rem;
-  line-height: 1.15;
+  font-size: 2.6rem;
+  line-height: 1.12;
   font-weight: 600;
-  margin: 0 0 1rem;
-  letter-spacing: -0.01em;
+  margin: 0 0 1.2rem;
+  letter-spacing: -0.015em;
 }
 
 body.autoral h2 {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: 600;
   margin: 2.5rem 0 1rem;
-  border-top: 1px solid var(--rule);
-  padding-top: 1.5rem;
+}
+
+body.autoral h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.5rem;
+}
+
+body.autoral .hero {
+  padding: 1rem 0 3rem;
+}
+
+body.autoral .hero .kicker {
+  font-size: 0.78rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 1rem;
+  font-weight: 600;
+}
+
+body.autoral .hero h1 em {
+  font-style: italic;
+  color: var(--accent);
 }
 
 body.autoral .hero .intro,
 body.autoral .about .headline {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   color: var(--muted);
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
-body.autoral p { margin: 0 0 1.2rem; }
+body.autoral .hero-cta {
+  margin: 2rem 0 0;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
 
+body.autoral .btn {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  padding: 0.6rem 1.25rem;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+body.autoral .btn:hover { opacity: 0.9; }
+body.autoral .btn-secondary {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent-soft);
+}
+body.autoral .btn-secondary:hover { background: var(--warm); }
+
+/* ─── Body content ─── */
+body.autoral p { margin: 0 0 1.2rem; }
 body.autoral a { color: var(--accent); }
 
-body.autoral .site-footer {
-  margin-top: 5rem;
-  padding: 2rem 0;
-  border-top: 1px solid var(--rule);
+/* Drop cap on first paragraph of long-form content */
+body.autoral .about > section > p:first-child::first-letter,
+body.autoral .hero-body > p:first-child::first-letter {
+  font-size: 3.4rem;
+  float: left;
+  line-height: 0.85;
+  margin: 0.4rem 0.6rem 0 -0.1rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* ─── Cards ─── */
+body.autoral .cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin: 4rem 0 2rem;
+}
+
+body.autoral .card {
+  padding: 1.5rem;
+  background: var(--warm);
+  border-radius: 6px;
+  border: 1px solid var(--rule);
+}
+
+body.autoral .card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  letter-spacing: -0.005em;
+}
+
+body.autoral .card p {
+  margin: 0 0 0.75rem;
   color: var(--muted);
-  text-align: center;
+  font-size: 0.97rem;
+  line-height: 1.5;
+}
+
+body.autoral .card-link {
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.93rem;
+}
+
+/* ─── About page ─── */
+body.autoral .about > section {
+  margin: 2.5rem 0;
+}
+
+body.autoral .about h2 {
+  border-top: 1px solid var(--rule);
+  padding-top: 1.5rem;
 }

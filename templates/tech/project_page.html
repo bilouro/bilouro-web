@@ -1,0 +1,33 @@
+{% extends "tech/base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block content %}
+<article class="project">
+  <p class="breadcrumb"><a href="{% pageurl page.get_parent.specific %}">← Projects</a></p>
+
+  <header>
+    <p class="meta">
+      <span class="kind kind--{{ page.kind }}">{{ page.get_kind_display }}</span>
+      {% if page.period %} · <span class="period">{{ page.period }}</span>{% endif %}
+    </p>
+    <h1>{{ page.title }}</h1>
+    <p class="summary">{{ page.summary }}</p>
+  </header>
+
+  {% if page.image %}<figure class="hero">{% image page.image width-1200 %}</figure>{% endif %}
+
+  <div class="body">{{ page.description|richtext }}</div>
+
+  {% if page.tech_stack %}
+    <section class="stack-detail">
+      <h3>Stack</h3>
+      <p>{{ page.tech_stack }}</p>
+    </section>
+  {% endif %}
+
+  <section class="links">
+    {% if page.github_url %}<a class="btn" href="{{ page.github_url }}" target="_blank" rel="noopener">View on GitHub</a>{% endif %}
+    {% if page.live_url %}<a class="btn btn-secondary" href="{{ page.live_url }}" target="_blank" rel="noopener">View live</a>{% endif %}
+  </section>
+</article>
+{% endblock %}

@@ -23,6 +23,12 @@ class BookCatalogPage(Page):
         context["books"] = (
             BookPage.objects.live().descendant_of(self).order_by("-first_published_at")
         )
+        # Aggregate posts from ALL books — newest first
+        context["posts"] = (
+            BookPostPage.objects.live()
+            .descendant_of(self)
+            .order_by("-date", "-first_published_at")[:10]
+        )
         return context
 
 
