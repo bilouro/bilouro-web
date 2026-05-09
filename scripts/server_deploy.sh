@@ -51,6 +51,37 @@ echo "==> bootstrap_sites (idempotent)"
 sudo -u "$APP_USER" bash -lc "cd $APP_DIR && set -a && . /etc/bilouro.env && set +a && \
   uv run python manage.py bootstrap_sites --prod" || echo "(bootstrap had warnings)"
 
+echo "==> systemd timer for publish_scheduled_pages (idempotent)"
+sudo tee /etc/systemd/system/bilouro-publish-scheduled.service >/dev/null <<UNIT
+[Unit]
+Description=Wagtail — publish scheduled pages
+After=network.target postgresql.service
+
+[Service]
+Type=oneshot
+User=$APP_USER
+Group=$APP_USER
+WorkingDirectory=$APP_DIR
+EnvironmentFile=/etc/bilouro.env
+ExecStart=/home/$APP_USER/.local/bin/uv run python manage.py publish_scheduled_pages
+UNIT
+
+sudo tee /etc/systemd/system/bilouro-publish-scheduled.timer >/dev/null <<'UNIT'
+[Unit]
+Description=Run Wagtail publish_scheduled_pages hourly
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+Unit=bilouro-publish-scheduled.service
+
+[Install]
+WantedBy=timers.target
+UNIT
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now bilouro-publish-scheduled.timer >/dev/null
+
 echo "==> restart $SERVICE"
 sudo systemctl restart "$SERVICE"
 
