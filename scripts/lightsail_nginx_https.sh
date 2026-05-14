@@ -75,6 +75,16 @@ sudo mkdir -p /etc/nginx/snippets
 sudo tee /etc/nginx/snippets/bilouro-app.conf >/dev/null <<'SNIP'
 client_max_body_size 25m;
 
+# Drop secret-probe scans without hitting Django (added 2026-05-14 after OOM
+# postmortem). 444 = nginx closes the connection without sending a response.
+location ~* (?:^|/)\.env(?:$|/|\.[a-z]+$) { return 444; }
+location ~* (?:^|/)\.(?:git|aws|boto|svn|hg)(?:/|$) { return 444; }
+location ~* /(?:serviceAccountKey|service-account|google-service-account|firebase-service-account|aws-credentials|credentials|secrets|config)\.(?:json|js|ya?ml)$ { return 444; }
+location ~* /(?:settings|local_settings|wp-config|configuration)\.(?:py|php|inc)$ { return 444; }
+location ~* /(?:phpinfo|info|test|adminer|phpmyadmin)\.php$ { return 444; }
+location ~* /(?:web\.config|\.htaccess|\.htpasswd|\.npmrc|\.pypirc|id_rsa|id_dsa)$ { return 444; }
+location ~* \.(?:bak|backup|old|orig|swp|swo|tmp|sql)$ { return 444; }
+
 location /static/ {
     alias /opt/bilouro/web/staticfiles/;
     expires 30d;
