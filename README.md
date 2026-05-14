@@ -78,6 +78,31 @@ pull → uv sync → migrate → collectstatic → bootstrap → restart → hea
 
 See `scripts/lightsail_*` for one-off provisioning, Certbot, and weekly Postgres backup to S3.
 
+### Hardening (applied to prod 2026-05-14 after OOM outage)
+
+The Lightsail VM is small (911 MB RAM, no swap by default), so the prod box runs
+three cheap safeguards. They are applied on first provision via the
+`scripts/lightsail_*` snippets and survive redeploys.
+
+1. **2 GB swap file** (`/swapfile`, `vm.swappiness=10`). Absorbs RAM spikes from
+   bulk page imports and Wagtail image rendition generation. Re-creation snippet
+   lives in [`personal-assistent/docs/bilouro_web_outage_runbook.md`](https://github.com/bilouro/personal-assistant/blob/main/docs/bilouro_web_outage_runbook.md) §7.
+
+2. **nginx 444 for secret-probe paths** — `location ~* …` blocks at the top of
+   `bilouro-app.conf` (templated in [`scripts/lightsail_nginx_https.sh`](scripts/lightsail_nginx_https.sh))
+   close the connection instantly for `/.env*`, `/.git/`, `/.aws/`, `/.boto`,
+   `/serviceAccountKey.json`, `/credentials.json`, `/settings.py`, `/phpinfo.php`,
+   `/wp-config.*`, `*.bak`, `*.sql`, etc. ~500–1000 hits/day stop here, never
+   reach Django.
+
+3. **fail2ban** with two jails — `sshd` (4 failed logins / 10 min → 1 h ban) and
+   `nginx-scanners` (15× 4xx in 2 min → 6 h ban). Installer:
+   [`scripts/lightsail_fail2ban.sh`](scripts/lightsail_fail2ban.sh). Inspect:
+   `sudo fail2ban-client status nginx-scanners`.
+
+Operational runbook for outages (health check, reboot, post-mortem patterns,
+re-creation of the above): [`personal-assistent/docs/bilouro_web_outage_runbook.md`](https://github.com/bilouro/personal-assistant/blob/main/docs/bilouro_web_outage_runbook.md).
+
 ## Project layout
 
 ```
@@ -100,7 +125,8 @@ bilouro-web/
 │   ├── lightsail_provision.sh     first-time Ubuntu bootstrap
 │   ├── lightsail_app_setup.sh     clone + venv + systemd + nginx
 │   ├── lightsail_run_certbot.sh   issue Let's Encrypt certs
-│   ├── lightsail_nginx_https.sh   swap nginx to HTTPS-aware config
+│   ├── lightsail_nginx_https.sh   swap nginx to HTTPS-aware config (+ 444 probe drops)
+│   ├── lightsail_fail2ban.sh      install fail2ban (sshd + nginx-scanners jails)
 │   └── lightsail_backup.sh        weekly pg_dump → S3
 ├── docker-compose.yml             local Postgres only
 ├── pyproject.toml                 uv + ruff + djlint
