@@ -343,6 +343,6 @@ body.tech .btn-secondary:hover { background: var(--warm); }
 
 /* ─── Cross-nav (footer) ─── */
 body.tech .cross-nav { background: var(--warm); }
-body.tech .cross-nav-grid h4 { color: var(--muted); }
+body.tech .cross-nav-grid h3 { color: var(--muted); }
 body.tech .cross-nav-grid a { color: var(--fg); font-family: "JetBrains Mono", Menlo, monospace; font-size: 0.9rem; }
 body.tech .cross-nav-grid a:hover { color: var(--accent); }
