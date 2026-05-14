@@ -153,14 +153,24 @@ def find_image(md_path: Path, image_filename_hint: str | None) -> Path | None:
     return None
 
 
-def get_or_create_wagtail_image(image_path: Path, title: str) -> WagtailImage:
-    """Upload an image to Wagtail (or return existing by title)."""
+def get_or_create_wagtail_image(image_path: Path, title: str, description: str = "") -> WagtailImage:
+    """Upload an image to Wagtail (or return existing by title).
+
+    `description` is used by Wagtail's accessibility checker as the default
+    alt text. Pass a meaningful sentence (e.g. the page title) — leaving it
+    empty causes the checker to flag the alt as "inappropriate pattern"
+    because it falls back to the slug-style image title.
+    """
     existing = WagtailImage.objects.filter(title=title).first()
     if existing:
+        if description and not existing.description:
+            existing.description = description[:255]
+            existing.save(update_fields=["description"])
         return existing
     with open(image_path, "rb") as f:
         return WagtailImage.objects.create(
             title=title,
+            description=description[:255],
             file=File(f, name=image_path.name),
         )
 
@@ -234,7 +244,9 @@ class Command(BaseCommand):
 
             wagtail_image = None
             if image_path:
-                wagtail_image = get_or_create_wagtail_image(image_path, slug)
+                wagtail_image = get_or_create_wagtail_image(
+                    image_path, slug, description=parsed["title"][:255]
+                )
 
             kwargs = dict(
                 title=parsed["title"][:255],
