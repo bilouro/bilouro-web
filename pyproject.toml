@@ -3,6 +3,9 @@ name = "bilouro"
 version = "0.1.0"
 description = "bilouro.com — Wagtail multi-site (autoral + tech) com i18n PT/EN"
 readme = "README.md"
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
+authors = [{ name = "Victor H. Bilouro", email = "hello@bilouro.com" }]
 requires-python = ">=3.13"
 dependencies = [
     "Django>=5.2,<6.0",
