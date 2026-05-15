@@ -3,7 +3,7 @@
 Usage:
     python manage.py import_markdown /path/to/dir --parent-slug tech-blog [--dry-run]
 
-Handles the LinkedIn-style format used in `linkedin/knowledge-base/posts/`:
+Handles the LinkedIn-style sectioned format:
     # Post NN — Title
 
     **Status:** ✅ Published (YYYY-MM-DD)

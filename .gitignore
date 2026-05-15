@@ -59,3 +59,7 @@ htmlcov/
 docker-compose.override.yml
 .github/workflows/
 *.mo
+
+# Local-only assistant context (private; references private repos/paths)
+CLAUDE.md
+

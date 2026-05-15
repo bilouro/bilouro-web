@@ -1,14 +1,20 @@
 #!/usr/bin/env bash
 # scripts/deploy.sh — push current branch and run the remote deploy.
-# Quick local wrapper around `bilouro-deploy` on the Lightsail VM.
+# Quick local wrapper around the remote deploy script on your VM.
+#
+# Required env vars (export them once in your shell or a .envrc):
+#   VM_HOST   — the VM's public IP or hostname
+#   SSH_KEY   — path to the SSH private key for VM_USER
+# Optional:
+#   VM_USER   — defaults to "ubuntu"
 
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
-VM_HOST="${VM_HOST:-3.251.103.83}"
+: "${VM_HOST:?Set VM_HOST=<your VM IP or hostname>}"
+: "${SSH_KEY:?Set SSH_KEY=<path to your ssh private key>}"
 VM_USER="${VM_USER:-ubuntu}"
-SSH_KEY="${SSH_KEY:-$HOME/.ssh/lightsail-bilouro.pem}"
 
 echo "==> git push"
 git push origin "$(git branch --show-current)"

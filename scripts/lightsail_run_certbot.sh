@@ -7,7 +7,7 @@
 
 set -euo pipefail
 
-ALERT_EMAIL="${ALERT_EMAIL:-bilouro@bilouro.com}"
+ALERT_EMAIL="${ALERT_EMAIL:?Set ALERT_EMAIL=<email for Let's Encrypt notifications>}"
 
 echo "==> Certbot — issue certs (subdomains + apex)"
 sudo mkdir -p /var/www/html

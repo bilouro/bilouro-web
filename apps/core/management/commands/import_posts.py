@@ -1,6 +1,8 @@
-"""Generic post importer — handles two formats:
+"""Generic post importer — handles two markdown formats:
 
-1. **LinkedIn-style** (used by `linkedin/knowledge-base/posts/`):
+1. **Sectioned-style** (LinkedIn copy-paste): each .md has a title block
+   followed by a fenced body block.
+
        # Post NN — Title
        ## Título sugerido (3 variações)
        1. **first option** *(used)*
@@ -9,27 +11,28 @@
        body
        ```
 
-2. **Frontmatter-style** (used by `book_jesus_lider/posts/*` and `book_jesus_leader/posts/*`):
+2. **Frontmatter-style** (YAML header + plain body):
+
        ---
        ref: João 13:1-17
        lang: pt
        date: 2026-05-09
-       image: 2026-05-09_jo_13_1-17_pt.png
+       image: my-cover.png
        ---
-       ![](2026-05-09_jo_13_1-17_pt.png)
+       ![](my-cover.png)
        body
        #hashtags
 
 Auto-detects format. Auto-finds image by:
   - frontmatter `image:` field, or
-  - same basename as .md (file.md → file.png), or
-  - pattern fallback for linkedin numbered posts (post-NN.png ↔ NN-*.md).
+  - same basename as the .md (file.md → file.png), or
+  - pattern fallback for numbered posts (post-NN.png ↔ NN-*.md).
 
 Target parent page must be either `tech.BlogIndexPage` or `shop.BookPage`.
 
 Usage:
     python manage.py import_posts /path/to/dir --parent-slug tech [--dry-run] [--limit N]
-    python manage.py import_posts /path/to/dir --parent-slug jesus-o-lider
+    python manage.py import_posts /path/to/dir --parent-slug <book-slug>
 """
 import re
 from datetime import date, datetime

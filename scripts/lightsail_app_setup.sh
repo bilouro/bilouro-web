@@ -12,7 +12,7 @@ set -euo pipefail
 APP_DIR=/opt/bilouro/web
 APP_USER=bilouro
 
-: "${ALERT_EMAIL:=bilouro@bilouro.com}"
+: "${ALERT_EMAIL:?Set ALERT_EMAIL=<email for Certbot notifications>}"
 : "${DJANGO_SECRET_KEY:=$(openssl rand -hex 64)}"
 : "${DB_PASSWORD:=$(openssl rand -hex 16)}"
 : "${SUPERUSER_USERNAME:=admin}"
@@ -21,7 +21,7 @@ if [ -z "${SUPERUSER_PASSWORD:-}" ]; then
   echo ">>> Generated random superuser password: $SUPERUSER_PASSWORD"
   echo ">>> Store this NOW or set SUPERUSER_PASSWORD env var before running."
 fi
-: "${SUPERUSER_EMAIL:=bilouro@bilouro.com}"
+: "${SUPERUSER_EMAIL:?Set SUPERUSER_EMAIL=<email for Django superuser>}"
 
 echo "==> set Postgres password"
 sudo -u postgres psql -c "ALTER ROLE bilouro WITH PASSWORD '${DB_PASSWORD}';"

@@ -7,7 +7,7 @@
 #     window — catches secret-probe bots that target /.env, /.git/, etc.
 #
 # Idempotent. Run via SSH to the VM:
-#     ssh -i ~/.ssh/lightsail-bilouro.pem ubuntu@3.251.103.83 'sudo bash -s' < scripts/lightsail_fail2ban.sh
+#     ssh -i <path-to-key> ubuntu@<your-vm-ip> 'sudo bash -s' < scripts/lightsail_fail2ban.sh
 # or scp + sudo bash.
 
 set -euo pipefail
