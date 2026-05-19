@@ -122,6 +122,24 @@ The Lightsail nano is small (911 MB RAM, no swap by default). The prod box runs 
 2. **nginx `444` for secret-probe paths** — `location ~* …` blocks at the top of [`bilouro-app.conf`](scripts/lightsail_nginx_https.sh) close the connection instantly for `/.env*`, `/.git/`, `/.aws/`, `/serviceAccountKey.json`, `/settings.py`, `/phpinfo.php`, `*.bak`, `*.sql`, etc. ~500–1000 hits/day stop here, never reach Django.
 3. **fail2ban** — two jails: `sshd` (4 failed logins in 10 min → 1 h ban) and `nginx-scanners` (15 × 4xx in 2 min → 6 h ban). Installer: [`scripts/lightsail_fail2ban.sh`](scripts/lightsail_fail2ban.sh).
 
+### Analytics (server-side, log-based)
+
+No JS tracking, no third-party SaaS. [GoAccess](https://goaccess.io/) parses the existing nginx `access.log` and renders a static HTML dashboard at `https://<your-site>/admin/stats/`, protected by HTTP Basic Auth. Pageviews, top URLs, countries, browsers, referers, hour-of-day heatmap, status codes — all from your own logs.
+
+```bash
+STATS_USER=admin STATS_PASSWORD='<your-password>' \
+  ssh -i <key> ubuntu@<vm> 'sudo -E bash -s' < scripts/lightsail_goaccess.sh
+```
+
+The installer ([`scripts/lightsail_goaccess.sh`](scripts/lightsail_goaccess.sh)):
+
+- Installs GoAccess + `apache2-utils`.
+- Hourly cron regenerates `/var/www/stats/index.html` (uses `--persist --restore` so data accumulates across log rotations).
+- Bumps `logrotate` retention for nginx access logs from 14 to 60 days.
+- Wires nginx `location /admin/stats/` with `auth_basic` (htpasswd-bcrypt).
+
+Manual rebuild any time: `sudo /usr/local/bin/goaccess-rebuild`.
+
 ## Project layout
 
 ```
@@ -146,6 +164,7 @@ bilouro-web/
 │   ├── lightsail_run_certbot.sh   issue Let's Encrypt certs
 │   ├── lightsail_nginx_https.sh   HTTPS-aware nginx (+ 444 probe drops)
 │   ├── lightsail_fail2ban.sh      install fail2ban (sshd + nginx-scanners)
+│   ├── lightsail_goaccess.sh      install GoAccess dashboard (/admin/stats/)
 │   └── lightsail_backup.sh        weekly pg_dump → S3
 ├── docker-compose.yml             local Postgres only
 ├── pyproject.toml                 uv + ruff + djlint
