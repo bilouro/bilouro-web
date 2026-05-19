@@ -34,27 +34,21 @@
 
 {% block extra_body %}
 <script>
+  /* Picker behaviour: NO auto-redirect. Always show the cards so a returning
+     visitor can change their mind. We only persist the *last* choice for
+     analytics-style reads in the future. Clicking a card lets the browser
+     follow the link normally. */
   (function () {
     var COOKIE = 'hj_locale_chosen';
-    function readCookie(name) {
-      var m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]+)'));
-      return m ? decodeURIComponent(m[1]) : null;
-    }
     function writeCookie(name, value, days) {
       var d = new Date(); d.setTime(d.getTime() + days*864e5);
       document.cookie = name + '=' + encodeURIComponent(value) + '; path=/; expires=' + d.toUTCString() + '; SameSite=Lax';
     }
-    var map = { br: 'https://br.hashtag-jesus.com/', pt: 'https://pt.hashtag-jesus.com/', en: 'https://en.hashtag-jesus.com/' };
-    var saved = readCookie(COOKIE);
-    if (saved && map[saved]) {
-      window.location.replace(map[saved]);
-      return;
-    }
-    var cards = document.querySelectorAll('.hj-picker-card');
-    cards.forEach(function (c) {
+    var map = { br: 'br.hashtag-jesus.com', pt: 'pt.hashtag-jesus.com', en: 'en.hashtag-jesus.com' };
+    document.querySelectorAll('.hj-picker-card').forEach(function (c) {
       c.addEventListener('click', function () {
-        var href = c.getAttribute('href');
-        var locale = Object.keys(map).find(function (k) { return map[k] === href || href.indexOf('//' + k + '.') !== -1; });
+        var href = c.getAttribute('href') || '';
+        var locale = Object.keys(map).find(function (k) { return href.indexOf('//' + k + '.') !== -1; });
         if (locale) writeCookie(COOKIE, locale, 90);
       });
     });
