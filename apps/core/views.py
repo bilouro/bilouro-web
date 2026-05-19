@@ -1,8 +1,24 @@
-"""Site-wide views (search + language switch)."""
+"""Site-wide views (search + language switch + admin stats)."""
 from django.shortcuts import render
 from django.utils import translation
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
+from wagtail.admin.auth import require_admin_access
 from wagtail.models import Page, Site
+
+
+@require_admin_access
+def stats_dashboard(request):
+    """Serve the static GoAccess dashboard, gated by Wagtail admin auth.
+
+    The HTML is at /var/www/stats/index.html on the VM. We use nginx's
+    X-Accel-Redirect so the file is served by nginx (fast) but only after
+    Django/Wagtail confirms the user has admin access.
+    """
+    response = HttpResponse()
+    response["X-Accel-Redirect"] = "/_internal/stats/"
+    # Empty Content-Type lets nginx auto-set it from the served file.
+    del response["Content-Type"]
+    return response
 
 
 def search(request):

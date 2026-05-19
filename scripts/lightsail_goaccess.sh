@@ -2,53 +2,47 @@
 # scripts/lightsail_goaccess.sh — install GoAccess + private dashboard at /admin/stats/.
 #
 # What it does:
-#   1. Install goaccess + apache2-utils (for htpasswd).
-#   2. Persist analyzed data across log rotations with --keep-db-files.
+#   1. Install goaccess.
+#   2. Persist analyzed data across log rotations (goaccess --persist --restore).
 #   3. Hourly cron regenerates /var/www/stats/index.html from /var/log/nginx/access.log*.
 #   4. Logrotate config bumped to 60 days for nginx access logs.
-#   5. nginx /admin/stats/ location with HTTP Basic Auth (htpasswd).
-#
-# Required env vars before running:
-#   STATS_USER       — basic-auth username
-#   STATS_PASSWORD   — basic-auth password (plain; will be bcrypted by htpasswd)
+#   5. nginx /_internal/stats/ location with the `internal` directive — only
+#      Django/Wagtail can dispatch the file via X-Accel-Redirect, after
+#      authorising the request with `@require_admin_access`. The public-facing
+#      URL is /admin/stats/, served by the Wagtail admin (with a sidebar
+#      menu item registered in apps/core/wagtail_hooks.py).
 #
 # Run remotely:
-#   STATS_USER=admin STATS_PASSWORD='...' \
-#     ssh -i ~/.ssh/<key>.pem ubuntu@<vm-ip> 'sudo -E bash -s' < scripts/lightsail_goaccess.sh
+#   ssh -i ~/.ssh/<key>.pem ubuntu@<vm-ip> 'sudo bash -s' < scripts/lightsail_goaccess.sh
 #
-# Idempotent. Safe to re-run.
+# Idempotent. Safe to re-run. Removes legacy htpasswd from prior version that
+# used nginx basic-auth.
 
 set -euo pipefail
 
-: "${STATS_USER:?Set STATS_USER}"
-: "${STATS_PASSWORD:?Set STATS_PASSWORD}"
-
 STATS_DIR=/var/www/stats
 DB_DIR=/var/lib/goaccess
-HTPASSWD=/etc/nginx/.htpasswd-stats
 CRON_FILE=/etc/cron.d/goaccess
+LEGACY_HTPASSWD=/etc/nginx/.htpasswd-stats
 
 echo "==> install packages"
 apt-get update -qq
-DEBIAN_FRONTEND=noninteractive apt-get install -y goaccess apache2-utils >/dev/null
+DEBIAN_FRONTEND=noninteractive apt-get install -y goaccess >/dev/null
 
 echo "==> create dirs"
 mkdir -p "$STATS_DIR" "$DB_DIR"
 chown www-data:www-data "$STATS_DIR"
 
-echo "==> basic-auth credentials"
-htpasswd -bcB "$HTPASSWD" "$STATS_USER" "$STATS_PASSWORD"
-chmod 640 "$HTPASSWD"
-chown root:www-data "$HTPASSWD"
+if [ -f "$LEGACY_HTPASSWD" ]; then
+  echo "==> remove legacy htpasswd (auth now via Wagtail admin)"
+  rm -f "$LEGACY_HTPASSWD"
+fi
 
 echo "==> logrotate: keep 60 days of nginx logs"
 sed -i 's/^\(\s*rotate\s*\)[0-9]\+/\160/' /etc/logrotate.d/nginx || true
 grep -q "rotate 60" /etc/logrotate.d/nginx || echo "  ! warning: rotate setting not bumped — inspect /etc/logrotate.d/nginx manually"
 
-echo "==> initial GoAccess report"
-# COMBINED log format = standard nginx. --keep-db-files lets us accumulate beyond
-# rotated logs by re-running goaccess incrementally.
-# Use a wrapper to absorb -.gz logs into a single stream sorted by time.
+echo "==> install goaccess-rebuild wrapper"
 cat > /usr/local/bin/goaccess-rebuild <<'WRAPPER'
 #!/usr/bin/env bash
 set -euo pipefail
@@ -82,25 +76,23 @@ cat > "$CRON_FILE" <<EOF
 EOF
 chmod 644 "$CRON_FILE"
 
-echo "==> nginx /admin/stats/ location"
-# Append a snippet to the existing shared bilouro-app.conf so all three vhosts
-# expose the dashboard. Idempotent.
+echo "==> nginx /_internal/stats/ location (internal; reached only via X-Accel-Redirect)"
 SNIPPET=/etc/nginx/snippets/bilouro-stats.conf
 cat > "$SNIPPET" <<'CONF'
-# Private analytics dashboard.
-location /admin/stats/ {
+# Private analytics dashboard. The Django/Wagtail view at /admin/stats/ is
+# `@require_admin_access`; on success it emits X-Accel-Redirect: /_internal/stats/
+# and nginx serves the static HTML from this internal-only location.
+location /_internal/stats/ {
+    internal;
     alias /var/www/stats/;
     index index.html;
-    auth_basic "bilouro stats";
-    auth_basic_user_file /etc/nginx/.htpasswd-stats;
-    try_files $uri $uri/ =404;
+    try_files $uri $uri/index.html =404;
 }
 CONF
 
 # Include the snippet inside bilouro-app.conf (only once).
 MAIN_SNIPPET=/etc/nginx/snippets/bilouro-app.conf
 if ! grep -q "bilouro-stats.conf" "$MAIN_SNIPPET"; then
-  # Insert before the catch-all "location /" block.
   awk '
     /^location \/ \{/ && !inserted { print "include /etc/nginx/snippets/bilouro-stats.conf;"; print ""; inserted=1 }
     { print }
@@ -111,11 +103,10 @@ nginx -t
 systemctl reload nginx
 
 echo
-echo "==> done. dashboard available at:"
+echo "==> done. Dashboard available at:"
 echo "    https://www.bilouro.com/admin/stats/"
-echo "    (also tech.* and books.*)"
-echo "    user: $STATS_USER"
-echo "    password: <as supplied>"
+echo "    (or tech.* / books.*)"
+echo "    Login: same as your Wagtail admin user."
 echo
 echo "Manual rebuild any time: sudo /usr/local/bin/goaccess-rebuild"
 echo "Cron rebuilds hourly at minute 17 (see $CRON_FILE)."

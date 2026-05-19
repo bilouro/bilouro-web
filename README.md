@@ -124,19 +124,22 @@ The Lightsail nano is small (911 MB RAM, no swap by default). The prod box runs 
 
 ### Analytics (server-side, log-based)
 
-No JS tracking, no third-party SaaS. [GoAccess](https://goaccess.io/) parses the existing nginx `access.log` and renders a static HTML dashboard at `https://<your-site>/admin/stats/`, protected by HTTP Basic Auth. Pageviews, top URLs, countries, browsers, referers, hour-of-day heatmap, status codes — all from your own logs.
+No JS tracking, no third-party SaaS. [GoAccess](https://goaccess.io/) parses the existing nginx `access.log` and renders a static HTML dashboard at `https://<your-site>/admin/stats/`, **gated by the Wagtail admin login**. A sidebar item in the Wagtail admin links to it.
+
+How it works: a Django view (`apps.core.views.stats_dashboard`, decorated with `@require_admin_access`) authorizes the request, then issues `X-Accel-Redirect` so nginx serves the static HTML at native speed from an `internal` location. No double-password, no extra middleware cost.
 
 ```bash
-STATS_USER=admin STATS_PASSWORD='<your-password>' \
-  ssh -i <key> ubuntu@<vm> 'sudo -E bash -s' < scripts/lightsail_goaccess.sh
+ssh -i <key> ubuntu@<vm> 'sudo bash -s' < scripts/lightsail_goaccess.sh
 ```
 
 The installer ([`scripts/lightsail_goaccess.sh`](scripts/lightsail_goaccess.sh)):
 
-- Installs GoAccess + `apache2-utils`.
+- Installs GoAccess.
 - Hourly cron regenerates `/var/www/stats/index.html` (uses `--persist --restore` so data accumulates across log rotations).
 - Bumps `logrotate` retention for nginx access logs from 14 to 60 days.
-- Wires nginx `location /admin/stats/` with `auth_basic` (htpasswd-bcrypt).
+- Wires nginx `location /_internal/stats/` with the `internal;` directive — only the Django view can dispatch it.
+
+Wagtail-side wiring lives in [`apps/core/views.py`](apps/core/views.py) (the view) and [`apps/core/wagtail_hooks.py`](apps/core/wagtail_hooks.py) (admin URL + sidebar menu item).
 
 Manual rebuild any time: `sudo /usr/local/bin/goaccess-rebuild`.
 
