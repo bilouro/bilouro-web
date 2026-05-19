@@ -1,0 +1,11 @@
+{% extends "hashtagjesus/_base.html" %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+<section class="hj-section">
+  <div class="hj-container hj-prose">
+    <h1 class="hj-page-title">{{ page.title }}</h1>
+    <div class="hj-legal-body">{{ page.body|richtext }}</div>
+  </div>
+</section>
+{% endblock %}

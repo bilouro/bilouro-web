@@ -1,0 +1,18 @@
+{% load i18n %}
+<footer class="hj-footer">
+  <div class="hj-container">
+    <div class="hj-footer-divider" aria-hidden="true">† · †</div>
+    <div class="hj-footer-row">
+      <div class="hj-footer-col">
+        <strong class="hj-wordmark">#jesus</strong>
+        <p>&copy; {% now "Y" %} · Victor H. Bilouro · Porto, Portugal</p>
+      </div>
+      <div class="hj-footer-col">
+        <ul>
+          {% if legal_url %}<li><a href="{{ legal_url }}">{% trans "Privacy" %}</a></li>{% endif %}
+          <li><a href="https://hashtag-jesus.com/">{% trans "Other languages" %}</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>

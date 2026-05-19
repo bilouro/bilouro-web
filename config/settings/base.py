@@ -31,6 +31,7 @@ LOCAL_APPS = [
     "apps.tech",
     "apps.newsletter",
     "apps.shop",
+    "apps.hashtagjesus",
 ]
 
 WAGTAIL_APPS = [

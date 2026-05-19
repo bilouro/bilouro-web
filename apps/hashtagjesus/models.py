@@ -1,0 +1,278 @@
+"""Pages for hashtag-jesus.com — Christian book launch site, multi-locale by subdomain.
+
+Locales (each with its own Wagtail Site and content tree):
+  br.hashtag-jesus.com  → pt-BR
+  pt.hashtag-jesus.com  → pt-PT
+  en.hashtag-jesus.com  → en
+And the apex (hashtag-jesus.com) serves a LanguagePickerPage with auto-detect.
+"""
+from django.db import models
+from modelcluster.fields import ParentalKey
+from modelcluster.contrib.taggit import ClusterTaggableManager
+from taggit.models import TaggedItemBase
+from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from wagtail.fields import RichTextField
+from wagtail.models import Page
+from wagtail.search import index
+
+
+# ─── Apex (hashtag-jesus.com) ──────────────────────────────────────────
+
+
+class LanguagePickerPage(Page):
+    """Apex landing — shows the 3 locales as cards, auto-highlights via CF-IPCountry.
+
+    Tracks no per-locale content beyond a headline / subtitle; the actual sites
+    live under the subdomains.
+    """
+
+    headline = models.CharField(
+        max_length=200,
+        blank=True,
+        default="Choose your language",
+        help_text="Top headline on the picker landing.",
+    )
+    subtitle = models.CharField(
+        max_length=400,
+        blank=True,
+        help_text="Sub-headline under the main headline.",
+    )
+
+    template = "hashtagjesus/language_picker_page.html"
+    max_count = 1
+    parent_page_types = ["wagtailcore.Page"]
+    subpage_types: list[str] = []
+
+    content_panels = Page.content_panels + [
+        FieldPanel("headline"),
+        FieldPanel("subtitle"),
+    ]
+
+    def get_context(self, request, *args, **kwargs):
+        ctx = super().get_context(request, *args, **kwargs)
+        from .context import build_picker_context
+        build_picker_context(ctx, request)
+        return ctx
+
+
+# ─── Per-locale (br./pt./en.hashtag-jesus.com) ─────────────────────────
+
+
+class HomePage(Page):
+    """Landing page for a locale subdomain. Hero + latest posts + book teaser."""
+
+    tagline = models.CharField(max_length=200, blank=True, help_text="Eyebrow above the hero headline.")
+    headline = RichTextField(blank=True, help_text="Hero headline (use <em> for emphasis).")
+    intro = RichTextField(blank=True, help_text="Short paragraph under the hero.")
+    cta_label = models.CharField(max_length=80, blank=True, default="")
+    cta_url = models.CharField(max_length=300, blank=True, default="")
+
+    template = "hashtagjesus/home_page.html"
+
+    content_panels = Page.content_panels + [
+        FieldPanel("tagline"),
+        FieldPanel("headline"),
+        FieldPanel("intro"),
+        MultiFieldPanel(
+            [FieldPanel("cta_label"), FieldPanel("cta_url")],
+            heading="Hero CTA",
+        ),
+    ]
+
+    parent_page_types = ["wagtailcore.Page"]
+    subpage_types = [
+        "hashtagjesus.BlogIndexPage",
+        "hashtagjesus.BookTeaserPage",
+        "hashtagjesus.LegalPage",
+    ]
+
+    def get_context(self, request, *args, **kwargs):
+        ctx = super().get_context(request, *args, **kwargs)
+        from .context import inject_locale_context
+        inject_locale_context(ctx, request, self)
+        posts_qs = (
+            BlogPostPage.objects.live().descendant_of(self).order_by("-date", "-first_published_at")
+        )
+        ctx["recent_posts"] = posts_qs[:6]
+        ctx["book_teaser"] = (
+            BookTeaserPage.objects.live().descendant_of(self).first()
+        )
+        return ctx
+
+
+class BlogIndexPage(Page):
+    """Listing of blog posts under a HomePage."""
+
+    intro = RichTextField(blank=True)
+
+    template = "hashtagjesus/blog_index_page.html"
+
+    content_panels = Page.content_panels + [FieldPanel("intro")]
+
+    subpage_types = ["hashtagjesus.BlogPostPage"]
+    parent_page_types = ["hashtagjesus.HomePage"]
+
+    def get_context(self, request, *args, **kwargs):
+        ctx = super().get_context(request, *args, **kwargs)
+        from .context import inject_locale_context
+        inject_locale_context(ctx, request, self)
+        ctx["posts"] = (
+            BlogPostPage.objects.live().descendant_of(self).order_by("-date", "-first_published_at")
+        )
+        return ctx
+
+
+class BlogPostTag(TaggedItemBase):
+    content_object = ParentalKey(
+        "hashtagjesus.BlogPostPage",
+        related_name="tagged_items",
+        on_delete=models.CASCADE,
+    )
+
+
+class BlogPostPage(Page):
+    """A single blog post (markdown body, rendered to HTML at template time)."""
+
+    date = models.DateField("Post date")
+    intro = models.CharField(max_length=400, blank=True)
+    body_md = models.TextField(blank=True, help_text="Markdown source.")
+    image = models.ForeignKey(
+        "wagtailimages.Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+    tags = ClusterTaggableManager(through=BlogPostTag, blank=True)
+
+    template = "hashtagjesus/blog_post_page.html"
+
+    search_fields = Page.search_fields + [
+        index.SearchField("intro"),
+        index.SearchField("body_md"),
+    ]
+
+    content_panels = Page.content_panels + [
+        MultiFieldPanel([FieldPanel("date"), FieldPanel("tags")], heading="Meta"),
+        FieldPanel("image"),
+        FieldPanel("intro"),
+        FieldPanel("body_md"),
+    ]
+
+    parent_page_types = ["hashtagjesus.BlogIndexPage"]
+
+    def get_context(self, request, *args, **kwargs):
+        ctx = super().get_context(request, *args, **kwargs)
+        from .context import inject_locale_context
+        inject_locale_context(ctx, request, self)
+        return ctx
+
+
+class BookTeaserPage(Page):
+    """Pre-launch teaser page for a single book (one per locale)."""
+
+    subtitle = models.CharField(max_length=200, blank=True)
+    summary = RichTextField(blank=True, help_text="2-4 sentences describing the book.")
+    cover_image = models.ForeignKey(
+        "wagtailimages.Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+    launch_date = models.DateField(null=True, blank=True, help_text="Expected launch date.")
+    waitlist_cta = models.CharField(
+        max_length=120,
+        blank=True,
+        default="Notify me when it launches",
+    )
+    waitlist_description = RichTextField(
+        blank=True,
+        help_text="Short paragraph above the waitlist form.",
+    )
+
+    template = "hashtagjesus/book_teaser_page.html"
+
+    content_panels = Page.content_panels + [
+        FieldPanel("subtitle"),
+        FieldPanel("cover_image"),
+        FieldPanel("summary"),
+        MultiFieldPanel(
+            [
+                FieldPanel("launch_date"),
+                FieldPanel("waitlist_cta"),
+                FieldPanel("waitlist_description"),
+            ],
+            heading="Launch / waitlist",
+        ),
+    ]
+
+    parent_page_types = ["hashtagjesus.HomePage"]
+    subpage_types: list[str] = []
+
+    def get_context(self, request, *args, **kwargs):
+        ctx = super().get_context(request, *args, **kwargs)
+        from .context import inject_locale_context
+        inject_locale_context(ctx, request, self)
+        return ctx
+
+
+class LegalPage(Page):
+    """Static legal text (privacy, terms). One per locale."""
+
+    body = RichTextField()
+
+    template = "hashtagjesus/legal_page.html"
+
+    content_panels = Page.content_panels + [FieldPanel("body")]
+
+    parent_page_types = ["hashtagjesus.HomePage"]
+    subpage_types: list[str] = []
+
+    def get_context(self, request, *args, **kwargs):
+        ctx = super().get_context(request, *args, **kwargs)
+        from .context import inject_locale_context
+        inject_locale_context(ctx, request, self)
+        return ctx
+
+
+# ─── Newsletter (not a Page; a plain Django model) ──────────────────────
+
+
+class NewsletterSignup(models.Model):
+    """One record per waitlist signup. Source of truth lives in MailerLite,
+    but we keep a local copy for audit + retry."""
+
+    LOCALE_CHOICES = [
+        ("br", "Português (Brasil)"),
+        ("pt", "Português (Portugal)"),
+        ("en", "English"),
+    ]
+
+    email = models.EmailField()
+    locale = models.CharField(max_length=2, choices=LOCALE_CHOICES)
+    source = models.CharField(
+        max_length=120,
+        blank=True,
+        help_text="Page slug or campaign that captured this email.",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    mailerlite_subscriber_id = models.CharField(max_length=64, blank=True, default="")
+    mailerlite_status = models.CharField(max_length=32, blank=True, default="pending")
+    mailerlite_error = models.TextField(blank=True, default="")
+    ip = models.GenericIPAddressField(null=True, blank=True)
+    country = models.CharField(max_length=2, blank=True, default="", help_text="From CF-IPCountry header.")
+
+    class Meta:
+        ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=["email", "locale"]),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["email", "locale"], name="unique_email_per_locale"
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.email} [{self.locale}]"

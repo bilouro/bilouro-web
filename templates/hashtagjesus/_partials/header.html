@@ -1,0 +1,14 @@
+{% load static %}
+<header class="hj-header">
+  <div class="hj-container hj-header-row">
+    <a class="hj-wordmark" href="/">#jesus</a>
+    <nav class="hj-nav" aria-label="Primary">
+      {% if blog_index_url %}<a href="{{ blog_index_url }}">{{ blog_label|default:"Reflexões" }}</a>{% endif %}
+      {% if book_url %}<a href="{{ book_url }}">{{ book_label|default:"O livro" }}</a>{% endif %}
+      <a class="hj-lang" href="https://hashtag-jesus.com/">
+        {{ locale|default:"en"|upper }}
+        <span class="hj-lang-icon" aria-hidden="true">†</span>
+      </a>
+    </nav>
+  </div>
+</header>

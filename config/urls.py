@@ -15,6 +15,7 @@ from wagtail.documents import urls as wagtaildocs_urls
 
 from apps.core.feeds import BooksFeed, CombinedFeed, TechBlogFeed
 from apps.core.views import search as search_view, set_language as set_lang_view
+from apps.hashtagjesus.views import newsletter_subscribe as hj_newsletter_subscribe
 
 
 def healthz(_request):
@@ -57,6 +58,9 @@ urlpatterns = [
     path("feed", feed_dispatch),
     path("search/", search_view, name="search"),
     path("i18n/setlang/", set_lang_view, name="set_language"),
+    # hashtag-jesus newsletter signup (POST from any subdomain)
+    path("api/newsletter/subscribe", hj_newsletter_subscribe, name="hj_newsletter_subscribe"),
+    path("api/newsletter/subscribe/", hj_newsletter_subscribe),
     path("django-admin/", admin.site.urls),
     path("admin/rosetta/", include("rosetta.urls")),  # /admin/rosetta/ for translation strings UI
     path("admin/", include(wagtailadmin_urls)),

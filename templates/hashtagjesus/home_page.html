@@ -1,0 +1,53 @@
+{% extends "hashtagjesus/_base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block title %}{{ page.title }} · #jesus{% endblock %}
+
+{% block content %}
+<section class="hj-hero">
+  <div class="hj-container">
+    {% if page.tagline %}<p class="hj-eyebrow">{{ page.tagline }}</p>{% endif %}
+    {% if page.headline %}<h1 class="hj-hero-headline">{{ page.headline|richtext }}</h1>{% endif %}
+    {% if page.intro %}<div class="hj-hero-intro">{{ page.intro|richtext }}</div>{% endif %}
+    {% if page.cta_url %}
+      <a class="hj-btn hj-btn-primary" href="{{ page.cta_url }}">{{ page.cta_label|default:"Ler mais" }} →</a>
+    {% endif %}
+  </div>
+</section>
+
+{% include "hashtagjesus/_partials/divider.html" %}
+
+{% if recent_posts %}
+<section class="hj-section hj-posts-section">
+  <div class="hj-container">
+    <p class="hj-eyebrow">{{ recent_label|default:"Últimas reflexões" }}</p>
+    <div class="hj-post-list">
+      {% for post in recent_posts %}
+        {% include "hashtagjesus/_partials/post_card.html" with post=post %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if book_teaser %}
+{% include "hashtagjesus/_partials/divider.html" %}
+
+<section class="hj-section hj-book-teaser-section">
+  <div class="hj-container hj-book-teaser-row">
+    {% if book_teaser.cover_image %}
+      <div class="hj-book-cover">
+        {% image book_teaser.cover_image fill-480x720 alt=book_teaser.title %}
+      </div>
+    {% endif %}
+    <div class="hj-book-text">
+      <p class="hj-eyebrow">{{ book_label|default:"O livro" }}</p>
+      <h2 class="hj-book-title"><a href="{% pageurl book_teaser %}">{{ book_teaser.title }}</a></h2>
+      {% if book_teaser.subtitle %}<p class="hj-book-subtitle">{{ book_teaser.subtitle }}</p>{% endif %}
+      {% if book_teaser.summary %}<div class="hj-book-summary">{{ book_teaser.summary|richtext }}</div>{% endif %}
+      <a class="hj-btn" href="{% pageurl book_teaser %}">{{ book_teaser.waitlist_cta|default:"Quero saber quando lançar" }} →</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

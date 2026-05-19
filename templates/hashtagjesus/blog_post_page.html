@@ -1,0 +1,24 @@
+{% extends "hashtagjesus/_base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block title %}{{ page.title }} · #jesus{% endblock %}
+
+{% block content %}
+<article class="hj-section hj-article">
+  <div class="hj-container hj-prose">
+    <p class="hj-eyebrow">
+      <time datetime="{{ page.date|date:'c' }}">{{ page.date|date:"j M Y" }}</time>
+    </p>
+    <h1 class="hj-page-title">{{ page.title }}</h1>
+    {% if page.intro %}<p class="hj-lede">{{ page.intro }}</p>{% endif %}
+    {% if page.image %}
+      <figure class="hj-figure">
+        {% image page.image fill-1200x675 alt=page.title %}
+      </figure>
+    {% endif %}
+    {% if page.body_md %}
+      <div class="hj-body">{{ page.body_md|linebreaks }}</div>
+    {% endif %}
+  </div>
+</article>
+{% endblock %}

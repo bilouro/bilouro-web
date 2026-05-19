@@ -1,0 +1,27 @@
+{% extends "hashtagjesus/_base.html" %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+<section class="hj-section">
+  <div class="hj-container hj-prose">
+    <h1 class="hj-page-title">{{ page.title }}</h1>
+    {% if page.intro %}<div class="hj-intro">{{ page.intro|richtext }}</div>{% endif %}
+  </div>
+</section>
+
+{% include "hashtagjesus/_partials/divider.html" %}
+
+<section class="hj-section">
+  <div class="hj-container">
+    {% if posts %}
+      <div class="hj-post-list">
+        {% for post in posts %}
+          {% include "hashtagjesus/_partials/post_card.html" with post=post %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="hj-empty">{{ no_posts_label|default:"Em breve." }}</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

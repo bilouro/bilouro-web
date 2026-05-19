@@ -1,0 +1,23 @@
+{% load i18n %}
+<form class="hj-newsletter" method="post" action="/api/newsletter/subscribe">
+  {% csrf_token %}
+  <input type="hidden" name="locale" value="{{ locale }}">
+  <input type="hidden" name="source" value="{{ source|default:'' }}">
+  <label class="hj-newsletter-label" for="hj-newsletter-email">
+    {{ form_label|default:"Quero saber quando lançar" }}
+  </label>
+  <div class="hj-newsletter-row">
+    <input
+      id="hj-newsletter-email"
+      type="email"
+      name="email"
+      required
+      placeholder="{{ placeholder|default:'tu@email.com' }}"
+      autocomplete="email"
+    >
+    <button type="submit" class="hj-btn">{{ button_label|default:"Inscrever" }}</button>
+  </div>
+  <p class="hj-newsletter-fineprint">
+    {{ fineprint|default:"Vais receber um email para confirmares. Nunca spam." }}
+  </p>
+</form>

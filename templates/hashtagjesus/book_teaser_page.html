@@ -1,0 +1,35 @@
+{% extends "hashtagjesus/_base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block content %}
+<section class="hj-section hj-book-teaser">
+  <div class="hj-container hj-book-teaser-row">
+    {% if page.cover_image %}
+      <div class="hj-book-cover">
+        {% image page.cover_image fill-540x800 alt=page.title %}
+      </div>
+    {% endif %}
+    <div class="hj-book-text">
+      {% if page.subtitle %}<p class="hj-eyebrow">{{ page.subtitle }}</p>{% endif %}
+      <h1 class="hj-page-title">{{ page.title }}</h1>
+      {% if page.summary %}<div class="hj-book-summary">{{ page.summary|richtext }}</div>{% endif %}
+
+      {% if page.launch_date %}
+        <p class="hj-launch-date">
+          <strong>{{ launch_label|default:"Lançamento previsto" }}:</strong>
+          {{ page.launch_date|date:"F Y" }}
+        </p>
+      {% endif %}
+
+      {% include "hashtagjesus/_partials/divider.html" %}
+
+      <div class="hj-waitlist">
+        {% if page.waitlist_description %}
+          <div class="hj-waitlist-desc">{{ page.waitlist_description|richtext }}</div>
+        {% endif %}
+        {% include "hashtagjesus/_partials/newsletter_form.html" with source=page.slug button_label=page.waitlist_cta %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

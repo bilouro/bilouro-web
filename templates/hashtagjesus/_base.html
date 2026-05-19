@@ -1,0 +1,38 @@
+{% load static wagtailcore_tags %}<!doctype html>
+<html lang="{{ html_lang|default:'en' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% block meta %}
+    <title>{% block title %}{% if page %}{{ page.title }} · {% endif %}#jesus{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}A book and a weekly reflection on Jesus for 2026.{% endblock %}">
+  {% endblock %}
+
+  {# hreflang alternates — point at the same path under each locale subdomain #}
+  {% if request %}
+    <link rel="alternate" hreflang="pt-br" href="https://br.hashtag-jesus.com{{ request.path }}">
+    <link rel="alternate" hreflang="pt-pt" href="https://pt.hashtag-jesus.com{{ request.path }}">
+    <link rel="alternate" hreflang="en"    href="https://en.hashtag-jesus.com{{ request.path }}">
+    <link rel="alternate" hreflang="x-default" href="https://hashtag-jesus.com{{ request.path }}">
+  {% endif %}
+
+  {# Fonts: Fraunces (display) + Inter (body) #}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600&display=swap">
+
+  <link rel="stylesheet" href="{% static 'css/hashtagjesus.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="hj hj-locale-{{ locale|default:'en' }}">
+  {% include "hashtagjesus/_partials/header.html" %}
+
+  <main class="hj-main">
+    {% block content %}{% endblock %}
+  </main>
+
+  {% include "hashtagjesus/_partials/footer.html" %}
+
+  {% block extra_body %}{% endblock %}
+</body>
+</html>

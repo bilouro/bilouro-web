@@ -1,0 +1,63 @@
+{% extends "hashtagjesus/_base.html" %}
+{% load static %}
+
+{% block title %}#jesus · Choose your language{% endblock %}
+{% block meta_description %}Pick your language: pt-BR, pt-PT, or English.{% endblock %}
+
+{% block content %}
+<section class="hj-picker">
+  <div class="hj-container">
+    <h1 class="hj-picker-headline">{{ page.headline|default:"Escolhe a tua língua" }}</h1>
+    {% if page.subtitle %}<p class="hj-picker-subtitle">{{ page.subtitle }}</p>{% endif %}
+
+    <div class="hj-picker-grid">
+      {% for locale in locales %}
+        <a class="hj-picker-card {% if locale.code == detected %}is-suggested{% endif %}"
+           href="{{ locale.url }}"
+           hreflang="{{ locale.hreflang }}">
+          <span class="hj-picker-flag" aria-hidden="true">{{ locale.flag }}</span>
+          <span class="hj-picker-name">{{ locale.name }}</span>
+          <span class="hj-picker-tag">{{ locale.label }}</span>
+          {% if locale.code == detected %}
+            <span class="hj-picker-suggested-pill">Sugerido</span>
+          {% endif %}
+        </a>
+      {% endfor %}
+    </div>
+
+    <p class="hj-picker-fineprint">
+      {{ fineprint|default:"Detectado pelo teu país. Podes mudar a qualquer momento." }}
+    </p>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_body %}
+<script>
+  (function () {
+    var COOKIE = 'hj_locale_chosen';
+    function readCookie(name) {
+      var m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]+)'));
+      return m ? decodeURIComponent(m[1]) : null;
+    }
+    function writeCookie(name, value, days) {
+      var d = new Date(); d.setTime(d.getTime() + days*864e5);
+      document.cookie = name + '=' + encodeURIComponent(value) + '; path=/; expires=' + d.toUTCString() + '; SameSite=Lax';
+    }
+    var map = { br: 'https://br.hashtag-jesus.com/', pt: 'https://pt.hashtag-jesus.com/', en: 'https://en.hashtag-jesus.com/' };
+    var saved = readCookie(COOKIE);
+    if (saved && map[saved]) {
+      window.location.replace(map[saved]);
+      return;
+    }
+    var cards = document.querySelectorAll('.hj-picker-card');
+    cards.forEach(function (c) {
+      c.addEventListener('click', function () {
+        var href = c.getAttribute('href');
+        var locale = Object.keys(map).find(function (k) { return map[k] === href || href.indexOf('//' + k + '.') !== -1; });
+        if (locale) writeCookie(COOKIE, locale, 90);
+      });
+    });
+  })();
+</script>
+{% endblock %}
