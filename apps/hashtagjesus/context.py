@@ -85,14 +85,14 @@ def inject_locale_context(ctx: dict, request, page) -> None:
     # current HomePage. Cheap because each Site is tiny.
     site = Site.find_for_request(request)
     if site:
-        from .models import BlogIndexPage, BookTeaserPage, LegalPage
+        from .models import HjBlogIndexPage, HjBookTeaserPage, HjLegalPage
         root = site.root_page
         try:
-            blog_index = BlogIndexPage.objects.live().descendant_of(root).first()
+            blog_index = HjBlogIndexPage.objects.live().descendant_of(root).first()
             ctx["blog_index_url"] = blog_index.url if blog_index else None
-            book_teaser = BookTeaserPage.objects.live().descendant_of(root).first()
+            book_teaser = HjBookTeaserPage.objects.live().descendant_of(root).first()
             ctx["book_url"] = book_teaser.url if book_teaser else None
-            legal = LegalPage.objects.live().descendant_of(root).first()
+            legal = HjLegalPage.objects.live().descendant_of(root).first()
             ctx["legal_url"] = legal.url if legal else None
         except Exception:
             ctx.setdefault("blog_index_url", None)

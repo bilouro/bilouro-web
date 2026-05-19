@@ -4,7 +4,7 @@ Locales (each with its own Wagtail Site and content tree):
   br.hashtag-jesus.com  → pt-BR
   pt.hashtag-jesus.com  → pt-PT
   en.hashtag-jesus.com  → en
-And the apex (hashtag-jesus.com) serves a LanguagePickerPage with auto-detect.
+And the apex (hashtag-jesus.com) serves a HjLanguagePickerPage with auto-detect.
 """
 from django.db import models
 from modelcluster.fields import ParentalKey
@@ -19,7 +19,7 @@ from wagtail.search import index
 # ─── Apex (hashtag-jesus.com) ──────────────────────────────────────────
 
 
-class LanguagePickerPage(Page):
+class HjLanguagePickerPage(Page):
     """Apex landing — shows the 3 locales as cards, auto-highlights via CF-IPCountry.
 
     Tracks no per-locale content beyond a headline / subtitle; the actual sites
@@ -58,7 +58,7 @@ class LanguagePickerPage(Page):
 # ─── Per-locale (br./pt./en.hashtag-jesus.com) ─────────────────────────
 
 
-class HomePage(Page):
+class HjHomePage(Page):
     """Landing page for a locale subdomain. Hero + latest posts + book teaser."""
 
     tagline = models.CharField(max_length=200, blank=True, help_text="Eyebrow above the hero headline.")
@@ -81,9 +81,9 @@ class HomePage(Page):
 
     parent_page_types = ["wagtailcore.Page"]
     subpage_types = [
-        "hashtagjesus.BlogIndexPage",
-        "hashtagjesus.BookTeaserPage",
-        "hashtagjesus.LegalPage",
+        "hashtagjesus.HjBlogIndexPage",
+        "hashtagjesus.HjBookTeaserPage",
+        "hashtagjesus.HjLegalPage",
     ]
 
     def get_context(self, request, *args, **kwargs):
@@ -91,16 +91,16 @@ class HomePage(Page):
         from .context import inject_locale_context
         inject_locale_context(ctx, request, self)
         posts_qs = (
-            BlogPostPage.objects.live().descendant_of(self).order_by("-date", "-first_published_at")
+            HjBlogPostPage.objects.live().descendant_of(self).order_by("-date", "-first_published_at")
         )
         ctx["recent_posts"] = posts_qs[:6]
         ctx["book_teaser"] = (
-            BookTeaserPage.objects.live().descendant_of(self).first()
+            HjBookTeaserPage.objects.live().descendant_of(self).first()
         )
         return ctx
 
 
-class BlogIndexPage(Page):
+class HjBlogIndexPage(Page):
     """Listing of blog posts under a HomePage."""
 
     intro = RichTextField(blank=True)
@@ -109,28 +109,28 @@ class BlogIndexPage(Page):
 
     content_panels = Page.content_panels + [FieldPanel("intro")]
 
-    subpage_types = ["hashtagjesus.BlogPostPage"]
-    parent_page_types = ["hashtagjesus.HomePage"]
+    subpage_types = ["hashtagjesus.HjBlogPostPage"]
+    parent_page_types = ["hashtagjesus.HjHomePage"]
 
     def get_context(self, request, *args, **kwargs):
         ctx = super().get_context(request, *args, **kwargs)
         from .context import inject_locale_context
         inject_locale_context(ctx, request, self)
         ctx["posts"] = (
-            BlogPostPage.objects.live().descendant_of(self).order_by("-date", "-first_published_at")
+            HjBlogPostPage.objects.live().descendant_of(self).order_by("-date", "-first_published_at")
         )
         return ctx
 
 
-class BlogPostTag(TaggedItemBase):
+class HjBlogPostTag(TaggedItemBase):
     content_object = ParentalKey(
-        "hashtagjesus.BlogPostPage",
+        "hashtagjesus.HjBlogPostPage",
         related_name="tagged_items",
         on_delete=models.CASCADE,
     )
 
 
-class BlogPostPage(Page):
+class HjBlogPostPage(Page):
     """A single blog post (markdown body, rendered to HTML at template time)."""
 
     date = models.DateField("Post date")
@@ -143,7 +143,7 @@ class BlogPostPage(Page):
         on_delete=models.SET_NULL,
         related_name="+",
     )
-    tags = ClusterTaggableManager(through=BlogPostTag, blank=True)
+    tags = ClusterTaggableManager(through=HjBlogPostTag, blank=True)
 
     template = "hashtagjesus/blog_post_page.html"
 
@@ -159,7 +159,7 @@ class BlogPostPage(Page):
         FieldPanel("body_md"),
     ]
 
-    parent_page_types = ["hashtagjesus.BlogIndexPage"]
+    parent_page_types = ["hashtagjesus.HjBlogIndexPage"]
 
     def get_context(self, request, *args, **kwargs):
         ctx = super().get_context(request, *args, **kwargs)
@@ -168,7 +168,7 @@ class BlogPostPage(Page):
         return ctx
 
 
-class BookTeaserPage(Page):
+class HjBookTeaserPage(Page):
     """Pre-launch teaser page for a single book (one per locale)."""
 
     subtitle = models.CharField(max_length=200, blank=True)
@@ -207,7 +207,7 @@ class BookTeaserPage(Page):
         ),
     ]
 
-    parent_page_types = ["hashtagjesus.HomePage"]
+    parent_page_types = ["hashtagjesus.HjHomePage"]
     subpage_types: list[str] = []
 
     def get_context(self, request, *args, **kwargs):
@@ -217,7 +217,7 @@ class BookTeaserPage(Page):
         return ctx
 
 
-class LegalPage(Page):
+class HjLegalPage(Page):
     """Static legal text (privacy, terms). One per locale."""
 
     body = RichTextField()
@@ -226,7 +226,7 @@ class LegalPage(Page):
 
     content_panels = Page.content_panels + [FieldPanel("body")]
 
-    parent_page_types = ["hashtagjesus.HomePage"]
+    parent_page_types = ["hashtagjesus.HjHomePage"]
     subpage_types: list[str] = []
 
     def get_context(self, request, *args, **kwargs):
