@@ -1,18 +1,34 @@
-{% load static wagtailcore_tags %}<!doctype html>
+{% load static wagtailcore_tags wagtailimages_tags %}<!doctype html>
 <html lang="{{ html_lang|default:'en' }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   {% block meta %}
-    <title>{% block title %}{% if page %}{{ page.title }} · {% endif %}#jesus{% endblock %}</title>
-    <meta name="description" content="{% block meta_description %}{% if page.intro %}{{ page.intro }}{% elif page.summary %}{{ page.summary }}{% else %}{{ meta_description_default }}{% endif %}{% endblock %}">
+    <title>{% block title %}{% if page.seo_title %}{{ page.seo_title }} · #jesus{% elif page %}{{ page.title }} · #jesus{% else %}#jesus{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}{% if page.search_description %}{{ page.search_description }}{% elif page.intro %}{{ page.intro|striptags }}{% elif page.summary %}{{ page.summary }}{% else %}{{ meta_description_default }}{% endif %}{% endblock %}">
+
     {# Open Graph + Twitter Card #}
     <meta property="og:type" content="{% block og_type %}website{% endblock %}">
-    <meta property="og:title" content="{% if page %}{{ page.title }}{% else %}#jesus{% endif %}">
-    <meta property="og:description" content="{% if page.intro %}{{ page.intro }}{% elif page.summary %}{{ page.summary }}{% else %}{{ meta_description_default }}{% endif %}">
+    <meta property="og:site_name" content="#jesus">
+    <meta property="og:title" content="{% block og_title %}{% if page.seo_title %}{{ page.seo_title }}{% elif page %}{{ page.title }}{% else %}#jesus{% endif %}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{% if page.search_description %}{{ page.search_description }}{% elif page.intro %}{{ page.intro|striptags }}{% elif page.summary %}{{ page.summary }}{% else %}{{ meta_description_default }}{% endif %}{% endblock %}">
     <meta property="og:url" content="https://{{ request.get_host }}{{ request.path }}">
     <meta property="og:locale" content="{{ html_lang|default:'en' }}">
+
+    {# og:image — child template can override via og_image block; default = brand card #}
+    {% block og_image %}
+      <meta property="og:image" content="https://{{ request.get_host }}{% static 'img/og_default.png' %}">
+      <meta property="og:image:width" content="1536">
+      <meta property="og:image:height" content="1024">
+      <meta property="og:image:alt" content="#jesus — Jesus em 2026">
+    {% endblock %}
+
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% if page.seo_title %}{{ page.seo_title }}{% elif page %}{{ page.title }}{% else %}#jesus{% endif %}">
+    <meta name="twitter:description" content="{% if page.search_description %}{{ page.search_description }}{% elif page.intro %}{{ page.intro|striptags }}{% elif page.summary %}{{ page.summary }}{% else %}{{ meta_description_default }}{% endif %}">
+    {% block twitter_image %}
+      <meta name="twitter:image" content="https://{{ request.get_host }}{% static 'img/og_default.png' %}">
+    {% endblock %}
   {% endblock %}
 
   {# RSS / Atom feed auto-discovery #}
@@ -25,6 +41,30 @@
     <link rel="alternate" hreflang="en"    href="https://en.hashtag-jesus.com{{ request.path }}">
     <link rel="alternate" hreflang="x-default" href="https://hashtag-jesus.com{{ request.path }}">
   {% endif %}
+
+  {# JSON-LD: WebSite + Organization (Google sitelinks / Knowledge Graph hints) #}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://hashtag-jesus.com/#website",
+        "url": "https://hashtag-jesus.com/",
+        "name": "#jesus",
+        "description": "Histórias e reflexões sobre Jesus encarnado em 2026 — pt-PT, pt-BR, English.",
+        "inLanguage": ["pt-BR", "pt-PT", "en"]
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://hashtag-jesus.com/#organization",
+        "name": "#jesus",
+        "url": "https://hashtag-jesus.com/",
+        "logo": "https://hashtag-jesus.com{% static 'img/og_default.png' %}"
+      }
+    ]
+  }
+  </script>
 
   {# Fonts: Fraunces (display) + Inter (body) #}
   <link rel="preconnect" href="https://fonts.googleapis.com">
