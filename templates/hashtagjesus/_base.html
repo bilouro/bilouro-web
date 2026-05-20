@@ -17,7 +17,7 @@
 
     {# og:image — child template can override via og_image block; default = brand card #}
     {% block og_image %}
-      <meta property="og:image" content="https://{{ request.get_host }}{% static 'img/og_default.png' %}">
+      <meta property="og:image" content="https://{{ request.get_host }}{% static 'img/og_default.jpg' %}">
       <meta property="og:image:width" content="1536">
       <meta property="og:image:height" content="1024">
       <meta property="og:image:alt" content="#jesus — Jesus em 2026">
@@ -27,7 +27,7 @@
     <meta name="twitter:title" content="{% block twitter_title %}{% if page.seo_title %}{{ page.seo_title }}{% elif page %}{{ page.title }}{% else %}#jesus{% endif %}{% endblock %}">
     <meta name="twitter:description" content="{% block twitter_description %}{% if page.search_description %}{{ page.search_description }}{% elif page.intro %}{{ page.intro|striptags }}{% elif page.summary %}{{ page.summary }}{% else %}{{ meta_description_default }}{% endif %}{% endblock %}">
     {% block twitter_image %}
-      <meta name="twitter:image" content="https://{{ request.get_host }}{% static 'img/og_default.png' %}">
+      <meta name="twitter:image" content="https://{{ request.get_host }}{% static 'img/og_default.jpg' %}">
     {% endblock %}
   {% endblock %}
 
@@ -60,7 +60,7 @@
         "@id": "https://hashtag-jesus.com/#organization",
         "name": "#jesus",
         "url": "https://hashtag-jesus.com/",
-        "logo": "https://hashtag-jesus.com{% static 'img/og_default.png' %}"
+        "logo": "https://hashtag-jesus.com{% static 'img/og_default.jpg' %}"
       }
     ]
   }
