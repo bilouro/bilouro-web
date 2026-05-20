@@ -24,8 +24,8 @@
     {% endblock %}
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{% if page.seo_title %}{{ page.seo_title }}{% elif page %}{{ page.title }}{% else %}#jesus{% endif %}">
-    <meta name="twitter:description" content="{% if page.search_description %}{{ page.search_description }}{% elif page.intro %}{{ page.intro|striptags }}{% elif page.summary %}{{ page.summary }}{% else %}{{ meta_description_default }}{% endif %}">
+    <meta name="twitter:title" content="{% block twitter_title %}{% if page.seo_title %}{{ page.seo_title }}{% elif page %}{{ page.title }}{% else %}#jesus{% endif %}{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}{% if page.search_description %}{{ page.search_description }}{% elif page.intro %}{{ page.intro|striptags }}{% elif page.summary %}{{ page.summary }}{% else %}{{ meta_description_default }}{% endif %}{% endblock %}">
     {% block twitter_image %}
       <meta name="twitter:image" content="https://{{ request.get_host }}{% static 'img/og_default.png' %}">
     {% endblock %}
