@@ -1,7 +1,14 @@
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags wagtailimages_tags %}
 <article class="hj-post-card">
-  <time class="hj-post-date" datetime="{{ post.date|date:'c' }}">{{ post.date|date:"j M Y" }}</time>
-  <h3 class="hj-post-title"><a href="{% pageurl post %}">{{ post.title }}</a></h3>
-  {% if post.intro %}<p class="hj-post-intro">{{ post.intro }}</p>{% endif %}
-  <a class="hj-post-more" href="{% pageurl post %}">{{ read_more_label|default:"Ler" }} →</a>
+  {% if post.image %}
+    <a class="hj-post-thumb" href="{% pageurl post %}" aria-hidden="true" tabindex="-1">
+      {% image post.image fill-320x320 loading="lazy" %}
+    </a>
+  {% endif %}
+  <div class="hj-post-card-body">
+    <time class="hj-post-date" datetime="{{ post.date|date:'c' }}">{{ post.date|date:"j M Y" }}</time>
+    <h3 class="hj-post-title"><a href="{% pageurl post %}">{{ post.title }}</a></h3>
+    {% if post.intro %}<p class="hj-post-intro">{{ post.intro }}</p>{% endif %}
+    <a class="hj-post-more" href="{% pageurl post %}">{{ read_more_label|default:"Ler" }} →</a>
+  </div>
 </article>
