@@ -57,6 +57,7 @@ LABELS = {
         "picker_suggested_pill": "Sugerido",
         "picker_fineprint": "Detectado pelo seu país. Você pode mudar a qualquer momento.",
         "picker_headline_default": "Escolha o seu idioma",
+        "meta_description_default": "Um livro e reflexões semanais sobre Jesus para 2026.",
     },
     "pt": {
         # nav / sections
@@ -84,6 +85,7 @@ LABELS = {
         "picker_suggested_pill": "Sugerido",
         "picker_fineprint": "Detectado pelo teu país. Podes mudar a qualquer momento.",
         "picker_headline_default": "Escolhe a tua língua",
+        "meta_description_default": "Um livro e reflexões semanais sobre Jesus para 2026.",
     },
     "en": {
         # nav / sections
@@ -111,6 +113,7 @@ LABELS = {
         "picker_suggested_pill": "Suggested",
         "picker_fineprint": "Detected from your country. You can switch any time.",
         "picker_headline_default": "Choose your language",
+        "meta_description_default": "A book and weekly reflections on Jesus for 2026.",
     },
 }
 

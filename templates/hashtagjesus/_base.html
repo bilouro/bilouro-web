@@ -5,7 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   {% block meta %}
     <title>{% block title %}{% if page %}{{ page.title }} · {% endif %}#jesus{% endblock %}</title>
-    <meta name="description" content="{% block meta_description %}A book and a weekly reflection on Jesus for 2026.{% endblock %}">
+    <meta name="description" content="{% block meta_description %}{% if page.intro %}{{ page.intro }}{% elif page.summary %}{{ page.summary }}{% else %}{{ meta_description_default }}{% endif %}{% endblock %}">
+    {# Open Graph + Twitter Card #}
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:title" content="{% if page %}{{ page.title }}{% else %}#jesus{% endif %}">
+    <meta property="og:description" content="{% if page.intro %}{{ page.intro }}{% elif page.summary %}{{ page.summary }}{% else %}{{ meta_description_default }}{% endif %}">
+    <meta property="og:url" content="https://{{ request.get_host }}{{ request.path }}">
+    <meta property="og:locale" content="{{ html_lang|default:'en' }}">
+    <meta name="twitter:card" content="summary_large_image">
   {% endblock %}
 
   {# hreflang alternates — point at the same path under each locale subdomain #}
