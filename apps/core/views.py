@@ -6,19 +6,30 @@ from wagtail.admin.auth import require_admin_access
 from wagtail.models import Page, Site
 
 
-@require_admin_access
-def stats_dashboard(request):
-    """Serve the static GoAccess dashboard, gated by Wagtail admin auth.
-
-    The HTML is at /var/www/stats/index.html on the VM. We use nginx's
-    X-Accel-Redirect so the file is served by nginx (fast) but only after
-    Django/Wagtail confirms the user has admin access.
-    """
+def _stats_redirect(target_file: str) -> HttpResponse:
+    """Tell nginx to serve a file from /var/www/stats via X-Accel-Redirect."""
     response = HttpResponse()
-    response["X-Accel-Redirect"] = "/_internal/stats/"
-    # Empty Content-Type lets nginx auto-set it from the served file.
+    response["X-Accel-Redirect"] = f"/_internal/stats/{target_file}"
     del response["Content-Type"]
     return response
+
+
+@require_admin_access
+def stats_dashboard(request):
+    """All hosts combined — GoAccess /var/www/stats/index.html"""
+    return _stats_redirect("index.html")
+
+
+@require_admin_access
+def stats_bilouro(request):
+    """*.bilouro.com only."""
+    return _stats_redirect("bilouro.html")
+
+
+@require_admin_access
+def stats_hashtag_jesus(request):
+    """*.hashtag-jesus.com only."""
+    return _stats_redirect("hashtag-jesus.html")
 
 
 def search(request):

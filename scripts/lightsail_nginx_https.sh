@@ -62,11 +62,23 @@ server {
     include /etc/nginx/snippets/bilouro-app.conf;
 }
 
-# Default catch-all (no cert, returns 404 — protects against random requests)
+# Default catch-all HTTP (no cert needed) — drop unknown hosts before they reach Django
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
     server_name _;
+    return 444;
+}
+
+# Default catch-all HTTPS — drop unknown SNI / Host so they don't fall through to
+# the first matching vhost and accidentally serve content under wrong domains.
+# Uses any valid cert (TLS will mismatch SNI for unknown hosts; HTTP response is 444).
+server {
+    listen 443 ssl http2 default_server;
+    listen [::]:443 ssl http2 default_server;
+    server_name _;
+    ssl_certificate     /etc/letsencrypt/live/www.bilouro.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/www.bilouro.com/privkey.pem;
     return 444;
 }
 NGINX
