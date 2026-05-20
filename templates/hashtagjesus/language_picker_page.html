@@ -7,7 +7,7 @@
 {% block content %}
 <section class="hj-picker">
   <div class="hj-container">
-    <h1 class="hj-picker-headline">{{ page.headline|default:"Escolhe a tua língua" }}</h1>
+    <h1 class="hj-picker-headline">{{ page.headline|default:picker_headline_default }}</h1>
     {% if page.subtitle %}<p class="hj-picker-subtitle">{{ page.subtitle }}</p>{% endif %}
 
     <div class="hj-picker-grid">
@@ -19,14 +19,14 @@
           <span class="hj-picker-name">{{ locale.name }}</span>
           <span class="hj-picker-tag">{{ locale.label }}</span>
           {% if locale.code == detected %}
-            <span class="hj-picker-suggested-pill">Sugerido</span>
+            <span class="hj-picker-suggested-pill">{{ picker_suggested_pill|default:"Suggested" }}</span>
           {% endif %}
         </a>
       {% endfor %}
     </div>
 
     <p class="hj-picker-fineprint">
-      {{ fineprint|default:"Detectado pelo teu país. Podes mudar a qualquer momento." }}
+      {{ fineprint|default:picker_fineprint }}
     </p>
   </div>
 </section>

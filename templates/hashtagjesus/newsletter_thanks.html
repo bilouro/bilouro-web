@@ -1,17 +1,17 @@
 {% extends "hashtagjesus/_base.html" %}
-{% block title %}Obrigado · #jesus{% endblock %}
+{% block title %}{{ thanks_title|default:"Thank you" }} · #jesus{% endblock %}
 {% block content %}
 <section class="hj-section">
   <div class="hj-container hj-prose hj-thanks">
     <p class="hj-eyebrow">†</p>
     {% if already %}
-      <h1 class="hj-page-title">Já estás na lista.</h1>
-      <p>Obrigado pelo entusiasmo. Avisamos quando o livro estiver pronto.</p>
+      <h1 class="hj-page-title">{{ thanks_already_title|default:"You're already on the list." }}</h1>
+      <p>{{ thanks_already_body|default:"Thanks for the enthusiasm. We'll tell you when the book is ready." }}</p>
     {% else %}
-      <h1 class="hj-page-title">Obrigado.</h1>
-      <p>Vais receber um email para confirmares o teu endereço. Sem confirmação, não te enviamos nada.</p>
+      <h1 class="hj-page-title">{{ thanks_title|default:"Thank you." }}</h1>
+      <p>{{ thanks_body|default:"You'll get an email to confirm your address. Without confirmation we don't send anything." }}</p>
     {% endif %}
-    <p><a href="/">← {{ back_label|default:"Voltar" }}</a></p>
+    <p><a href="/">← {{ back_label|default:"Back" }}</a></p>
   </div>
 </section>
 {% endblock %}

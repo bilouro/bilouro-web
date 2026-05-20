@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
 
+from .context import inject_locale_context
 from .mailerlite import subscribe as ml_subscribe
 from .models import NewsletterSignup
 
@@ -54,7 +55,9 @@ def newsletter_subscribe(request):
 
     if request.method == "GET":
         # Render a standalone thank-you page if user lands here by mistake
-        return render(request, "hashtagjesus/newsletter_thanks.html", status=200)
+        ctx = {}
+        inject_locale_context(ctx, request, None)
+        return render(request, "hashtagjesus/newsletter_thanks.html", ctx, status=200)
 
     email = (request.POST.get("email") or "").strip().lower()
     locale = (request.POST.get("locale") or host_locale(request) or detect_locale(request)).lower()
@@ -64,8 +67,9 @@ def newsletter_subscribe(request):
         msg = _("Please enter a valid email.")
         if is_json:
             return JsonResponse({"ok": False, "error": str(msg)}, status=400)
-        return render(request, "hashtagjesus/newsletter_form.html",
-                      {"error": msg, "email": email}, status=400)
+        ctx = {"error": msg, "email": email}
+        inject_locale_context(ctx, request, None)
+        return render(request, "hashtagjesus/newsletter_form.html", ctx, status=400)
 
     if locale not in {"br", "pt", "en"}:
         locale = "en"
@@ -109,7 +113,9 @@ def newsletter_subscribe(request):
 def _success_response(request, is_json: bool, already: bool):
     if is_json:
         return JsonResponse({"ok": True, "already": already})
-    return render(request, "hashtagjesus/newsletter_thanks.html", {"already": already})
+    ctx = {"already": already}
+    inject_locale_context(ctx, request, None)
+    return render(request, "hashtagjesus/newsletter_thanks.html", ctx)
 
 
 def robots_for_hashtagjesus(request) -> HttpResponse:

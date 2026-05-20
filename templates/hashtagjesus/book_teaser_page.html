@@ -16,7 +16,7 @@
 
       {% if page.launch_date %}
         <p class="hj-launch-date">
-          <strong>{{ launch_label|default:"Lançamento previsto" }}:</strong>
+          <strong>{{ launch_label }}:</strong>
           {{ page.launch_date|date:"F Y" }}
         </p>
       {% endif %}

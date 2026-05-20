@@ -32,28 +32,85 @@ LOCALES = [
 # Labels per locale (header/footer/etc). Light-touch i18n: enough for now.
 LABELS = {
     "br": {
+        # nav / sections
         "blog_label": "Reflexões",
         "book_label": "O livro",
         "read_more_label": "Ler",
         "recent_label": "Últimas reflexões",
         "no_posts_label": "Em breve.",
         "back_label": "Voltar",
+        "privacy_label": "Privacidade",
+        "other_languages_label": "Outros idiomas",
+        # book teaser
+        "launch_label": "Lançamento previsto",
+        # newsletter form
+        "newsletter_form_label": "Quero saber quando lançar",
+        "newsletter_button": "Inscrever",
+        "newsletter_placeholder": "voce@email.com",
+        "newsletter_fineprint": "Você vai receber um email para confirmar. Nunca spam.",
+        # newsletter thanks
+        "thanks_already_title": "Você já está na lista.",
+        "thanks_already_body": "Obrigado pelo entusiasmo. Avisamos quando o livro estiver pronto.",
+        "thanks_title": "Obrigado.",
+        "thanks_body": "Você vai receber um email para confirmar o seu endereço. Sem confirmação, não enviamos nada.",
+        # picker
+        "picker_suggested_pill": "Sugerido",
+        "picker_fineprint": "Detectado pelo seu país. Você pode mudar a qualquer momento.",
+        "picker_headline_default": "Escolha o seu idioma",
     },
     "pt": {
+        # nav / sections
         "blog_label": "Reflexões",
         "book_label": "O livro",
         "read_more_label": "Ler",
         "recent_label": "Últimas reflexões",
         "no_posts_label": "Em breve.",
         "back_label": "Voltar",
+        "privacy_label": "Privacidade",
+        "other_languages_label": "Outras línguas",
+        # book teaser
+        "launch_label": "Lançamento previsto",
+        # newsletter form
+        "newsletter_form_label": "Quero saber quando lançar",
+        "newsletter_button": "Inscrever",
+        "newsletter_placeholder": "tu@email.com",
+        "newsletter_fineprint": "Vais receber um email para confirmares. Nunca spam.",
+        # newsletter thanks
+        "thanks_already_title": "Já estás na lista.",
+        "thanks_already_body": "Obrigado pelo entusiasmo. Avisamos-te quando o livro estiver pronto.",
+        "thanks_title": "Obrigado.",
+        "thanks_body": "Vais receber um email para confirmares o teu endereço. Sem confirmação, não te enviamos nada.",
+        # picker
+        "picker_suggested_pill": "Sugerido",
+        "picker_fineprint": "Detectado pelo teu país. Podes mudar a qualquer momento.",
+        "picker_headline_default": "Escolhe a tua língua",
     },
     "en": {
+        # nav / sections
         "blog_label": "Reflections",
         "book_label": "The book",
         "read_more_label": "Read",
         "recent_label": "Latest reflections",
         "no_posts_label": "Coming soon.",
         "back_label": "Back",
+        "privacy_label": "Privacy",
+        "other_languages_label": "Other languages",
+        # book teaser
+        "launch_label": "Expected launch",
+        # newsletter form
+        "newsletter_form_label": "Notify me when it launches",
+        "newsletter_button": "Subscribe",
+        "newsletter_placeholder": "you@email.com",
+        "newsletter_fineprint": "You'll get an email to confirm. Never spam.",
+        # newsletter thanks
+        "thanks_already_title": "You're already on the list.",
+        "thanks_already_body": "Thanks for the enthusiasm. We'll tell you when the book is ready.",
+        "thanks_title": "Thank you.",
+        "thanks_body": "You'll get an email to confirm your address. Without confirmation we don't send anything.",
+        # picker
+        "picker_suggested_pill": "Suggested",
+        "picker_fineprint": "Detected from your country. You can switch any time.",
+        "picker_headline_default": "Choose your language",
     },
 }
 
@@ -103,7 +160,10 @@ def inject_locale_context(ctx: dict, request, page) -> None:
 def build_picker_context(ctx: dict, request) -> None:
     cc = (request.headers.get("CF-IPCountry") or "").upper()
     detected = COUNTRY_TO_LOCALE.get(cc, "en")
-    ctx["locale"] = "x"   # body class for apex
-    ctx["html_lang"] = "en"
+    ctx["locale"] = detected   # body class for apex (rendered in detected lang)
+    ctx["html_lang"] = {"br": "pt-br", "pt": "pt-pt", "en": "en"}.get(detected, "en")
     ctx["locales"] = LOCALES
     ctx["detected"] = detected
+    # Strings on the picker render in the detected locale (e.g. BR visitor
+    # sees "Sugerido"; EN visitor sees "Suggested").
+    ctx.update(LABELS.get(detected, LABELS["en"]))
