@@ -122,9 +122,17 @@ The Lightsail nano is small (911 MB RAM, no swap by default). The prod box runs 
 2. **nginx `444` for secret-probe paths** — `location ~* …` blocks at the top of [`bilouro-app.conf`](scripts/lightsail_nginx_https.sh) close the connection instantly for `/.env*`, `/.git/`, `/.aws/`, `/serviceAccountKey.json`, `/settings.py`, `/phpinfo.php`, `*.bak`, `*.sql`, etc. ~500–1000 hits/day stop here, never reach Django.
 3. **fail2ban** — two jails: `sshd` (4 failed logins in 10 min → 1 h ban) and `nginx-scanners` (15 × 4xx in 2 min → 6 h ban). Installer: [`scripts/lightsail_fail2ban.sh`](scripts/lightsail_fail2ban.sh).
 
+4. **HTTPS catch-all** — `listen 443 ssl http2 default_server` block returns `444` for any SNI/Host that doesn't match a known vhost. Closes a leak where unknown hosts (e.g. `random.example.com → 3.251.103.83`) used to fall through to the first matching server block (typically `bilouro.com` apex 301) and surface bilouro content under arbitrary names. Templated in [`scripts/lightsail_nginx_https.sh`](scripts/lightsail_nginx_https.sh).
+
 ### Analytics (server-side, log-based)
 
-No JS tracking, no third-party SaaS. [GoAccess](https://goaccess.io/) parses the existing nginx `access.log` and renders a static HTML dashboard at `https://<your-site>/admin/stats/`, **gated by the Wagtail admin login**. A sidebar item in the Wagtail admin links to it.
+No JS tracking, no third-party SaaS. [GoAccess](https://goaccess.io/) parses the existing nginx `access.log` and renders static HTML dashboards **gated by the Wagtail admin login**. Three reports are generated, each linked in the Wagtail admin sidebar:
+
+- `https://<your-site>/admin/stats/` — all hosts combined
+- `https://<your-site>/admin/stats/bilouro/` — `*.bilouro.com` only
+- `https://<your-site>/admin/stats/hashtag-jesus/` — `*.hashtag-jesus.com` only
+
+This requires nginx to log the `$host` (custom `vhost_combined` log format). The wrapper at `/usr/local/bin/goaccess-rebuild` greps the shared access log by host prefix before running goaccess for each report.
 
 How it works: a Django view (`apps.core.views.stats_dashboard`, decorated with `@require_admin_access`) authorizes the request, then issues `X-Accel-Redirect` so nginx serves the static HTML at native speed from an `internal` location. No double-password, no extra middleware cost.
 
