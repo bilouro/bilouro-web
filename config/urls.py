@@ -13,7 +13,7 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 
-from apps.core.feeds import BooksFeed, CombinedFeed, TechBlogFeed
+from apps.core.feeds import BooksFeed, CombinedFeed, HjBlogFeed, TechBlogFeed
 from apps.core.views import search as search_view, set_language as set_lang_view
 from apps.hashtagjesus.views import newsletter_subscribe as hj_newsletter_subscribe
 
@@ -24,15 +24,18 @@ def healthz(_request):
 
 def feed_dispatch(request, *args, **kwargs):
     """Pick the right feed by hostname:
-    - books.* → BooksFeed
-    - tech.*  → TechBlogFeed
-    - other (www, apex) → CombinedFeed (everything)
+    - books.*                          → BooksFeed
+    - tech.*                           → TechBlogFeed
+    - {br,pt,en}.hashtag-jesus.com     → HjBlogFeed (auto-locale via Site)
+    - other (www, apex)                → CombinedFeed (everything)
     """
     host = request.get_host().split(":")[0]
     if host.startswith("books"):
         return BooksFeed()(request, *args, **kwargs)
     if host.startswith("tech"):
         return TechBlogFeed()(request, *args, **kwargs)
+    if "hashtag-jesus.com" in host:
+        return HjBlogFeed()(request, *args, **kwargs)
     return CombinedFeed()(request, *args, **kwargs)
 
 

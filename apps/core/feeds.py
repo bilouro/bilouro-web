@@ -11,6 +11,7 @@ from django.contrib.syndication.views import Feed
 from django.utils.feedgenerator import Atom1Feed
 from wagtail.models import Site
 
+from apps.hashtagjesus.models import HjBlogPostPage
 from apps.shop.models import BookPostPage
 from apps.tech.models import BlogPostPage
 
@@ -71,6 +72,35 @@ class BooksFeed(_SiteAwareFeed):
 
     def item_description(self, item):
         return (item.body_md or "")[:300] if item.body_md else (item.ref or "")
+
+    def item_link(self, item):
+        return item.full_url
+
+    def item_pubdate(self, item):
+        return item.first_published_at
+
+
+class HjBlogFeed(_SiteAwareFeed):
+    """hashtag-jesus.com (br/pt/en) — HjBlogPostPage, filtrado pela Site (locale)."""
+
+    def title(self, site):
+        return f"#jesus — {site.site_name}" if site.site_name else "#jesus"
+
+    def description(self, site):
+        return f"Reflexões publicadas em {site.hostname}."
+
+    def items(self, site):
+        return (
+            HjBlogPostPage.objects.live()
+            .descendant_of(site.root_page)
+            .order_by("-date", "-first_published_at")[:20]
+        )
+
+    def item_title(self, item):
+        return item.title
+
+    def item_description(self, item):
+        return item.intro or (item.body_md or "")[:300]
 
     def item_link(self, item):
         return item.full_url
