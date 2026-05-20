@@ -15,6 +15,9 @@
     <meta name="twitter:card" content="summary_large_image">
   {% endblock %}
 
+  {# RSS / Atom feed auto-discovery #}
+  <link rel="alternate" type="application/atom+xml" title="{% if site_name %}{{ site_name }}{% else %}#jesus{% endif %} feed" href="/feed/">
+
   {# hreflang alternates — point at the same path under each locale subdomain #}
   {% if request %}
     <link rel="alternate" hreflang="pt-br" href="https://br.hashtag-jesus.com{{ request.path }}">

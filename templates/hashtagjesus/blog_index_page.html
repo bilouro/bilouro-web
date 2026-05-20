@@ -6,6 +6,12 @@
   <div class="hj-container hj-prose">
     <h1 class="hj-page-title">{{ page.title }}</h1>
     {% if page.intro %}<div class="hj-intro">{{ page.intro|richtext }}</div>{% endif %}
+    <p class="hj-rss-line">
+      <a href="/feed/" rel="alternate" type="application/atom+xml" aria-label="RSS feed">
+        <svg class="hj-rss-icon" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="currentColor"><path d="M4 4v3a13 13 0 0113 13h3A16 16 0 004 4zm0 6v3a7 7 0 017 7h3a10 10 0 00-10-10zm1.5 7.5a2 2 0 100 4 2 2 0 000-4z"/></svg>
+        RSS
+      </a>
+    </p>
   </div>
 </section>
 
