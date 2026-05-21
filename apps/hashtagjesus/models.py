@@ -54,6 +54,19 @@ class HjLanguagePickerPage(Page):
         build_picker_context(ctx, request)
         return ctx
 
+    def serve(self, request, *args, **kwargs):
+        """If we've seen this visitor pick a locale before, send them straight
+        there (server-side 302, no JS flash). Bypass when ?pick=1 / ?choose=1
+        — used by the 'Other languages' footer link to force re-show the
+        picker even with a cookie set."""
+        force_show = bool(request.GET.get("pick") or request.GET.get("choose"))
+        if not force_show:
+            saved = request.COOKIES.get("hj_locale_chosen")
+            if saved in ("br", "pt", "en"):
+                from django.http import HttpResponseRedirect
+                return HttpResponseRedirect(f"https://{saved}.hashtag-jesus.com/")
+        return super().serve(request, *args, **kwargs)
+
 
 # ─── Per-locale (br./pt./en.hashtag-jesus.com) ─────────────────────────
 
