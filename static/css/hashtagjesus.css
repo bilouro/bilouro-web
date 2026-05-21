@@ -269,6 +269,11 @@ em { font-style: italic; }
 .hj-footer-col a { color: var(--hj-mist); text-decoration: none; }
 .hj-footer-col a:hover { color: var(--hj-ink); }
 
+.hj-social { display: flex; flex-direction: column; gap: var(--hj-s-2); }
+.hj-social a { display: inline-flex; align-items: center; gap: var(--hj-s-3); }
+.hj-social-icon { width: 22px; height: 22px; flex-shrink: 0; transition: transform .15s ease; }
+.hj-social a:hover .hj-social-icon { transform: scale(1.08); }
+
 /* ── Thanks ──────────────────────────────────────────────────── */
 
 .hj-thanks { text-align: center; padding-top: var(--hj-s-9); }
