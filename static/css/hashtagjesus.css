@@ -278,6 +278,24 @@ em { font-style: italic; }
 
 .hj-thanks { text-align: center; padding-top: var(--hj-s-9); }
 
+/* ── YouTube Short / video embed (9:16) ──────────────────────── */
+
+.hj-short-wrap {
+  max-width: 405px;
+  aspect-ratio: 9 / 16;
+  margin: var(--hj-s-7) auto;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--hj-ink);
+  box-shadow: 0 4px 24px rgba(26, 26, 26, 0.08);
+}
+.hj-short-wrap iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
 /* ── Misc ────────────────────────────────────────────────────── */
 
 .hj-empty { color: var(--hj-mist); font-style: italic; text-align: center; padding: var(--hj-s-7) 0; }

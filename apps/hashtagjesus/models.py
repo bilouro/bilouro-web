@@ -155,6 +155,16 @@ class HjBlogPostPage(Page):
         blank=True,
         on_delete=models.SET_NULL,
         related_name="+",
+        help_text="Hero image. Also used as the OG / preview image when sharing.",
+    )
+    youtube_url = models.URLField(
+        blank=True,
+        default="",
+        help_text=(
+            "YouTube Short / video URL. When filled, replaces the hero image on the "
+            "page (image is still used for the share preview). Accepts youtu.be/<id>, "
+            "youtube.com/shorts/<id>, youtube.com/watch?v=<id>, or just the <id>."
+        ),
     )
     tags = ClusterTaggableManager(through=HjBlogPostTag, blank=True)
 
@@ -168,9 +178,31 @@ class HjBlogPostPage(Page):
     content_panels = Page.content_panels + [
         MultiFieldPanel([FieldPanel("date"), FieldPanel("tags")], heading="Meta"),
         FieldPanel("image"),
+        FieldPanel("youtube_url"),
         FieldPanel("intro"),
         FieldPanel("body_md"),
     ]
+
+    @property
+    def youtube_video_id(self) -> str:
+        """Extract the 11-char video ID from common YouTube URL formats."""
+        import re
+        url = (self.youtube_url or "").strip()
+        if not url:
+            return ""
+        # Plain ID (no slashes, short)
+        if "/" not in url and 8 <= len(url) <= 20:
+            return url
+        for pat in (
+            r"youtu\.be/([A-Za-z0-9_-]{11})",
+            r"youtube\.com/shorts/([A-Za-z0-9_-]{11})",
+            r"youtube\.com/embed/([A-Za-z0-9_-]{11})",
+            r"youtube\.com/watch\?(?:.*&)?v=([A-Za-z0-9_-]{11})",
+        ):
+            m = re.search(pat, url)
+            if m:
+                return m.group(1)
+        return ""
 
     parent_page_types = ["hashtagjesus.HjBlogIndexPage"]
 

@@ -26,7 +26,17 @@
     </p>
     <h1 class="hj-page-title">{{ page.title }}</h1>
     {% if page.intro %}<p class="hj-lede">{{ page.intro }}</p>{% endif %}
-    {% if page.image %}
+    {% if page.youtube_video_id %}
+      <div class="hj-short-wrap">
+        <iframe
+          src="https://www.youtube-nocookie.com/embed/{{ page.youtube_video_id }}?rel=0&modestbranding=1&playsinline=1"
+          title="{{ page.title }}"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen></iframe>
+      </div>
+    {% elif page.image %}
       <figure class="hj-figure">
         {% image page.image fill-1200x675 alt=page.title %}
       </figure>
