@@ -317,3 +317,62 @@ em { font-style: italic; }
 }
 .hj-rss-line a:hover { color: var(--hj-crimson); border-bottom-color: var(--hj-crimson); }
 .hj-rss-icon { color: var(--hj-crimson); }
+
+/* ── Scripture block ─────────────────────────────────────────── */
+
+.hj-scripture {
+  background: var(--hj-cream-2);
+  border-left: 3px solid var(--hj-crimson);
+  padding: var(--hj-s-5) var(--hj-s-5);
+  margin: var(--hj-s-5) 0 var(--hj-s-6);
+  font-family: var(--hj-serif);
+  font-size: 1.05rem;
+  line-height: 1.85;
+  color: var(--hj-ink-2);
+  border-radius: 0 var(--hj-radius) var(--hj-radius) 0;
+}
+
+/* ── Post card excerpt ───────────────────────────────────────── */
+
+.hj-post-excerpt {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--hj-ink-2);
+  margin-bottom: var(--hj-s-3);
+}
+
+.hj-post-thumb--video img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--hj-radius);
+  object-fit: cover;
+}
+
+/* ── Callout cards (exercise + question) ─────────────────────── */
+
+.hj-callout {
+  background: var(--hj-cream-2);
+  border-radius: var(--hj-radius);
+  padding: var(--hj-s-5);
+  margin: var(--hj-s-5) 0;
+}
+.hj-callout-title {
+  font-family: var(--hj-sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--hj-crimson);
+  margin-bottom: var(--hj-s-3);
+}
+.hj-callout p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.75;
+}
+.hj-callout--exercise {
+  border-left: 3px solid var(--hj-mist);
+}
+.hj-callout--question {
+  border-left: 3px solid var(--hj-crimson);
+}

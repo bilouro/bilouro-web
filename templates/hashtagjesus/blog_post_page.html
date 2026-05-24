@@ -1,7 +1,7 @@
 {% extends "hashtagjesus/_base.html" %}
 {% load wagtailcore_tags wagtailimages_tags %}
 
-{% block title %}{{ page.title }} · #jesus{% endblock %}
+{% block title %}{{ page.chapter_title|default:page.title }} · #jesus{% endblock %}
 {% block og_type %}article{% endblock %}
 
 {% if page.image %}
@@ -21,11 +21,7 @@
 {% block content %}
 <article class="hj-section hj-article">
   <div class="hj-container hj-prose">
-    <p class="hj-eyebrow">
-      <time datetime="{{ page.date|date:'c' }}">{{ page.date|date:"j M Y" }}</time>
-    </p>
-    <h1 class="hj-page-title">{{ page.title }}</h1>
-    {% if page.intro %}<p class="hj-lede">{{ page.intro }}</p>{% endif %}
+
     {% if page.youtube_video_id %}
       <div class="hj-short-wrap">
         <iframe
@@ -41,9 +37,41 @@
         {% image page.image fill-1200x675 alt=page.title %}
       </figure>
     {% endif %}
-    {% if page.body_md %}
-      <div class="hj-body">{{ page.body_md|linebreaks }}</div>
+
+    {% if page.biblical_ref %}
+      <p class="hj-eyebrow">{{ page.biblical_ref }}</p>
+    {% else %}
+      <p class="hj-eyebrow">
+        <time datetime="{{ page.date|date:'c' }}">{{ page.date|date:"j M Y" }}</time>
+      </p>
     {% endif %}
+
+    <h1 class="hj-page-title">{{ page.chapter_title|default:page.title }}</h1>
+
+    {% if page.biblical_text %}
+      <div class="hj-scripture">
+        {{ page.biblical_text|linebreaksbr }}
+      </div>
+    {% endif %}
+
+    {% if page.chapter_reflection %}
+      <div class="hj-body">{{ page.chapter_reflection|linebreaks }}</div>
+    {% endif %}
+
+    {% if page.chapter_exercise %}
+      <div class="hj-callout hj-callout--exercise">
+        <h4 class="hj-callout-title">{{ exercise_label|default:"Exercício" }}</h4>
+        <p>{{ page.chapter_exercise }}</p>
+      </div>
+    {% endif %}
+
+    {% if page.chapter_question %}
+      <div class="hj-callout hj-callout--question">
+        <h4 class="hj-callout-title">{{ question_label|default:"Para reflectir" }}</h4>
+        <p>{{ page.chapter_question }}</p>
+      </div>
+    {% endif %}
+
   </div>
 </article>
 {% endblock %}

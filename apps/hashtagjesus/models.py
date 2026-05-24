@@ -144,11 +144,15 @@ class HjBlogPostTag(TaggedItemBase):
 
 
 class HjBlogPostPage(Page):
-    """A single blog post (markdown body, rendered to HTML at template time)."""
+    """A single blog post with book chapter.
+
+    body_md = post storytelling (shown in listing).
+    chapter_* fields = book chapter (shown in detail page).
+    """
 
     date = models.DateField("Post date")
-    intro = models.CharField(max_length=400, blank=True)
-    body_md = models.TextField(blank=True, help_text="Markdown source.")
+    intro = models.CharField(max_length=400, blank=True, help_text="OG/meta description.")
+    body_md = models.TextField(blank=True, help_text="Post storytelling (shown in blog listing).")
     image = models.ForeignKey(
         "wagtailimages.Image",
         null=True,
@@ -166,6 +170,12 @@ class HjBlogPostPage(Page):
             "youtube.com/shorts/<id>, youtube.com/watch?v=<id>, or just the <id>."
         ),
     )
+    chapter_title = models.CharField(max_length=200, blank=True, help_text="Book chapter title.")
+    biblical_ref = models.CharField(max_length=200, blank=True, help_text="Biblical reference (e.g. Mateus 7:1-5).")
+    biblical_text = models.TextField(blank=True, help_text="Biblical text with superscript verse numbers.")
+    chapter_reflection = models.TextField(blank=True, help_text="Pastoral reflection (2-4 paragraphs).")
+    chapter_exercise = models.TextField(blank=True, help_text="Practical exercise.")
+    chapter_question = models.TextField(blank=True, help_text="Reflective question.")
     tags = ClusterTaggableManager(through=HjBlogPostTag, blank=True)
 
     template = "hashtagjesus/blog_post_page.html"
@@ -173,6 +183,7 @@ class HjBlogPostPage(Page):
     search_fields = Page.search_fields + [
         index.SearchField("intro"),
         index.SearchField("body_md"),
+        index.SearchField("chapter_reflection"),
     ]
 
     content_panels = Page.content_panels + [
@@ -181,6 +192,14 @@ class HjBlogPostPage(Page):
         FieldPanel("youtube_url"),
         FieldPanel("intro"),
         FieldPanel("body_md"),
+        MultiFieldPanel([
+            FieldPanel("chapter_title"),
+            FieldPanel("biblical_ref"),
+            FieldPanel("biblical_text"),
+            FieldPanel("chapter_reflection"),
+            FieldPanel("chapter_exercise"),
+            FieldPanel("chapter_question"),
+        ], heading="Book chapter"),
     ]
 
     @property

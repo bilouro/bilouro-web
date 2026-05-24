@@ -41,6 +41,9 @@ LABELS = {
         "back_label": "Voltar",
         "privacy_label": "Privacidade",
         "other_languages_label": "Outros idiomas",
+        # chapter detail
+        "exercise_label": "Exercício",
+        "question_label": "Para refletir",
         # book teaser
         "launch_label": "Lançamento previsto",
         # newsletter form
@@ -69,6 +72,9 @@ LABELS = {
         "back_label": "Voltar",
         "privacy_label": "Privacidade",
         "other_languages_label": "Outras línguas",
+        # chapter detail
+        "exercise_label": "Exercício",
+        "question_label": "Para reflectir",
         # book teaser
         "launch_label": "Lançamento previsto",
         # newsletter form
@@ -97,6 +103,9 @@ LABELS = {
         "back_label": "Back",
         "privacy_label": "Privacy",
         "other_languages_label": "Other languages",
+        # chapter detail
+        "exercise_label": "Exercise",
+        "question_label": "Reflect",
         # book teaser
         "launch_label": "Expected launch",
         # newsletter form

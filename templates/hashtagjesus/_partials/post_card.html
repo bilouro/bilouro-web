@@ -1,6 +1,11 @@
 {% load wagtailcore_tags wagtailimages_tags %}
 <article class="hj-post-card">
-  {% if post.image %}
+  {% if post.youtube_video_id %}
+    <a class="hj-post-thumb hj-post-thumb--video" href="{% pageurl post %}" aria-hidden="true" tabindex="-1">
+      <img src="https://img.youtube.com/vi/{{ post.youtube_video_id }}/mqdefault.jpg"
+           alt="" loading="lazy" width="320" height="180">
+    </a>
+  {% elif post.image %}
     <a class="hj-post-thumb" href="{% pageurl post %}" aria-hidden="true" tabindex="-1">
       {% image post.image fill-320x320 loading="lazy" %}
     </a>
@@ -8,7 +13,7 @@
   <div class="hj-post-card-body">
     <time class="hj-post-date" datetime="{{ post.date|date:'c' }}">{{ post.date|date:"j M Y" }}</time>
     <h3 class="hj-post-title"><a href="{% pageurl post %}">{{ post.title }}</a></h3>
-    {% if post.intro %}<p class="hj-post-intro">{{ post.intro }}</p>{% endif %}
+    {% if post.body_md %}<div class="hj-post-excerpt">{{ post.body_md|truncatewords:60|linebreaksbr }}</div>{% endif %}
     <a class="hj-post-more" href="{% pageurl post %}">{{ read_more_label|default:"Ler" }} →</a>
   </div>
 </article>
