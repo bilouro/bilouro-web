@@ -331,6 +331,17 @@ em { font-style: italic; }
   color: var(--hj-ink-2);
   border-radius: 0 var(--hj-radius) var(--hj-radius) 0;
 }
+.hj-scripture-ref {
+  display: block;
+  font-family: var(--hj-sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--hj-crimson);
+  margin-bottom: var(--hj-s-3);
+}
 
 /* ── Post card excerpt ───────────────────────────────────────── */
 

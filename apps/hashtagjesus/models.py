@@ -203,6 +203,13 @@ class HjBlogPostPage(Page):
     ]
 
     @property
+    def biblical_ref_short(self) -> str:
+        ref = (self.biblical_ref or "").strip()
+        if not ref:
+            return ""
+        return ref.split("|")[0].strip()
+
+    @property
     def youtube_video_id(self) -> str:
         """Extract the 11-char video ID from common YouTube URL formats."""
         import re

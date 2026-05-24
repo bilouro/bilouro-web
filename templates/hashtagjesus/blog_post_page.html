@@ -38,18 +38,15 @@
       </figure>
     {% endif %}
 
-    {% if page.biblical_ref %}
-      <p class="hj-eyebrow">{{ page.biblical_ref }}</p>
-    {% else %}
-      <p class="hj-eyebrow">
-        <time datetime="{{ page.date|date:'c' }}">{{ page.date|date:"j M Y" }}</time>
-      </p>
-    {% endif %}
+    <p class="hj-eyebrow">
+      <time datetime="{{ page.date|date:'c' }}">{{ page.date|date:"j M Y" }}</time>
+    </p>
 
     <h1 class="hj-page-title">{{ page.chapter_title|default:page.title }}</h1>
 
     {% if page.biblical_text %}
       <div class="hj-scripture">
+        <cite class="hj-scripture-ref">{{ page.biblical_ref_short }}</cite>
         {{ page.biblical_text|linebreaksbr }}
       </div>
     {% endif %}
