@@ -134,7 +134,7 @@ class HjBlogIndexPage(Page):
         all_posts = (
             HjBlogPostPage.objects.live().descendant_of(self).order_by("-date", "-first_published_at")
         )
-        page_obj = Paginator(all_posts, 10).get_page(request.GET.get("page"))
+        page_obj = Paginator(all_posts, 6).get_page(request.GET.get("page"))
         ctx["posts"] = page_obj
         ctx["page_obj"] = page_obj
         return ctx
