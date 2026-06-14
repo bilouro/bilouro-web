@@ -13,7 +13,7 @@
   <div class="hj-post-card-body">
     <time class="hj-post-date" datetime="{{ post.date|date:'c' }}">{{ post.date|date:"j M Y" }}</time>
     <h3 class="hj-post-title"><a href="{% pageurl post %}">{{ post.title }}</a></h3>
-    {% if post.body_md %}<div class="hj-post-excerpt">{{ post.body_md|truncatewords:60|linebreaksbr }}</div>{% endif %}
+    {% if post.body_md %}<div class="hj-post-excerpt">{{ post.body_md|linebreaks }}</div>{% endif %}
     <a class="hj-post-more" href="{% pageurl post %}">{{ read_more_label|default:"Ler" }} →</a>
   </div>
 </article>

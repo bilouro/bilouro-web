@@ -41,6 +41,10 @@ LABELS = {
         "back_label": "Voltar",
         "privacy_label": "Privacidade",
         "other_languages_label": "Outros idiomas",
+        "see_more_label": "Ver mais",
+        "prev_label": "Anterior",
+        "next_label": "Próxima",
+        "page_label": "Página",
         # chapter detail
         "exercise_label": "Exercício",
         "question_label": "Para refletir",
@@ -72,6 +76,10 @@ LABELS = {
         "back_label": "Voltar",
         "privacy_label": "Privacidade",
         "other_languages_label": "Outras línguas",
+        "see_more_label": "Ver mais",
+        "prev_label": "Anterior",
+        "next_label": "Seguinte",
+        "page_label": "Página",
         # chapter detail
         "exercise_label": "Exercício",
         "question_label": "Para reflectir",
@@ -103,6 +111,10 @@ LABELS = {
         "back_label": "Back",
         "privacy_label": "Privacy",
         "other_languages_label": "Other languages",
+        "see_more_label": "See more",
+        "prev_label": "Previous",
+        "next_label": "Next",
+        "page_label": "Page",
         # chapter detail
         "exercise_label": "Exercise",
         "question_label": "Reflect",

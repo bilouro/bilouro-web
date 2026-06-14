@@ -107,6 +107,7 @@ class HjHomePage(Page):
             HjBlogPostPage.objects.live().descendant_of(self).order_by("-date", "-first_published_at")
         )
         ctx["recent_posts"] = posts_qs[:6]
+        ctx["more_posts"] = posts_qs.count() > 6
         ctx["book_teaser"] = (
             HjBookTeaserPage.objects.live().descendant_of(self).first()
         )
@@ -129,9 +130,13 @@ class HjBlogIndexPage(Page):
         ctx = super().get_context(request, *args, **kwargs)
         from .context import inject_locale_context
         inject_locale_context(ctx, request, self)
-        ctx["posts"] = (
+        from django.core.paginator import Paginator
+        all_posts = (
             HjBlogPostPage.objects.live().descendant_of(self).order_by("-date", "-first_published_at")
         )
+        page_obj = Paginator(all_posts, 10).get_page(request.GET.get("page"))
+        ctx["posts"] = page_obj
+        ctx["page_obj"] = page_obj
         return ctx
 
 

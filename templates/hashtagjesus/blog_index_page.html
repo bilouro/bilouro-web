@@ -25,6 +25,21 @@
           {% include "hashtagjesus/_partials/post_card.html" with post=post %}
         {% endfor %}
       </div>
+      {% if page_obj.paginator.num_pages > 1 %}
+      <nav class="hj-pagination" aria-label="{{ blog_label }}">
+        {% if page_obj.has_previous %}
+          <a class="hj-page-link" href="?page={{ page_obj.previous_page_number }}">← {{ prev_label|default:"Anterior" }}</a>
+        {% else %}
+          <span class="hj-page-link hj-page-link--off">← {{ prev_label|default:"Anterior" }}</span>
+        {% endif %}
+        <span class="hj-page-info">{{ page_label|default:"Página" }} {{ page_obj.number }}/{{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+          <a class="hj-page-link" href="?page={{ page_obj.next_page_number }}">{{ next_label|default:"Seguinte" }} →</a>
+        {% else %}
+          <span class="hj-page-link hj-page-link--off">{{ next_label|default:"Seguinte" }} →</span>
+        {% endif %}
+      </nav>
+      {% endif %}
     {% else %}
       <p class="hj-empty">{{ no_posts_label|default:"Em breve." }}</p>
     {% endif %}
