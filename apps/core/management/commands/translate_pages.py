@@ -245,11 +245,19 @@ class Command(BaseCommand):
                         errored += 1
                         continue
                     translated_fields = result.get("fields") if isinstance(result.get("fields"), dict) else result
+                    child_applied = 0
                     for src, dst in field_pairs:
                         if src in translated_fields and translated_fields[src]:
                             setattr(child, dst, translated_fields[src])
-                            changed += 1
+                            child_applied += 1
+                    if child_applied:
+                        # Save the child row directly — modelcluster child edits do
+                        # NOT persist reliably through page.save_revision() alone.
+                        child.save()
+                        changed += child_applied
             if changed and not opts["dry_run"]:
+                # Re-sync the page revision/draft with the now-updated live children.
+                page = type(page).objects.get(pk=page.pk)
                 page.save_revision().publish()
                 self.stdout.write(self.style.SUCCESS(f"  + {page.slug}: {changed} inline field(s) translated"))
                 inline_translated += 1

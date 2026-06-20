@@ -496,10 +496,10 @@ class Command(BaseCommand):
                      "A 10–15 page document + presentation session: what you have, what's missing, in what order to do it.",
                      "Assessment e roadmap", "Auditoria de processos, aplicações e infraestrutura.",
                      "Um documento de 10–15 páginas + sessão de apresentação: o que tens, o que falta, por que ordem fazer."),
-                    ("Public sites", "Institutional sites, landing pages, blog/CMS, light e-commerce.",
-                     "Wagtail / Django / Next.js. AWS hosting included for the first year.",
-                     "Sites públicos", "Sites institucionais, landing pages, blog/CMS, e-commerce light.",
-                     "Wagtail / Django / Next.js. Alojamento AWS incluído no primeiro ano."),
+                    ("Public sites", "Institutional sites, landing pages, blog, simple online store.",
+                     "A site that's truly yours — fast and easy to update. Hosting included for the first year.",
+                     "Sites públicos", "Sites institucionais, landing pages, blog, loja online simples.",
+                     "Um site que é mesmo teu — rápido e fácil de atualizar. Alojamento incluído no primeiro ano."),
                 ]
                 for title, subtitle, output, title_pt, subtitle_pt, output_pt in services:
                     studio_home.service_cards.add(
@@ -524,52 +524,48 @@ class Command(BaseCommand):
                 )
                 studio_home.cases.add(
                     StudioCase(
-                        title="Breath Pilates — AI agents + data warehouse",
+                        title="Breath Pilates — AI assistants that answer and book clients",
                         body=(
-                            "<p>Two Pilates studios in production (Gaia and Maia): a voice agent "
-                            "(Vapi + Vonage + OpenAI) that books and escalates to a human, an email "
-                            "agent (Gmail + OpenAI) for triage and autonomous replies, and a medallion "
-                            "warehouse (PostgreSQL) with Metabase dashboards — all on AWS via Pulumi.</p>"
+                            "<p>Two Pilates studios where an AI assistant answers calls and emails on "
+                            "its own — booking classes, replying to common questions, and handing over "
+                            "to a person when needed. The owners also get simple dashboards to see how "
+                            "the business is doing at a glance.</p>"
                         ),
-                        title_pt="Breath Pilates — agentes de IA + warehouse de dados",
+                        title_pt="Breath Pilates — assistentes de IA que atendem e marcam clientes",
                         body_pt=(
-                            "<p>Dois estúdios de Pilates em produção (Gaia e Maia): um agente de voz "
-                            "(Vapi + Vonage + OpenAI) que agenda e escala para humano, um agente de email "
-                            "(Gmail + OpenAI) para triagem e respostas autónomas, e um warehouse medallion "
-                            "(PostgreSQL) com dashboards Metabase — tudo em AWS via Pulumi.</p>"
+                            "<p>Dois estúdios de Pilates onde um assistente de IA atende chamadas e "
+                            "emails sozinho — marca aulas, responde às perguntas mais comuns e passa "
+                            "para uma pessoa quando é preciso. Os donos têm ainda painéis simples para "
+                            "ver num relance como vai o negócio.</p>"
                         ),
                     ),
                     StudioCase(
-                        title="eupago-python + vendus-python — open-source SDKs",
+                        title="Automatic payments and invoicing for a Portuguese business",
                         body=(
-                            "<p>Python SDKs published on PyPI (MIT). eupago-python: PT payment gateway "
-                            "(Multibanco, MB WAY, card, Apple/Google Pay) — production-validated with real "
-                            "money. vendus-python: AT-certified invoicing. Full OSS structure: mkdocs, "
-                            "pre-commit, CHANGELOG, examples, SECURITY.</p>"
+                            "<p>Tools that let a business take payments (Multibanco, MB WAY, card) and "
+                            "issue legal invoices automatically — no more manual copy-paste between "
+                            "systems. Already handling real payments from real customers.</p>"
                         ),
-                        title_pt="eupago-python + vendus-python — SDKs open source",
+                        title_pt="Pagamentos e faturação automáticos para um negócio português",
                         body_pt=(
-                            "<p>SDKs Python publicados no PyPI (MIT). eupago-python: gateway de pagamentos "
-                            "PT (Multibanco, MB WAY, cartão, Apple/Google Pay) — validado em produção com "
-                            "dinheiro real. vendus-python: faturação certificada pela AT. Estrutura OSS "
-                            "completa: mkdocs, pre-commit, CHANGELOG, examples, SECURITY.</p>"
+                            "<p>Ferramentas que permitem a um negócio receber pagamentos (Multibanco, "
+                            "MB WAY, cartão) e emitir faturas legais automaticamente — sem copy-paste "
+                            "manual entre sistemas. Já a processar pagamentos reais de clientes reais.</p>"
                         ),
                     ),
                     StudioCase(
-                        title="Breath Pilates App — Gym/Studio management platform",
+                        title="Breath Pilates — a full app for members and staff",
                         body=(
-                            "<p>A full client-facing platform (Turborepo, Next.js 15 + TypeScript + "
-                            "shadcn/ui): client app (OTP login, trial classes, sign-up + payment, booking) "
-                            "and admin app (10 staff features — calendar, templates, substitutions, "
-                            "availability). Deployed on Vercel with per-branch previews.</p>"
+                            "<p>A complete app for a gym/studio: members sign up, pay, and book or "
+                            "cancel classes from their phone; the team manages the schedule, trial "
+                            "classes, substitutions and availability — all in one place.</p>"
                         ),
-                        title_pt="Breath Pilates App — plataforma de gestão de ginásios/estúdios",
+                        title_pt="Breath Pilates — uma app completa para sócios e equipa",
                         body_pt=(
-                            "<p>Uma plataforma completa virada para o cliente (Turborepo, Next.js 15 + "
-                            "TypeScript + shadcn/ui): app de cliente (login OTP, aulas experimentais, "
-                            "inscrição + pagamento, marcações) e app de admin (10 funcionalidades de staff "
-                            "— calendário, templates, substituições, disponibilidade). Deploy na Vercel "
-                            "com previews por branch.</p>"
+                            "<p>Uma app completa para um ginásio/estúdio: os sócios inscrevem-se, pagam "
+                            "e marcam ou cancelam aulas pelo telemóvel; a equipa gere o horário, as "
+                            "aulas experimentais, as substituições e a disponibilidade — tudo num só "
+                            "lugar.</p>"
                         ),
                     ),
                 )
