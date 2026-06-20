@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-09 14:43+0100\n"
+"POT-Creation-Date: 2026-06-20 01:35+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: OpenAI Responses API\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: apps/hashtagjesus/views.py:67
+msgid "Please enter a valid email."
+msgstr ""
 
 #: templates/_cross_nav.html:6
 msgid "Autoral"
@@ -187,6 +191,58 @@ msgstr "Os posts abaixo fazem parte da viagem até ao lançamento."
 #: templates/shop/book_page.html:45
 msgid "Buy"
 msgstr "Comprar"
+
+#: templates/studio/_base.html:10
+msgid "Skip to content"
+msgstr "Saltar para o conteúdo"
+
+#: templates/studio/_base.html:14
+msgid "Primary"
+msgstr "Principal"
+
+#: templates/studio/_base.html:15
+msgid "Language"
+msgstr "Idioma"
+
+#: templates/studio/_base.html:19
+msgid "Book a conversation"
+msgstr "Marca uma conversa"
+
+#: templates/studio/_base.html:32
+msgid "Footer"
+msgstr "Rodapé"
+
+#: templates/studio/booking_page.html:23
+msgid "Name"
+msgstr "Nome"
+
+#: templates/studio/booking_page.html:28
+msgid "Email"
+msgstr "Email"
+
+#: templates/studio/booking_page.html:33
+msgid "Phone"
+msgstr "Telefone"
+
+#: templates/studio/booking_page.html:39
+msgid "Preferred date"
+msgstr "Data preferida"
+
+#: templates/studio/booking_page.html:43
+msgid "Preferred time"
+msgstr "Hora preferida"
+
+#: templates/studio/booking_page.html:54
+msgid "In 1–2 sentences, what would you like to talk about?"
+msgstr "Em 1–2 frases, sobre o que queres falar?"
+
+#: templates/studio/booking_page.html:58
+msgid "Submit"
+msgstr "Submeter"
+
+#: templates/studio/thanks_page.html:10
+msgid "Back to home"
+msgstr "Voltar ao início"
 
 #: templates/tech/base.html:14
 msgid "Posts"

@@ -13,6 +13,14 @@ from wagtail.models import Page, Site
 
 from apps.autoral.models import AboutPage, HomePage
 from apps.shop.models import BookCatalogPage, BookPage
+from apps.studio.models import (
+    StudioBookingPage,
+    StudioCase,
+    StudioHomePage,
+    StudioProcessStep,
+    StudioServiceCard,
+    StudioThanksPage,
+)
 from apps.tech.models import BlogIndexPage, ProjectIndexPage, ProjectPage
 
 
@@ -51,6 +59,62 @@ SITE_SPECS = [
             "slug": "books",
             "intro": "<p>Published books.</p>",
             "intro_pt": "<p>Livros publicados.</p>",
+        },
+    },
+    {
+        "host_local": "studio.localhost",
+        "host_prod": "studio.bilouro.com",
+        "is_default": False,
+        "page_model": StudioHomePage,
+        "page_data": {
+            "title": "Bilouro Studio",
+            "slug": "studio",
+            "hero_eyebrow": "Bilouro Studio",
+            "hero_headline": "Small AI &amp; integration solutions. <em>Delivered in weeks — not quarters.</em>",
+            "hero_subhead": (
+                "<p>A technology studio delivering small AI, integration and automation "
+                "solutions for Portuguese SMEs — fast, fixed-scope, affordable.</p>"
+            ),
+            "cta_label": "Book a conversation",
+            "services_heading": "What we do",
+            "services_intro": "<p>Five focused services. Fixed scope, concrete deadlines.</p>",
+            "process_heading": "How we work",
+            "process_intro": "<p>Fixed scope. Fixed deadline. Fixed price — no consultancy that starts cheap and grows.</p>",
+            "cases_heading": "Proof",
+            "cases_intro": "<p>Production work with real money on the line.</p>",
+            "about_heading": "Who's behind it",
+            "about_body": (
+                "<p>It's the senior engineer who writes the code — no junior behind the scenes. "
+                "22 years across logistics, insurance, retail and financial services.</p>"
+                "<p>Public OSS as proof: eupago-python, vendus-python, xmldiffreport (MIT). "
+                "PT market plus international reach (PT/BR/EN).</p>"
+            ),
+            "closing_heading": "Have a problem worth solving?",
+            "closing_body": "<p>Tell us about it. The first conversation is free.</p>",
+            "stack_note": "<p>Stack: Python · Django · Next.js · AWS · OpenAI.</p>",
+            "hero_eyebrow_pt": "Bilouro Studio",
+            "hero_headline_pt": "Pequenas soluções de IA e integração. <em>Entregues em semanas — não em trimestres.</em>",
+            "hero_subhead_pt": (
+                "<p>Um estúdio de tecnologia que entrega pequenas soluções de IA, integração "
+                "e automação para PMEs portuguesas — rápido, com escopo fechado e custo acessível.</p>"
+            ),
+            "cta_label_pt": "Marca uma conversa",
+            "services_heading_pt": "O que fazemos",
+            "services_intro_pt": "<p>Cinco serviços focados. Escopo fechado, prazos concretos.</p>",
+            "process_heading_pt": "Como trabalhamos",
+            "process_intro_pt": "<p>Escopo fechado. Prazo fechado. Preço fechado — sem consultoria que começa barata e cresce.</p>",
+            "cases_heading_pt": "Provas",
+            "cases_intro_pt": "<p>Trabalho em produção, com dinheiro real em jogo.</p>",
+            "about_heading_pt": "Quem está por trás",
+            "about_body_pt": (
+                "<p>É o engenheiro sénior quem escreve o código — sem júnior nos bastidores. "
+                "22 anos em logística, seguros, retalho e serviços financeiros.</p>"
+                "<p>Open source público como prova: eupago-python, vendus-python, xmldiffreport "
+                "(MIT). Mercado PT e alcance internacional (PT/BR/EN).</p>"
+            ),
+            "closing_heading_pt": "Tens um problema que vale a pena resolver?",
+            "closing_body_pt": "<p>Conta-nos. A primeira conversa é gratuita.</p>",
+            "stack_note_pt": "<p>Stack: Python · Django · Next.js · AWS · OpenAI.</p>",
         },
     },
 ]
@@ -368,5 +432,148 @@ class Command(BaseCommand):
                 project_index.add_child(instance=p)
                 p.save_revision().publish()
                 self.stdout.write(self.style.SUCCESS(f"  + Project '{spec['title'][:50]}'"))
+
+        # Studio: booking + thanks pages, service cards, process steps, cases.
+        studio_home = StudioHomePage.objects.first()
+        if studio_home:
+            if not StudioBookingPage.objects.exists():
+                booking = StudioBookingPage(
+                    title="Book a conversation",
+                    slug="agendar",
+                    heading="Book a conversation",
+                    intro=(
+                        "<p>A 1-hour session on Google Meet to understand your problem and "
+                        "design the path. You'll get the meeting link by email within 24h "
+                        "after submitting this form.</p>"
+                    ),
+                    hours_note="Weekdays, 11:00–19:00.",
+                    heading_pt="Marca uma conversa",
+                    intro_pt=(
+                        "<p>Uma sessão de 1 hora em Google Meet para perceber o teu problema "
+                        "e desenhar o caminho. Recebes o link da reunião por email em até 24h "
+                        "depois de submeteres este formulário.</p>"
+                    ),
+                    hours_note_pt="Dias úteis, 11:00–19:00.",
+                )
+                studio_home.add_child(instance=booking)
+                booking.save_revision().publish()
+                self.stdout.write(self.style.SUCCESS("  + StudioBookingPage (/agendar) created"))
+
+            if not StudioThanksPage.objects.exists():
+                thanks = StudioThanksPage(
+                    title="Thank you",
+                    slug="obrigado",
+                    heading="We got it",
+                    body=(
+                        "<p>We received your request. You'll get a confirmation by email "
+                        "within 24h. Please check your spam folder too.</p>"
+                    ),
+                    heading_pt="Recebemos",
+                    body_pt=(
+                        "<p>Recebemos o teu pedido. Vais receber confirmação por email em até "
+                        "24h. Verifica também a pasta de spam.</p>"
+                    ),
+                )
+                studio_home.add_child(instance=thanks)
+                thanks.save_revision().publish()
+                self.stdout.write(self.style.SUCCESS("  + StudioThanksPage (/obrigado) created"))
+
+            if not studio_home.service_cards.exists():
+                services = [
+                    ("AI Agents", "Voice, email and chat. Support, scheduling, qualification, FAQ.",
+                     "A production agent live in 3–5 weeks, trained on your data, with monitored costs.",
+                     "Agentes de IA", "Voz, email e chat. Atendimento, agendamento, qualificação, FAQ.",
+                     "Um agente em produção em 3–5 semanas, treinado nos teus dados, com custos monitorizados."),
+                    ("Systems integration", "Scheduling ↔ payment ↔ invoicing ↔ accounting ↔ CRM.",
+                     "Your systems talk to each other — no more 'export to Excel and email it'.",
+                     "Integração entre sistemas", "Agendamento ↔ pagamento ↔ faturação ↔ contabilidade ↔ CRM.",
+                     "Os teus sistemas conversam entre si — sem mais 'exportar para Excel e enviar por email'."),
+                    ("Small applications", "Responsive web, internal dashboards, point automations.",
+                     "What fits between a spreadsheet and a SaaS product. Delivered in 2–6 weeks.",
+                     "Pequenas aplicações", "Web responsivo, painéis internos, automações pontuais.",
+                     "O que cabe entre uma folha de cálculo e um produto SaaS. Entrega em 2–6 semanas."),
+                    ("Assessment & roadmap", "Audit of processes, applications and infrastructure.",
+                     "A 10–15 page document + presentation session: what you have, what's missing, in what order to do it.",
+                     "Assessment e roadmap", "Auditoria de processos, aplicações e infraestrutura.",
+                     "Um documento de 10–15 páginas + sessão de apresentação: o que tens, o que falta, por que ordem fazer."),
+                    ("Public sites", "Institutional sites, landing pages, blog/CMS, light e-commerce.",
+                     "Wagtail / Django / Next.js. AWS hosting included for the first year.",
+                     "Sites públicos", "Sites institucionais, landing pages, blog/CMS, e-commerce light.",
+                     "Wagtail / Django / Next.js. Alojamento AWS incluído no primeiro ano."),
+                ]
+                for title, subtitle, output, title_pt, subtitle_pt, output_pt in services:
+                    studio_home.service_cards.add(
+                        StudioServiceCard(
+                            title=title, subtitle=subtitle, output=output,
+                            title_pt=title_pt, subtitle_pt=subtitle_pt, output_pt=output_pt,
+                        )
+                    )
+                studio_home.process_steps.add(
+                    StudioProcessStep(title="Conversation (30–60 min)",
+                                      description="You tell us the problem; we come back with a diagnosis.",
+                                      title_pt="Conversa (30–60 min)",
+                                      description_pt="Contas-nos o problema; voltamos com um diagnóstico."),
+                    StudioProcessStep(title="Clear proposal in 48h",
+                                      description="Fixed scope, fixed deadline, fixed price.",
+                                      title_pt="Proposta clara em 48h",
+                                      description_pt="Escopo fechado, prazo fechado, preço fechado."),
+                    StudioProcessStep(title="Fast delivery (2–6 weeks)",
+                                      description="Short sprints, weekly demos, documented handover.",
+                                      title_pt="Entrega rápida (2–6 semanas)",
+                                      description_pt="Sprints curtos, demos semanais, handover documentado."),
+                )
+                studio_home.cases.add(
+                    StudioCase(
+                        title="Breath Pilates — AI agents + data warehouse",
+                        body=(
+                            "<p>Two Pilates studios in production (Gaia and Maia): a voice agent "
+                            "(Vapi + Vonage + OpenAI) that books and escalates to a human, an email "
+                            "agent (Gmail + OpenAI) for triage and autonomous replies, and a medallion "
+                            "warehouse (PostgreSQL) with Metabase dashboards — all on AWS via Pulumi.</p>"
+                        ),
+                        title_pt="Breath Pilates — agentes de IA + warehouse de dados",
+                        body_pt=(
+                            "<p>Dois estúdios de Pilates em produção (Gaia e Maia): um agente de voz "
+                            "(Vapi + Vonage + OpenAI) que agenda e escala para humano, um agente de email "
+                            "(Gmail + OpenAI) para triagem e respostas autónomas, e um warehouse medallion "
+                            "(PostgreSQL) com dashboards Metabase — tudo em AWS via Pulumi.</p>"
+                        ),
+                    ),
+                    StudioCase(
+                        title="eupago-python + vendus-python — open-source SDKs",
+                        body=(
+                            "<p>Python SDKs published on PyPI (MIT). eupago-python: PT payment gateway "
+                            "(Multibanco, MB WAY, card, Apple/Google Pay) — production-validated with real "
+                            "money. vendus-python: AT-certified invoicing. Full OSS structure: mkdocs, "
+                            "pre-commit, CHANGELOG, examples, SECURITY.</p>"
+                        ),
+                        title_pt="eupago-python + vendus-python — SDKs open source",
+                        body_pt=(
+                            "<p>SDKs Python publicados no PyPI (MIT). eupago-python: gateway de pagamentos "
+                            "PT (Multibanco, MB WAY, cartão, Apple/Google Pay) — validado em produção com "
+                            "dinheiro real. vendus-python: faturação certificada pela AT. Estrutura OSS "
+                            "completa: mkdocs, pre-commit, CHANGELOG, examples, SECURITY.</p>"
+                        ),
+                    ),
+                    StudioCase(
+                        title="Breath Pilates App — Gym/Studio management platform",
+                        body=(
+                            "<p>A full client-facing platform (Turborepo, Next.js 15 + TypeScript + "
+                            "shadcn/ui): client app (OTP login, trial classes, sign-up + payment, booking) "
+                            "and admin app (10 staff features — calendar, templates, substitutions, "
+                            "availability). Deployed on Vercel with per-branch previews.</p>"
+                        ),
+                        title_pt="Breath Pilates App — plataforma de gestão de ginásios/estúdios",
+                        body_pt=(
+                            "<p>Uma plataforma completa virada para o cliente (Turborepo, Next.js 15 + "
+                            "TypeScript + shadcn/ui): app de cliente (login OTP, aulas experimentais, "
+                            "inscrição + pagamento, marcações) e app de admin (10 funcionalidades de staff "
+                            "— calendário, templates, substituições, disponibilidade). Deploy na Vercel "
+                            "com previews por branch.</p>"
+                        ),
+                    ),
+                )
+                studio_home.save_revision().publish()
+                self.stdout.write(self.style.SUCCESS("  + Studio service cards / process steps / cases seeded"))
 
         self.stdout.write(self.style.SUCCESS("\nbootstrap_sites complete."))

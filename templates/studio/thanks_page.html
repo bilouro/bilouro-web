@@ -1,0 +1,13 @@
+{% extends "studio/_base.html" %}
+{% load i18n i18n_fields %}
+
+{% block content %}
+<section class="st-section st-thanks">
+  <div class="st-container st-thanks__inner">
+    <div class="st-thanks__check" aria-hidden="true">✓</div>
+    <h1 class="st-section__title">{% tr page "heading" %}</h1>
+    <div class="st-section__intro">{% tr_richtext page "body" %}</div>
+    <a class="st-btn" href="/">{% trans "Back to home" %}</a>
+  </div>
+</section>
+{% endblock %}

@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 # scripts/lightsail_nginx_https.sh — switch nginx to HTTPS using per-domain certs.
-# Run after all 4 certs (www/tech/books/bilouro) exist in /etc/letsencrypt/live/.
+# Run after all 5 certs (www/tech/books/studio/bilouro) exist in /etc/letsencrypt/live/.
+#
+# To add the studio cert (after the DNS A/CNAME for studio.bilouro.com resolves
+# to this VM and the HTTP→301 block below is live so the ACME webroot is served):
+#   sudo certbot certonly --webroot -w /var/www/html \
+#     --non-interactive --agree-tos --email "$ALERT_EMAIL" \
+#     -d studio.bilouro.com --cert-name studio.bilouro.com
 
 set -euo pipefail
 
@@ -27,7 +33,7 @@ server {
 server {
     listen 80;
     listen [::]:80;
-    server_name www.bilouro.com tech.bilouro.com books.bilouro.com;
+    server_name www.bilouro.com tech.bilouro.com books.bilouro.com studio.bilouro.com;
     location /.well-known/acme-challenge/ { root /var/www/html; }
     location / { return 301 https://$host$request_uri; }
 }
@@ -59,6 +65,16 @@ server {
     server_name books.bilouro.com;
     ssl_certificate     /etc/letsencrypt/live/books.bilouro.com/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/books.bilouro.com/privkey.pem;
+    include /etc/nginx/snippets/bilouro-app.conf;
+}
+
+# studio subdomain HTTPS
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name studio.bilouro.com;
+    ssl_certificate     /etc/letsencrypt/live/studio.bilouro.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/studio.bilouro.com/privkey.pem;
     include /etc/nginx/snippets/bilouro-app.conf;
 }
 

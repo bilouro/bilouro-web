@@ -1,0 +1,41 @@
+{% extends "_base.html" %}
+{% load static i18n i18n_fields wagtailcore_tags %}
+
+{% block body_class %}studio{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/studio.css' %}">{% endblock %}
+
+{% block body %}
+{% with cur=request.LANGUAGE_CODE|default:'en' %}
+<a class="st-skip" href="#main">{% trans "Skip to content" %}</a>
+<header class="st-header">
+  <div class="st-container st-header__inner">
+    <a class="st-logo" href="/">Bilouro<span>Studio</span></a>
+    <nav class="st-nav" aria-label="{% trans 'Primary' %}">
+      <div class="st-lang" role="group" aria-label="{% trans 'Language' %}">
+        <a href="/i18n/setlang/?lang=en&next={{ request.path|urlencode }}" class="{% if cur == 'en' %}is-active{% endif %}">EN</a>
+        <a href="/i18n/setlang/?lang=pt&next={{ request.path|urlencode }}" class="{% if cur == 'pt' %}is-active{% endif %}">PT</a>
+      </div>
+      <a class="st-btn st-btn--sm" href="{% if booking_page %}{{ booking_page.url }}{% else %}/agendar/{% endif %}">{% trans "Book a conversation" %}</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">{% block content %}{% endblock %}</main>
+
+<footer class="st-footer">
+  <div class="st-container st-footer__inner">
+    <div class="st-footer__brand">
+      <a class="st-logo st-logo--sm" href="/">Bilouro<span>Studio</span></a>
+      {% if page.stack_note or page.stack_note_pt %}<div class="st-footer__stack">{% tr_richtext page "stack_note" %}</div>{% endif %}
+    </div>
+    <nav class="st-footer__links" aria-label="{% trans 'Footer' %}">
+      <a href="https://tech.bilouro.com">tech.bilouro.com</a>
+      <a href="https://www.bilouro.com">www.bilouro.com</a>
+      <a href="https://github.com/bilouro">GitHub</a>
+      <a href="mailto:consulting@bilouro.com">consulting@bilouro.com</a>
+    </nav>
+  </div>
+</footer>
+{% endwith %}
+{% endblock %}

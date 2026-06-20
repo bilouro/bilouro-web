@@ -32,6 +32,7 @@ LOCAL_APPS = [
     "apps.newsletter",
     "apps.shop",
     "apps.hashtagjesus",
+    "apps.studio",
 ]
 
 WAGTAIL_APPS = [
@@ -187,6 +188,9 @@ EMAIL_BACKEND = env(
 )
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="hello@bilouro.com")
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
+
+# studio.bilouro.com — where booking-form notifications land.
+STUDIO_BOOKING_NOTIFY_EMAIL = env("STUDIO_BOOKING_NOTIFY_EMAIL", default="consulting@bilouro.com")
 
 
 # ─── Logging ────────────────────────────────────────────────────────

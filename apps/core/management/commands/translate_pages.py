@@ -56,6 +56,45 @@ TRANSLATABLE = {
         [("subtitle", "subtitle_pt"), ("description", "description_pt")],  # NOT title — book name same in both
     ),
     # BookPostPage: NOT translated.
+    # studio.bilouro.com
+    "StudioHomePage": (
+        "studio_home",
+        [
+            ("hero_eyebrow", "hero_eyebrow_pt"),
+            ("hero_headline", "hero_headline_pt"),
+            ("hero_subhead", "hero_subhead_pt"),
+            ("cta_label", "cta_label_pt"),
+            ("services_heading", "services_heading_pt"),
+            ("services_intro", "services_intro_pt"),
+            ("process_heading", "process_heading_pt"),
+            ("process_intro", "process_intro_pt"),
+            ("cases_heading", "cases_heading_pt"),
+            ("cases_intro", "cases_intro_pt"),
+            ("about_heading", "about_heading_pt"),
+            ("about_body", "about_body_pt"),
+            ("closing_heading", "closing_heading_pt"),
+            ("closing_body", "closing_body_pt"),
+            ("stack_note", "stack_note_pt"),
+        ],
+    ),
+    "StudioBookingPage": (
+        "studio_booking",
+        [("heading", "heading_pt"), ("intro", "intro_pt"), ("hours_note", "hours_note_pt")],
+    ),
+    "StudioThanksPage": (
+        "studio_thanks",
+        [("heading", "heading_pt"), ("body", "body_pt")],
+    ),
+}
+
+# Inline (Orderable) children that also need PT translation, keyed by parent
+# page class. Each entry: (relation_name, payload_label, [(src, dst), ...]).
+TRANSLATABLE_INLINES = {
+    "StudioHomePage": [
+        ("service_cards", "service_card", [("title", "title_pt"), ("subtitle", "subtitle_pt"), ("output", "output_pt")]),
+        ("process_steps", "process_step", [("title", "title_pt"), ("description", "description_pt")]),
+        ("cases", "case", [("title", "title_pt"), ("body", "body_pt")]),
+    ],
 }
 
 
@@ -172,8 +211,51 @@ class Command(BaseCommand):
             )
             translated += 1
 
+        # Second pass: translate inline (Orderable) children of pages that have them.
+        inline_translated = 0
+        for page in pages:
+            cls_name = type(page).__name__
+            if cls_name not in TRANSLATABLE_INLINES:
+                continue
+            # Re-fetch so we operate on a clean cluster (the first pass may have
+            # saved a new revision for this page's own fields).
+            page = type(page).objects.get(pk=page.pk)
+            changed = 0
+            for relation, label, field_pairs in TRANSLATABLE_INLINES[cls_name]:
+                for child in getattr(page, relation).all():
+                    payload_fields = {}
+                    for src, dst in field_pairs:
+                        src_value = getattr(child, src, None)
+                        dst_value = getattr(child, dst, None)
+                        if not src_value:
+                            continue
+                        if dst_value and not opts["force"]:
+                            continue
+                        payload_fields[src] = str(src_value)
+                    if not payload_fields:
+                        continue
+                    if opts["dry_run"]:
+                        self.stdout.write(f"  [dry] {page.slug}/{label}#{child.pk}: would translate {list(payload_fields)}")
+                        continue
+                    payload = {"source_lang": "en", "target_lang": "pt", "page_type": label, "fields": payload_fields}
+                    try:
+                        result = call_openai(api_key, prompt_id, prompt_version, payload)
+                    except Exception as e:
+                        self.stdout.write(self.style.ERROR(f"  ! {page.slug}/{label}#{child.pk}: OpenAI error: {e}"))
+                        errored += 1
+                        continue
+                    translated_fields = result.get("fields") if isinstance(result.get("fields"), dict) else result
+                    for src, dst in field_pairs:
+                        if src in translated_fields and translated_fields[src]:
+                            setattr(child, dst, translated_fields[src])
+                            changed += 1
+            if changed and not opts["dry_run"]:
+                page.save_revision().publish()
+                self.stdout.write(self.style.SUCCESS(f"  + {page.slug}: {changed} inline field(s) translated"))
+                inline_translated += 1
+
         self.stdout.write(
             self.style.SUCCESS(
-                f"\nDone. translated={translated} skipped={skipped} errored={errored}"
+                f"\nDone. translated={translated} inline_pages={inline_translated} skipped={skipped} errored={errored}"
             )
         )

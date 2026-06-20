@@ -1,0 +1,179 @@
+/* studio.bilouro.com — Bilouro Studio. Own visual identity (distinct from the
+   other sub-sites). Loaded after _base.css; everything is scoped to body.studio. */
+
+body.studio {
+  --st-ink: #0e1116;
+  --st-ink-soft: #3a414d;
+  --st-muted: #6b7280;
+  --st-bg: #faf9f7;
+  --st-surface: #ffffff;
+  --st-line: #e7e4dd;
+  --st-accent: #3b5bff;
+  --st-accent-ink: #ffffff;
+  --st-accent-soft: #eef1ff;
+  --st-radius: 14px;
+  --st-shadow: 0 1px 2px rgba(14,17,22,.05), 0 8px 28px rgba(14,17,22,.06);
+  --st-max: 1080px;
+
+  margin: 0;
+  background: var(--st-bg);
+  color: var(--st-ink);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+body.studio * { box-sizing: border-box; }
+
+body.studio .st-container {
+  max-width: var(--st-max);
+  margin: 0 auto;
+  padding: 0 clamp(20px, 5vw, 40px);
+}
+
+/* Skip link */
+body.studio .st-skip {
+  position: absolute; left: -9999px; top: 0;
+  background: var(--st-ink); color: #fff; padding: 10px 16px; z-index: 100;
+}
+body.studio .st-skip:focus { left: 12px; top: 12px; border-radius: 8px; }
+
+/* ── Header ─────────────────────────────────────────── */
+body.studio .st-header {
+  position: sticky; top: 0; z-index: 50;
+  background: color-mix(in srgb, var(--st-bg) 86%, transparent);
+  backdrop-filter: saturate(140%) blur(10px);
+  border-bottom: 1px solid var(--st-line);
+}
+body.studio .st-header__inner {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px; gap: 16px;
+}
+body.studio .st-logo {
+  font-weight: 800; letter-spacing: -.02em; font-size: 1.2rem;
+  text-decoration: none; color: var(--st-ink); display: inline-flex; gap: .35ch;
+}
+body.studio .st-logo span { color: var(--st-accent); }
+body.studio .st-logo--sm { font-size: 1.05rem; }
+body.studio .st-nav { display: flex; align-items: center; gap: 18px; }
+body.studio .st-lang { display: flex; gap: 2px; font-size: .82rem; font-weight: 600; }
+body.studio .st-lang a {
+  text-decoration: none; color: var(--st-muted); padding: 4px 8px; border-radius: 8px;
+}
+body.studio .st-lang a.is-active { color: var(--st-ink); background: var(--st-accent-soft); }
+
+/* ── Buttons ───────────────────────────────────────── */
+body.studio .st-btn {
+  display: inline-block; background: var(--st-accent); color: var(--st-accent-ink);
+  text-decoration: none; font-weight: 700; padding: 12px 22px; border-radius: 999px;
+  border: 0; cursor: pointer; font-size: 1rem; transition: transform .08s ease, filter .15s ease;
+}
+body.studio .st-btn:hover { filter: brightness(1.07); }
+body.studio .st-btn:active { transform: translateY(1px); }
+body.studio .st-btn--sm { padding: 8px 16px; font-size: .9rem; }
+body.studio .st-btn--lg { padding: 15px 30px; font-size: 1.06rem; }
+
+/* ── Hero ──────────────────────────────────────────── */
+body.studio .st-hero { padding: clamp(56px, 11vw, 120px) 0 clamp(40px, 8vw, 80px); }
+body.studio .st-eyebrow {
+  text-transform: uppercase; letter-spacing: .14em; font-size: .78rem; font-weight: 700;
+  color: var(--st-accent); margin: 0 0 18px;
+}
+body.studio .st-hero__title {
+  font-size: clamp(2.1rem, 6vw, 3.7rem); line-height: 1.07; letter-spacing: -.03em;
+  font-weight: 800; margin: 0 0 22px; max-width: 18ch;
+}
+body.studio .st-hero__title em { color: var(--st-accent); font-style: normal; }
+body.studio .st-hero__sub { font-size: clamp(1.05rem, 2.4vw, 1.3rem); color: var(--st-ink-soft); max-width: 60ch; margin: 0 0 32px; }
+body.studio .st-hero__sub p { margin: 0; }
+
+/* ── Sections ──────────────────────────────────────── */
+body.studio .st-section { padding: clamp(48px, 9vw, 92px) 0; }
+body.studio .st-section--alt { background: var(--st-surface); border-block: 1px solid var(--st-line); }
+body.studio .st-section__title {
+  font-size: clamp(1.6rem, 4vw, 2.3rem); letter-spacing: -.02em; font-weight: 800; margin: 0 0 12px;
+}
+body.studio .st-section__intro { color: var(--st-muted); max-width: 60ch; margin: 0 0 40px; }
+body.studio .st-section__intro p { margin: 0; }
+
+/* ── Service cards ─────────────────────────────────── */
+body.studio .st-cards {
+  display: grid; gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+body.studio .st-card {
+  background: var(--st-surface); border: 1px solid var(--st-line); border-radius: var(--st-radius);
+  padding: 26px; box-shadow: var(--st-shadow);
+}
+body.studio .st-card__icon { width: 48px; height: 48px; border-radius: 12px; margin-bottom: 14px; object-fit: cover; }
+body.studio .st-card__title { font-size: 1.18rem; font-weight: 800; margin: 0 0 8px; letter-spacing: -.01em; }
+body.studio .st-card__sub { color: var(--st-ink-soft); margin: 0 0 12px; font-weight: 600; }
+body.studio .st-card__out { color: var(--st-muted); margin: 0; font-size: .95rem; }
+
+/* ── Process steps ─────────────────────────────────── */
+body.studio .st-steps { list-style: none; counter-reset: none; margin: 0; padding: 0; display: grid; gap: 18px; }
+body.studio .st-step { display: flex; gap: 18px; align-items: flex-start; }
+body.studio .st-step__n {
+  flex: 0 0 auto; width: 40px; height: 40px; border-radius: 999px;
+  background: var(--st-accent-soft); color: var(--st-accent);
+  display: grid; place-items: center; font-weight: 800;
+}
+body.studio .st-step__title { margin: 4px 0 4px; font-size: 1.1rem; font-weight: 700; }
+body.studio .st-step__desc { margin: 0; color: var(--st-muted); }
+
+/* ── Cases ─────────────────────────────────────────── */
+body.studio .st-cases { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+body.studio .st-case {
+  background: var(--st-surface); border: 1px solid var(--st-line); border-radius: var(--st-radius);
+  padding: 24px; box-shadow: var(--st-shadow);
+}
+body.studio .st-case__img { width: 100%; height: auto; border-radius: 10px; margin-bottom: 16px; }
+body.studio .st-case__title { font-size: 1.2rem; font-weight: 800; margin: 0 0 10px; letter-spacing: -.01em; }
+body.studio .st-case__body { color: var(--st-ink-soft); }
+body.studio .st-case__body p { margin: 0; }
+
+/* ── About ─────────────────────────────────────────── */
+body.studio .st-about__body { max-width: 64ch; font-size: 1.08rem; color: var(--st-ink-soft); }
+
+/* ── Closing CTA ───────────────────────────────────── */
+body.studio .st-cta { background: var(--st-ink); color: #fff; padding: clamp(56px, 10vw, 100px) 0; text-align: center; }
+body.studio .st-cta__title { font-size: clamp(1.7rem, 4.5vw, 2.6rem); font-weight: 800; letter-spacing: -.02em; margin: 0 0 14px; }
+body.studio .st-cta__body { color: #c8ccd6; max-width: 50ch; margin: 0 auto 30px; }
+body.studio .st-cta__body p { margin: 0; }
+
+/* ── Booking form ──────────────────────────────────── */
+body.studio .st-booking__inner { max-width: 600px; margin: 0 auto; }
+body.studio .st-booking__hours { font-weight: 700; color: var(--st-ink); margin: -24px 0 28px; }
+body.studio .st-form { display: grid; gap: 18px; background: var(--st-surface); border: 1px solid var(--st-line); border-radius: var(--st-radius); padding: 28px; box-shadow: var(--st-shadow); }
+body.studio .st-field { display: grid; gap: 6px; }
+body.studio .st-field > span { font-weight: 700; font-size: .92rem; }
+body.studio .st-field input, body.studio .st-field select, body.studio .st-field textarea {
+  font: inherit; padding: 11px 13px; border: 1px solid var(--st-line); border-radius: 10px; background: #fff; color: var(--st-ink); width: 100%;
+}
+body.studio .st-field input:focus, body.studio .st-field select:focus, body.studio .st-field textarea:focus {
+  outline: 2px solid var(--st-accent); outline-offset: 1px; border-color: var(--st-accent);
+}
+body.studio .st-field-row { display: grid; gap: 18px; grid-template-columns: 1fr 1fr; }
+body.studio .st-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+body.studio .st-alert { background: #fdecea; border: 1px solid #f5c2bd; color: #8a2418; padding: 12px 16px; border-radius: 10px; margin-bottom: 22px; }
+
+/* ── Thanks ────────────────────────────────────────── */
+body.studio .st-thanks__inner { max-width: 540px; margin: 0 auto; text-align: center; }
+body.studio .st-thanks__check {
+  width: 64px; height: 64px; border-radius: 999px; background: var(--st-accent-soft); color: var(--st-accent);
+  display: grid; place-items: center; font-size: 2rem; font-weight: 800; margin: 0 auto 24px;
+}
+
+/* ── Footer ────────────────────────────────────────── */
+body.studio .st-footer { background: var(--st-surface); border-top: 1px solid var(--st-line); padding: 40px 0; }
+body.studio .st-footer__inner { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: space-between; }
+body.studio .st-footer__stack { color: var(--st-muted); font-size: .9rem; margin-top: 6px; }
+body.studio .st-footer__stack p { margin: 0; }
+body.studio .st-footer__links { display: flex; flex-wrap: wrap; gap: 18px; }
+body.studio .st-footer__links a { color: var(--st-ink-soft); text-decoration: none; font-size: .92rem; }
+body.studio .st-footer__links a:hover { color: var(--st-accent); }
+
+@media (max-width: 560px) {
+  body.studio .st-field-row { grid-template-columns: 1fr; }
+  body.studio .st-nav { gap: 10px; }
+}
