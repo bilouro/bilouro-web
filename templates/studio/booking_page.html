@@ -1,62 +1,13 @@
 {% extends "studio/_base.html" %}
-{% load static i18n i18n_fields wagtailcore_tags %}
+{% load i18n i18n_fields %}
 
 {% block content %}
 <section class="st-section st-booking">
   <div class="st-container st-booking__inner">
     <h1 class="st-section__title">{% tr page "heading" %}</h1>
-    <div class="st-section__intro">{% tr_richtext page "intro" %}</div>
+    {% tr_richtext page "intro" as intro_html %}{% if intro_html %}<div class="st-section__intro">{{ intro_html }}</div>{% endif %}
     {% tr page "hours_note" as hours %}{% if hours %}<p class="st-booking__hours">{{ hours }}</p>{% endif %}
-
-    {% if form_error %}<div class="st-alert" role="alert">{{ form_error }}</div>{% endif %}
-
-    <form class="st-form" method="post" action="/api/studio/booking">
-      {% csrf_token %}
-      <input type="hidden" name="source" value="agendar">
-
-      {# Honeypot — must stay empty. Hidden from humans. #}
-      <div class="st-hp" aria-hidden="true">
-        <label>Company<input type="text" name="company" tabindex="-1" autocomplete="off"></label>
-      </div>
-
-      <label class="st-field">
-        <span>{% trans "Name" %}</span>
-        <input type="text" name="name" required value="{{ values.name|default:'' }}">
-      </label>
-
-      <label class="st-field">
-        <span>{% trans "Email" %}</span>
-        <input type="email" name="email" required value="{{ values.email|default:'' }}">
-      </label>
-
-      <label class="st-field">
-        <span>{% trans "Phone" %}</span>
-        <input type="tel" name="phone" value="{{ values.phone|default:'' }}">
-      </label>
-
-      <div class="st-field-row">
-        <label class="st-field">
-          <span>{% trans "Preferred date" %}</span>
-          <input type="date" name="preferred_date" value="{{ values.preferred_date|default:'' }}">
-        </label>
-        <label class="st-field">
-          <span>{% trans "Preferred time" %}</span>
-          <select name="preferred_time">
-            <option value="">—</option>
-            {% for slot in time_slots %}
-              <option value="{{ slot }}" {% if values.preferred_time == slot %}selected{% endif %}>{{ slot }}</option>
-            {% endfor %}
-          </select>
-        </label>
-      </div>
-
-      <label class="st-field">
-        <span>{% trans "In 1–2 sentences, what would you like to talk about?" %}</span>
-        <textarea name="message" rows="4" required>{{ values.message|default:'' }}</textarea>
-      </label>
-
-      <button type="submit" class="st-btn st-btn--lg">{% trans "Submit" %}</button>
-    </form>
+    <a class="st-btn st-btn--lg" href="{{ STUDIO_BOOKING_URL }}" target="_blank" rel="noopener">{% trans "Book a conversation" %}</a>
   </div>
 </section>
 {% endblock %}

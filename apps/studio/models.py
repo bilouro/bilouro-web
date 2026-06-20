@@ -17,8 +17,10 @@ persisted to the `Booking` model BEFORE the notification email is attempted, so 
 mail failure never loses a lead.
 """
 from django.db import models
+from django.shortcuts import get_object_or_404
 from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
+from wagtail.contrib.routable_page.models import RoutablePageMixin, path
 from wagtail.fields import RichTextField
 from wagtail.models import Orderable, Page
 from wagtail.search import index
@@ -115,7 +117,12 @@ class StudioHomePage(Page):
     ]
 
     parent_page_types = ["wagtailcore.Page"]
-    subpage_types = ["studio.StudioBookingPage", "studio.StudioThanksPage"]
+    subpage_types = [
+        "studio.StudioBookingPage",
+        "studio.StudioThanksPage",
+        "studio.StudioBlogIndexPage",
+        "studio.StudioProjectIndexPage",
+    ]
 
     def get_context(self, request, *args, **kwargs):
         ctx = super().get_context(request, *args, **kwargs)
@@ -234,11 +241,6 @@ class StudioBookingPage(Page):
         ctx["thanks_page"] = StudioThanksPage.objects.live().first()
         return ctx
 
-    def get_sitemap_urls(self, request=None):
-        # Dormant fallback page (bookings go through the external calendar link) —
-        # keep it out of the sitemap.
-        return []
-
 
 class StudioThanksPage(Page):
     """Post-submit confirmation page (/obrigado)."""
@@ -262,6 +264,115 @@ class StudioThanksPage(Page):
     def get_sitemap_urls(self, request=None):
         # Post-submit confirmation page — never index.
         return []
+
+
+# ─── Blog + Projects (read tech's content, render in studio style) ─────
+#
+# These index pages do NOT own any posts/projects — they read the existing
+# tech BlogPostPage / ProjectPage rows (single shared DB) and render them under
+# studio URLs with studio templates. No cross-links to tech.bilouro.com.
+
+
+class StudioBlogIndexPage(RoutablePageMixin, Page):
+    """studio.bilouro.com/blog — same posts as tech, studio style, studio URLs."""
+
+    intro = RichTextField(blank=True)
+    intro_pt = RichTextField(blank=True)
+
+    template = "studio/blog_index_page.html"
+    max_count = 1
+    parent_page_types = ["studio.StudioHomePage"]
+    subpage_types: list[str] = []
+
+    content_panels = Page.content_panels + [
+        MultiFieldPanel([FieldPanel("intro")], heading="EN"),
+        MultiFieldPanel([FieldPanel("intro_pt")], heading="PT", classname="collapsed"),
+    ]
+
+    def _posts(self):
+        from apps.tech.models import BlogPostPage
+
+        return BlogPostPage.objects.live().order_by("-date", "-first_published_at")
+
+    @path("")
+    def index_route(self, request):
+        return self.render(request, context_overrides={"posts": self._posts()})
+
+    @path("<slug:slug>/")
+    def post_route(self, request, slug):
+        from apps.tech.models import BlogPostPage
+
+        post = get_object_or_404(BlogPostPage.objects.live(), slug=slug)
+        return self.render(
+            request,
+            context_overrides={"post": post},
+            template="studio/blog_post_page.html",
+        )
+
+    def get_sitemap_urls(self, request=None):
+        base = self.get_full_url(request)
+        if not base:
+            return []
+        if not base.endswith("/"):
+            base += "/"
+        urls = [{"location": base}]
+        for post in self._posts():
+            entry = {"location": f"{base}{post.slug}/"}
+            if post.last_published_at:
+                entry["lastmod"] = post.last_published_at
+            urls.append(entry)
+        return urls
+
+
+class StudioProjectIndexPage(RoutablePageMixin, Page):
+    """studio.bilouro.com/projects — same projects as tech, studio style/URLs."""
+
+    intro = RichTextField(blank=True)
+    intro_pt = RichTextField(blank=True)
+
+    template = "studio/project_index_page.html"
+    max_count = 1
+    parent_page_types = ["studio.StudioHomePage"]
+    subpage_types: list[str] = []
+
+    content_panels = Page.content_panels + [
+        MultiFieldPanel([FieldPanel("intro")], heading="EN"),
+        MultiFieldPanel([FieldPanel("intro_pt")], heading="PT", classname="collapsed"),
+    ]
+
+    def _projects(self):
+        from apps.tech.models import ProjectPage
+
+        return ProjectPage.objects.live().order_by("sort_order")
+
+    @path("")
+    def index_route(self, request):
+        return self.render(request, context_overrides={"projects": self._projects()})
+
+    @path("<slug:slug>/")
+    def project_route(self, request, slug):
+        from apps.tech.models import ProjectPage
+
+        project = get_object_or_404(ProjectPage.objects.live(), slug=slug)
+        return self.render(
+            request,
+            context_overrides={"project": project},
+            template="studio/project_page.html",
+        )
+
+    def get_sitemap_urls(self, request=None):
+        base = self.get_full_url(request)
+        if not base:
+            return []
+        if not base.endswith("/"):
+            base += "/"
+        urls = [{"location": base}]
+        for project in self._projects():
+            entry = {"location": f"{base}{project.slug}/"}
+            if project.last_published_at:
+                entry["lastmod"] = project.last_published_at
+            urls.append(entry)
+        return urls
 
 
 # ─── Booking (plain Django model — leads) ──────────────────────────────

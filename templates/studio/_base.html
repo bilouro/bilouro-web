@@ -12,6 +12,8 @@
   <div class="st-container st-header__inner">
     <a class="st-logo" href="/">Bilouro<span>Studio</span></a>
     <nav class="st-nav" aria-label="{% trans 'Primary' %}">
+      <a class="st-navlink" href="/blog/">Blog</a>
+      <a class="st-navlink" href="/projects/">{% trans "Projects" %}</a>
       <div class="st-lang" role="group" aria-label="{% trans 'Language' %}">
         <a href="/i18n/setlang/?lang=en&next={{ request.path|urlencode }}" class="{% if cur == 'en' %}is-active{% endif %}">EN</a>
         <a href="/i18n/setlang/?lang=pt&next={{ request.path|urlencode }}" class="{% if cur == 'pt' %}is-active{% endif %}">PT</a>
@@ -29,9 +31,9 @@
       <a class="st-logo st-logo--sm" href="/">Bilouro<span>Studio</span></a>
     </div>
     <nav class="st-footer__links" aria-label="{% trans 'Footer' %}">
-      <a href="https://tech.bilouro.com">tech.bilouro.com</a>
-      <a href="https://www.bilouro.com">www.bilouro.com</a>
-      <a href="https://github.com/bilouro">GitHub</a>
+      <a href="/blog/">Blog</a>
+      <a href="/projects/">{% trans "Projects" %}</a>
+      <a href="https://github.com/bilouro" target="_blank" rel="noopener">GitHub</a>
       <a href="mailto:consulting@bilouro.com">consulting@bilouro.com</a>
     </nav>
   </div>

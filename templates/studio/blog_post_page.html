@@ -1,0 +1,21 @@
+{% extends "studio/_base.html" %}
+{% load i18n i18n_fields wagtailcore_tags wagtailimages_tags %}
+
+{% block title %}{% tr post "title" as t %}{{ t }} · Bilouro Studio{% endblock %}
+{% block meta_description %}{% tr post "intro" as it %}{{ it|default:post.title }}{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_image %}{% if post.image %}{% image post.image fill-1200x630 as og_img %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ og_img.url }}">{% endif %}{% endblock %}
+
+{% block content %}
+<article class="st-section st-post">
+  <div class="st-container st-post__inner">
+    <p class="st-post__back"><a href="{{ page.url }}">← Blog</a></p>
+    <p class="st-post__meta"><time datetime="{{ post.date|date:'Y-m-d' }}">{{ post.date|date:"F j, Y" }}</time></p>
+    {% tr post "title" as t %}<h1 class="st-post__title">{{ t }}</h1>
+    {% tr post "intro" as it %}{% if it %}<p class="st-post__lede">{{ it }}</p>{% endif %}
+    {% if post.image %}<figure class="st-post__hero">{% image post.image width-1200 loading="lazy" %}</figure>{% endif %}
+    <div class="st-post__body">{% tr post "body_md" as body %}{{ body|linebreaks }}</div>
+    {% if post.tags.all %}<div class="st-post__tags">{% for tag in post.tags.all %}<span class="st-tag">#{{ tag.name }}</span>{% endfor %}</div>{% endif %}
+  </div>
+</article>
+{% endblock %}

@@ -14,10 +14,12 @@ from wagtail.models import Page, Site
 from apps.autoral.models import AboutPage, HomePage
 from apps.shop.models import BookCatalogPage, BookPage
 from apps.studio.models import (
+    StudioBlogIndexPage,
     StudioBookingPage,
     StudioCase,
     StudioHomePage,
     StudioProcessStep,
+    StudioProjectIndexPage,
     StudioServiceCard,
     StudioThanksPage,
 )
@@ -477,6 +479,28 @@ class Command(BaseCommand):
                 studio_home.add_child(instance=thanks)
                 thanks.save_revision().publish()
                 self.stdout.write(self.style.SUCCESS("  + StudioThanksPage (/obrigado) created"))
+
+            if not StudioBlogIndexPage.objects.exists():
+                blog = StudioBlogIndexPage(
+                    title="Blog",
+                    slug="blog",
+                    intro="<p>Notes on engineering, AI and building software that ships.</p>",
+                    intro_pt="<p>Notas sobre engenharia, IA e software que entra em produção.</p>",
+                )
+                studio_home.add_child(instance=blog)
+                blog.save_revision().publish()
+                self.stdout.write(self.style.SUCCESS("  + StudioBlogIndexPage (/blog) created"))
+
+            if not StudioProjectIndexPage.objects.exists():
+                projects_index = StudioProjectIndexPage(
+                    title="Projects",
+                    slug="projects",
+                    intro="<p>Selected work — open source, professional and side projects.</p>",
+                    intro_pt="<p>Trabalho selecionado — open source, profissional e projetos pessoais.</p>",
+                )
+                studio_home.add_child(instance=projects_index)
+                projects_index.save_revision().publish()
+                self.stdout.write(self.style.SUCCESS("  + StudioProjectIndexPage (/projects) created"))
 
             if not studio_home.service_cards.exists():
                 services = [

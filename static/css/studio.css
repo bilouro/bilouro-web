@@ -173,7 +173,57 @@ body.studio .st-footer__links { display: flex; flex-wrap: wrap; gap: 18px; }
 body.studio .st-footer__links a { color: var(--st-ink-soft); text-decoration: none; font-size: .92rem; }
 body.studio .st-footer__links a:hover { color: var(--st-accent); }
 
+/* ── Header nav links ──────────────────────────────── */
+body.studio .st-navlink {
+  text-decoration: none; color: var(--st-ink-soft); font-weight: 600; font-size: .95rem;
+  padding: 6px 4px; border-bottom: 2px solid transparent;
+}
+body.studio .st-navlink:hover { color: var(--st-accent); }
+
+/* ── Blog listing ──────────────────────────────────── */
+body.studio .st-postlist { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
+body.studio .st-postcard { background: var(--st-surface); border: 1px solid var(--st-line); border-radius: var(--st-radius); box-shadow: var(--st-shadow); overflow: hidden; }
+body.studio .st-postcard__link { display: grid; grid-template-columns: 220px 1fr; text-decoration: none; color: inherit; }
+body.studio .st-postcard__thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+body.studio .st-postcard__body { padding: 22px 24px; }
+body.studio .st-postcard__body time { color: var(--st-muted); font-size: .85rem; font-weight: 600; }
+body.studio .st-postcard__title { margin: 6px 0 8px; font-size: 1.3rem; font-weight: 800; letter-spacing: -.01em; }
+body.studio .st-postcard__excerpt { margin: 0; color: var(--st-muted); }
+
+/* ── Post / project detail ─────────────────────────── */
+body.studio .st-post__inner { max-width: 760px; margin: 0 auto; }
+body.studio .st-post__back { margin: 0 0 18px; }
+body.studio .st-post__back a { color: var(--st-accent); text-decoration: none; font-weight: 600; }
+body.studio .st-post__meta { color: var(--st-muted); font-weight: 600; margin: 0 0 8px; }
+body.studio .st-post__title { font-size: clamp(1.8rem, 4.5vw, 2.6rem); line-height: 1.1; letter-spacing: -.02em; font-weight: 800; margin: 0 0 14px; }
+body.studio .st-post__lede { font-size: 1.2rem; color: var(--st-ink-soft); margin: 0 0 28px; }
+body.studio .st-post__hero { margin: 0 0 28px; }
+body.studio .st-post__hero img { width: 100%; height: auto; border-radius: var(--st-radius); }
+body.studio .st-post__body { font-size: 1.08rem; line-height: 1.75; color: var(--st-ink); }
+body.studio .st-post__body p { margin: 0 0 1.1em; }
+body.studio .st-post__stack { margin: 32px 0; padding: 20px 24px; background: var(--st-surface); border: 1px solid var(--st-line); border-radius: var(--st-radius); }
+body.studio .st-post__stack h3 { margin: 0 0 6px; font-size: 1rem; }
+body.studio .st-post__stack p { margin: 0; color: var(--st-muted); }
+body.studio .st-post__links { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+body.studio .st-post__tags { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 8px; }
+body.studio .st-tag { background: var(--st-accent-soft); color: var(--st-accent); padding: 4px 10px; border-radius: 999px; font-size: .82rem; font-weight: 600; }
+
+/* ── Projects grid ─────────────────────────────────── */
+body.studio .st-projgrid { display: grid; gap: 22px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+body.studio .st-projcard { background: var(--st-surface); border: 1px solid var(--st-line); border-radius: var(--st-radius); box-shadow: var(--st-shadow); display: flex; flex-direction: column; overflow: hidden; }
+body.studio .st-projcard__link { text-decoration: none; color: inherit; flex: 1; }
+body.studio .st-projcard__thumb img { display: block; width: 100%; height: auto; }
+body.studio .st-projcard__body { padding: 22px 24px; }
+body.studio .st-projcard__meta { margin: 0 0 8px; color: var(--st-muted); font-size: .85rem; }
+body.studio .st-kind { font-weight: 700; color: var(--st-accent); text-transform: uppercase; letter-spacing: .06em; font-size: .72rem; }
+body.studio .st-projcard__title { margin: 0 0 8px; font-size: 1.2rem; font-weight: 800; letter-spacing: -.01em; }
+body.studio .st-projcard__summary { margin: 0; color: var(--st-ink-soft); }
+body.studio .st-projcard__foot { padding: 14px 24px; border-top: 1px solid var(--st-line); display: flex; gap: 18px; }
+body.studio .st-projcard__foot a { color: var(--st-accent); text-decoration: none; font-weight: 600; font-size: .9rem; }
+body.studio .st-empty { color: var(--st-muted); }
+
 @media (max-width: 560px) {
   body.studio .st-field-row { grid-template-columns: 1fr; }
   body.studio .st-nav { gap: 10px; }
+  body.studio .st-postcard__link { grid-template-columns: 1fr; }
 }

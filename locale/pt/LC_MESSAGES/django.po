@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-20 01:35+0100\n"
+"POT-Creation-Date: 2026-06-20 03:08+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: OpenAI Responses API\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -47,7 +47,9 @@ msgstr "Todos os livros"
 msgid "Blog"
 msgstr "Blog"
 
-#: templates/_cross_nav.html:24 templates/tech/base.html:15
+#: templates/_cross_nav.html:24 templates/studio/_base.html:16
+#: templates/studio/_base.html:35 templates/studio/project_index_page.html:7
+#: templates/studio/project_page.html:11 templates/tech/base.html:15
 #: templates/tech/project_page.html:6
 msgid "Projects"
 msgstr "Projetos"
@@ -200,17 +202,22 @@ msgstr "Saltar para o conteúdo"
 msgid "Primary"
 msgstr "Principal"
 
-#: templates/studio/_base.html:15
+#: templates/studio/_base.html:17
 msgid "Language"
 msgstr "Idioma"
 
-#: templates/studio/_base.html:19
+#: templates/studio/_base.html:21
 msgid "Book a conversation"
 msgstr "Marca uma conversa"
 
-#: templates/studio/_base.html:32
+#: templates/studio/_base.html:33
 msgid "Footer"
 msgstr "Rodapé"
+
+#: templates/studio/blog_index_page.html:22
+#: templates/tech/blog_index_page.html:26
+msgid "No posts yet."
+msgstr "Ainda não há publicações."
 
 #: templates/studio/booking_page.html:23
 msgid "Name"
@@ -240,6 +247,23 @@ msgstr "Em 1–2 frases, sobre o que queres falar?"
 msgid "Submit"
 msgstr "Submeter"
 
+#: templates/studio/project_index_page.html:28
+#: templates/tech/project_index_page.html:38
+msgid "No projects yet."
+msgstr "Ainda não há projetos."
+
+#: templates/studio/project_page.html:17 templates/tech/project_page.html:24
+msgid "Stack"
+msgstr "Stack"
+
+#: templates/studio/project_page.html:20 templates/tech/project_page.html:30
+msgid "View on GitHub"
+msgstr "Ver no GitHub"
+
+#: templates/studio/project_page.html:21 templates/tech/project_page.html:31
+msgid "View live"
+msgstr "Ver online"
+
 #: templates/studio/thanks_page.html:10
 msgid "Back to home"
 msgstr "Voltar ao início"
@@ -252,10 +276,6 @@ msgstr "Publicações"
 msgid "Notes from the seam between code and leadership."
 msgstr "Notas da fronteira entre código e liderança."
 
-#: templates/tech/blog_index_page.html:26
-msgid "No posts yet."
-msgstr "Ainda não há publicações."
-
 #: templates/tech/blog_post_page.html:38
 msgid "by"
 msgstr "por"
@@ -263,19 +283,3 @@ msgstr "por"
 #: templates/tech/blog_post_page.html:64
 msgid "Read next"
 msgstr "Ler a seguir"
-
-#: templates/tech/project_index_page.html:38
-msgid "No projects yet."
-msgstr "Ainda não há projetos."
-
-#: templates/tech/project_page.html:24
-msgid "Stack"
-msgstr "Stack"
-
-#: templates/tech/project_page.html:30
-msgid "View on GitHub"
-msgstr "Ver no GitHub"
-
-#: templates/tech/project_page.html:31
-msgid "View live"
-msgstr "Ver online"

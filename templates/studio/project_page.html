@@ -1,0 +1,26 @@
+{% extends "studio/_base.html" %}
+{% load i18n i18n_fields wagtailcore_tags wagtailimages_tags %}
+
+{% block title %}{% tr project "title" as t %}{{ t }} · Bilouro Studio{% endblock %}
+{% block meta_description %}{% tr project "summary" as s %}{{ s|default:project.title }}{% endblock %}
+{% block og_image %}{% if project.image %}{% image project.image fill-1200x630 as og_img %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ og_img.url }}">{% endif %}{% endblock %}
+
+{% block content %}
+<article class="st-section st-post">
+  <div class="st-container st-post__inner">
+    <p class="st-post__back"><a href="{{ page.url }}">← {% trans "Projects" %}</a></p>
+    <p class="st-post__meta"><span class="st-kind st-kind--{{ project.kind }}">{% trans project.get_kind_display %}</span>{% if project.period %} · {{ project.period }}{% endif %}</p>
+    {% tr project "title" as t %}<h1 class="st-post__title">{{ t }}</h1>
+    {% tr project "summary" as s %}{% if s %}<p class="st-post__lede">{{ s }}</p>{% endif %}
+    {% if project.image %}<figure class="st-post__hero">{% image project.image width-1200 loading="lazy" %}</figure>{% endif %}
+    {% tr_richtext project "description" as desc %}{% if desc %}<div class="st-post__body">{{ desc }}</div>{% endif %}
+    {% if project.tech_stack %}<section class="st-post__stack"><h3>{% trans "Stack" %}</h3><p>{{ project.tech_stack }}</p></section>{% endif %}
+    {% if project.github_url or project.live_url %}
+    <div class="st-post__links">
+      {% if project.github_url %}<a class="st-btn" href="{{ project.github_url }}" target="_blank" rel="noopener">{% trans "View on GitHub" %}</a>{% endif %}
+      {% if project.live_url %}<a class="st-btn st-btn--sm" href="{{ project.live_url }}" target="_blank" rel="noopener">{% trans "View live" %}</a>{% endif %}
+    </div>
+    {% endif %}
+  </div>
+</article>
+{% endblock %}
