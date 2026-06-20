@@ -403,6 +403,9 @@ class StudioSolutionPage(Page):
     closing_heading = models.CharField(max_length=200, blank=True)
     closing_body = RichTextField(blank=True)
     cta_label = models.CharField(max_length=80, blank=True, default="Book a conversation")
+    price_heading = models.CharField(max_length=120, blank=True)
+    price_value = models.CharField(max_length=80, blank=True, help_text="e.g. 'from €1,000'")
+    price_note = RichTextField(blank=True)
 
     hero_eyebrow_pt = models.CharField(max_length=160, blank=True)
     hero_headline_pt = RichTextField(blank=True)
@@ -418,6 +421,9 @@ class StudioSolutionPage(Page):
     closing_heading_pt = models.CharField(max_length=200, blank=True)
     closing_body_pt = RichTextField(blank=True)
     cta_label_pt = models.CharField(max_length=80, blank=True)
+    price_heading_pt = models.CharField(max_length=120, blank=True)
+    price_value_pt = models.CharField(max_length=80, blank=True)
+    price_note_pt = RichTextField(blank=True)
 
     template = "studio/solution_page.html"
     parent_page_types = ["studio.StudioHomePage"]
@@ -437,6 +443,7 @@ class StudioSolutionPage(Page):
         FieldPanel("stats_heading"),
         InlinePanel("stats", label="Stat"),
         FieldPanel("proof_note"),
+        MultiFieldPanel([FieldPanel("price_heading"), FieldPanel("price_value"), FieldPanel("price_note")], heading="Investment (EN)"),
         MultiFieldPanel([FieldPanel("closing_heading"), FieldPanel("closing_body"), FieldPanel("cta_label")], heading="Closing CTA (EN)"),
         MultiFieldPanel(
             [
@@ -445,6 +452,7 @@ class StudioSolutionPage(Page):
                 FieldPanel("solution_heading_pt"), FieldPanel("solution_body_pt"),
                 FieldPanel("steps_heading_pt"), FieldPanel("benefits_heading_pt"), FieldPanel("stats_heading_pt"),
                 FieldPanel("proof_note_pt"),
+                FieldPanel("price_heading_pt"), FieldPanel("price_value_pt"), FieldPanel("price_note_pt"),
                 FieldPanel("closing_heading_pt"), FieldPanel("closing_body_pt"), FieldPanel("cta_label_pt"),
             ],
             heading="PT",

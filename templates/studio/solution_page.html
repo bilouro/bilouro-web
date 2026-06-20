@@ -81,6 +81,18 @@
   </div>
 </section>
 
+{# ── Investment ───────────────────────────────────────── #}
+{% tr page "price_value" as price_value %}
+{% if price_value %}
+<section class="st-section st-section--alt">
+  <div class="st-container st-price">
+    <h2 class="st-section__title">{% tr page "price_heading" %}</h2>
+    <div class="st-price__value">{{ price_value }}</div>
+    <div class="st-price__note">{% tr_richtext page "price_note" %}</div>
+  </div>
+</section>
+{% endif %}
+
 {# ── Closing CTA ──────────────────────────────────────── #}
 <section class="st-cta">
   <div class="st-container">

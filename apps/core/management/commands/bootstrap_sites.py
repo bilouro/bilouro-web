@@ -720,4 +720,22 @@ class Command(BaseCommand):
                 vcase.save()
                 self.stdout.write(self.style.SUCCESS("  + linked voice-agent case → /voice-agent/"))
 
+            # Investment block on the solution page (idempotent; page-level fields).
+            sol = StudioSolutionPage.objects.first()
+            if sol and not sol.price_value:
+                sol.price_heading = "Investment"
+                sol.price_value = "from €1,000"
+                sol.price_note = (
+                    "<p>Plus a monthly cost that depends on your call volume. Every project "
+                    "gets a fixed quote after a free conversation — no surprises.</p>"
+                )
+                sol.price_heading_pt = "Investimento"
+                sol.price_value_pt = "a partir de 1000€"
+                sol.price_note_pt = (
+                    "<p>Mais um custo mensal que depende do volume de chamadas. Cada projeto "
+                    "recebe uma proposta fechada após uma conversa gratuita — sem surpresas.</p>"
+                )
+                sol.save_revision().publish()
+                self.stdout.write(self.style.SUCCESS("  + solution investment set"))
+
         self.stdout.write(self.style.SUCCESS("\nbootstrap_sites complete."))

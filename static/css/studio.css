@@ -270,6 +270,11 @@ body.studio .st-statband__note p { margin: 0; }
 body.studio .st-sol-back { margin: 26px 0 0; }
 body.studio .st-sol-back a { color: #c8ccd6; text-decoration: none; font-weight: 600; }
 
+body.studio .st-price { text-align: center; max-width: 640px; margin: 0 auto; }
+body.studio .st-price__value { font-size: clamp(2.4rem, 7vw, 3.6rem); font-weight: 800; letter-spacing: -.03em; color: var(--st-accent); margin: 6px 0 14px; }
+body.studio .st-price__note { color: var(--st-ink-soft); font-size: 1.05rem; }
+body.studio .st-price__note p { margin: 0; }
+
 /* Proof "see more" on the home cases */
 body.studio .st-case__more { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; color: var(--st-accent); font-weight: 700; font-size: .92rem; text-decoration: none; }
 body.studio .st-case--link { display: block; text-decoration: none; color: inherit; transition: transform .1s ease, box-shadow .15s ease; }
