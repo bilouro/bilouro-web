@@ -21,12 +21,22 @@
     <div class="st-section__intro">{% tr_richtext page "services_intro" %}</div>
     <div class="st-cards">
       {% for card in service_cards %}
-        <article class="st-card">
-          {% if card.image %}{% image card.image fill-96x96 class="st-card__icon" %}{% endif %}
-          <h3 class="st-card__title">{% tr card "title" %}</h3>
-          {% tr card "subtitle" as sub %}{% if sub %}<p class="st-card__sub">{{ sub }}</p>{% endif %}
-          {% tr card "output" as out %}{% if out %}<p class="st-card__out">{{ out }}</p>{% endif %}
-        </article>
+        {% if card.link_url %}
+          <a class="st-card st-card--link" href="{{ card.link_url }}">
+            {% if card.image %}{% image card.image fill-96x96 class="st-card__icon" %}{% endif %}
+            <h3 class="st-card__title">{% tr card "title" %}</h3>
+            {% tr card "subtitle" as sub %}{% if sub %}<p class="st-card__sub">{{ sub }}</p>{% endif %}
+            {% tr card "output" as out %}{% if out %}<p class="st-card__out">{{ out }}</p>{% endif %}
+            <span class="st-card__more">{% trans "See the full solution — click for more" %} →</span>
+          </a>
+        {% else %}
+          <article class="st-card">
+            {% if card.image %}{% image card.image fill-96x96 class="st-card__icon" %}{% endif %}
+            <h3 class="st-card__title">{% tr card "title" %}</h3>
+            {% tr card "subtitle" as sub %}{% if sub %}<p class="st-card__sub">{{ sub }}</p>{% endif %}
+            {% tr card "output" as out %}{% if out %}<p class="st-card__out">{{ out }}</p>{% endif %}
+          </article>
+        {% endif %}
       {% endfor %}
     </div>
   </div>

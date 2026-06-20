@@ -281,6 +281,12 @@ body.studio .st-case--link { display: block; text-decoration: none; color: inher
 body.studio .st-case--link:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(14,17,22,.1); }
 body.studio .st-case--link:hover .st-case__more { text-decoration: underline; }
 
+/* Clickable service card (links to a solution) */
+body.studio .st-card--link { display: flex; flex-direction: column; text-decoration: none; color: inherit; transition: transform .1s ease, box-shadow .15s ease; }
+body.studio .st-card--link:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(14,17,22,.1); }
+body.studio .st-card__more { margin-top: auto; padding-top: 14px; display: inline-flex; align-items: center; gap: 6px; color: var(--st-accent); font-weight: 700; font-size: .9rem; }
+body.studio .st-card--link:hover .st-card__more { text-decoration: underline; }
+
 /* ── Mobile: hamburger menu ────────────────────────── */
 @media (max-width: 768px) {
   body.studio .st-book-full { display: none; }

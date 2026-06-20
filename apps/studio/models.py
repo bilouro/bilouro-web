@@ -144,6 +144,11 @@ class StudioServiceCard(Orderable):
     title = models.CharField(max_length=120)
     subtitle = models.CharField(max_length=255, blank=True)
     output = models.TextField(blank=True, help_text="The typical deliverable / outcome.")
+    link_url = models.CharField(
+        max_length=300,
+        blank=True,
+        help_text="Optional — when set, the card links to this URL with a 'see more' hint.",
+    )
     title_pt = models.CharField(max_length=120, blank=True)
     subtitle_pt = models.CharField(max_length=255, blank=True)
     output_pt = models.TextField(blank=True)
@@ -153,6 +158,7 @@ class StudioServiceCard(Orderable):
         FieldPanel("title"),
         FieldPanel("subtitle"),
         FieldPanel("output"),
+        FieldPanel("link_url"),
         MultiFieldPanel(
             [FieldPanel("title_pt"), FieldPanel("subtitle_pt"), FieldPanel("output_pt")],
             heading="PT",

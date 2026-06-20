@@ -720,6 +720,16 @@ class Command(BaseCommand):
                 vcase.save()
                 self.stdout.write(self.style.SUCCESS("  + linked voice-agent case → /voice-agent/"))
 
+            # Link the AI-agents service card to the solution page (idempotent)
+            scard = (
+                studio_home.service_cards.filter(title__icontains="AI Agents").first()
+                or studio_home.service_cards.first()
+            )
+            if scard and not scard.link_url:
+                scard.link_url = "/voice-agent/"
+                scard.save()
+                self.stdout.write(self.style.SUCCESS("  + linked AI-agents service card → /voice-agent/"))
+
             # Investment block on the solution page (idempotent; page-level fields).
             sol = StudioSolutionPage.objects.first()
             if sol and not sol.price_value:
