@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-20 03:08+0100\n"
+"POT-Creation-Date: 2026-06-20 16:54+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: OpenAI Responses API\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -47,8 +47,8 @@ msgstr "Todos os livros"
 msgid "Blog"
 msgstr "Blog"
 
-#: templates/_cross_nav.html:24 templates/studio/_base.html:16
-#: templates/studio/_base.html:35 templates/studio/project_index_page.html:7
+#: templates/_cross_nav.html:24 templates/studio/_base.html:20
+#: templates/studio/_base.html:45 templates/studio/project_index_page.html:7
 #: templates/studio/project_page.html:11 templates/tech/base.html:15
 #: templates/tech/project_page.html:6
 msgid "Projects"
@@ -198,19 +198,27 @@ msgstr "Comprar"
 msgid "Skip to content"
 msgstr "Saltar para o conteúdo"
 
-#: templates/studio/_base.html:14
+#: templates/studio/_base.html:18
 msgid "Primary"
 msgstr "Principal"
 
-#: templates/studio/_base.html:17
+#: templates/studio/_base.html:21
 msgid "Language"
 msgstr "Idioma"
 
-#: templates/studio/_base.html:21
+#: templates/studio/_base.html:28 templates/studio/booking_page.html:10
 msgid "Book a conversation"
 msgstr "Marca uma conversa"
 
-#: templates/studio/_base.html:33
+#: templates/studio/_base.html:28
+msgid "Book"
+msgstr "Agendar"
+
+#: templates/studio/_base.html:29
+msgid "Menu"
+msgstr ""
+
+#: templates/studio/_base.html:43
 msgid "Footer"
 msgstr "Rodapé"
 
@@ -218,34 +226,6 @@ msgstr "Rodapé"
 #: templates/tech/blog_index_page.html:26
 msgid "No posts yet."
 msgstr "Ainda não há publicações."
-
-#: templates/studio/booking_page.html:23
-msgid "Name"
-msgstr "Nome"
-
-#: templates/studio/booking_page.html:28
-msgid "Email"
-msgstr "Email"
-
-#: templates/studio/booking_page.html:33
-msgid "Phone"
-msgstr "Telefone"
-
-#: templates/studio/booking_page.html:39
-msgid "Preferred date"
-msgstr "Data preferida"
-
-#: templates/studio/booking_page.html:43
-msgid "Preferred time"
-msgstr "Hora preferida"
-
-#: templates/studio/booking_page.html:54
-msgid "In 1–2 sentences, what would you like to talk about?"
-msgstr "Em 1–2 frases, sobre o que queres falar?"
-
-#: templates/studio/booking_page.html:58
-msgid "Submit"
-msgstr "Submeter"
 
 #: templates/studio/project_index_page.html:28
 #: templates/tech/project_index_page.html:38
@@ -283,3 +263,24 @@ msgstr "por"
 #: templates/tech/blog_post_page.html:64
 msgid "Read next"
 msgstr "Ler a seguir"
+
+#~ msgid "Name"
+#~ msgstr "Nome"
+
+#~ msgid "Email"
+#~ msgstr "Email"
+
+#~ msgid "Phone"
+#~ msgstr "Telefone"
+
+#~ msgid "Preferred date"
+#~ msgstr "Data preferida"
+
+#~ msgid "Preferred time"
+#~ msgstr "Hora preferida"
+
+#~ msgid "In 1–2 sentences, what would you like to talk about?"
+#~ msgstr "Em 1–2 frases, sobre o que queres falar?"
+
+#~ msgid "Submit"
+#~ msgstr "Submeter"
