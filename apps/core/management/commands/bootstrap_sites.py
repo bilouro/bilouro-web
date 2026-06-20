@@ -21,6 +21,10 @@ from apps.studio.models import (
     StudioProcessStep,
     StudioProjectIndexPage,
     StudioServiceCard,
+    StudioSolutionBenefit,
+    StudioSolutionPage,
+    StudioSolutionStat,
+    StudioSolutionStep,
     StudioThanksPage,
 )
 from apps.tech.models import BlogIndexPage, ProjectIndexPage, ProjectPage
@@ -595,5 +599,125 @@ class Command(BaseCommand):
                 )
                 studio_home.save_revision().publish()
                 self.stdout.write(self.style.SUCCESS("  + Studio service cards / process steps / cases seeded"))
+
+            # Solution page — business-facing infographic (AI voice agent)
+            if not StudioSolutionPage.objects.exists():
+                sol = StudioSolutionPage(
+                    title="Voice Agent",
+                    slug="voice-agent",
+                    hero_eyebrow="Solution · AI Voice Agent",
+                    hero_headline="An AI assistant that answers your phone — <em>24/7</em>",
+                    hero_sub=(
+                        "<p>Never miss a call again. Your AI voice agent answers in natural Portuguese, "
+                        "books and changes appointments, answers the usual questions, and sends an instant "
+                        "confirmation by SMS — handing over to a person whenever it matters.</p>"
+                    ),
+                    problem_heading="The problem",
+                    problem_body=(
+                        "<p>Every missed call is a lost customer. Your team can't pick up during a class, "
+                        "after hours or at the weekend. A receptionist is expensive and still goes home at "
+                        "night. Meanwhile, bookings slip away to whoever answers first.</p>"
+                    ),
+                    solution_heading="The solution",
+                    solution_body=(
+                        "<p>A voice assistant answers every call on your existing number, day or night. It "
+                        "understands what the caller wants and gets it done — books a trial class, reschedules, "
+                        "cancels, or shares your address and prices — then texts a confirmation. Anything "
+                        "unusual is passed to a person.</p>"
+                    ),
+                    steps_heading="How it works",
+                    benefits_heading="What you get",
+                    stats_heading="In numbers",
+                    proof_note="<p><strong>Live in production today</strong> — answering real calls for two Pilates studios.</p>",
+                    closing_heading="Want this answering your phone?",
+                    closing_body="<p>Tell us about your business in a free conversation — we'll show you what a voice agent would handle for you.</p>",
+                    cta_label="Book a conversation",
+                    hero_eyebrow_pt="Solução · Agente de Voz com IA",
+                    hero_headline_pt="Um assistente de IA que atende o teu telefone — <em>24/7</em>",
+                    hero_sub_pt=(
+                        "<p>Nunca mais percas uma chamada. O teu agente de voz atende em português natural, "
+                        "marca e altera marcações, responde às perguntas do costume e envia confirmação imediata "
+                        "por SMS — passando para uma pessoa sempre que é preciso.</p>"
+                    ),
+                    problem_heading_pt="O problema",
+                    problem_body_pt=(
+                        "<p>Cada chamada não atendida é um cliente perdido. A tua equipa não consegue atender "
+                        "durante a aula, fora de horas ou ao fim de semana. Uma rececionista é cara e à noite "
+                        "vai para casa. Entretanto, as marcações vão para quem atender primeiro.</p>"
+                    ),
+                    solution_heading_pt="A solução",
+                    solution_body_pt=(
+                        "<p>Um assistente de voz atende todas as chamadas no teu número atual, de dia ou de noite. "
+                        "Percebe o que o cliente quer e resolve — marca uma aula experimental, reagenda, cancela, "
+                        "ou dá a morada e os preços — e envia a confirmação por SMS. O que for fora do comum passa "
+                        "para uma pessoa.</p>"
+                    ),
+                    steps_heading_pt="Como funciona",
+                    benefits_heading_pt="O que ganhas",
+                    stats_heading_pt="Em números",
+                    proof_note_pt="<p><strong>Em produção hoje</strong> — a atender chamadas reais de dois estúdios de Pilates.</p>",
+                    closing_heading_pt="Queres isto a atender o teu telefone?",
+                    closing_body_pt="<p>Conta-nos sobre o teu negócio numa conversa gratuita — mostramos-te o que um agente de voz trataria por ti.</p>",
+                    cta_label_pt="Marca uma conversa",
+                )
+                studio_home.add_child(instance=sol)
+                sol.steps.add(
+                    StudioSolutionStep(icon="📞", title="The customer calls",
+                                       body="They dial your usual number — nothing changes for them.",
+                                       title_pt="O cliente liga",
+                                       body_pt="Marca o número de sempre — para ele não muda nada."),
+                    StudioSolutionStep(icon="💬", title="The assistant handles it",
+                                       body="It talks naturally, understands the request, and books, cancels or answers — right there on the call.",
+                                       title_pt="O assistente trata de tudo",
+                                       body_pt="Fala com naturalidade, percebe o pedido e marca, cancela ou responde — ali mesmo na chamada."),
+                    StudioSolutionStep(icon="✅", title="Everyone's confirmed",
+                                       body="The customer gets an instant SMS confirmation; you get a summary of the call. Tricky cases go to a person.",
+                                       title_pt="Fica tudo confirmado",
+                                       body_pt="O cliente recebe confirmação por SMS na hora; tu recebes um resumo da chamada. Os casos difíceis vão para uma pessoa."),
+                )
+                sol.benefits.add(
+                    StudioSolutionBenefit(icon="📞", title="Answers 24/7",
+                                          body="Calls picked up day, night and weekends — you never lose a lead to a missed call.",
+                                          title_pt="Atende 24/7",
+                                          body_pt="Chamadas atendidas de dia, de noite e ao fim de semana — nunca perdes um cliente por não atender."),
+                    StudioSolutionBenefit(icon="📅", title="Books & reschedules",
+                                          body="Trial classes, regular bookings, cancellations and changes — handled on the call.",
+                                          title_pt="Marca e reagenda",
+                                          body_pt="Aulas experimentais, marcações, cancelamentos e alterações — resolvidos na chamada."),
+                    StudioSolutionBenefit(icon="💬", title="SMS confirmations",
+                                          body="Every booking ends with a text confirming date, time, place and a link to change it.",
+                                          title_pt="Confirmações por SMS",
+                                          body_pt="Cada marcação termina com um SMS a confirmar dia, hora, local e link para alterar."),
+                    StudioSolutionBenefit(icon="🇵🇹", title="Natural Portuguese",
+                                          body="Speaks fluent European Portuguese — customers often don't realise it isn't a person.",
+                                          title_pt="Português natural",
+                                          body_pt="Fala português europeu fluente — muitas vezes os clientes nem percebem que não é uma pessoa."),
+                    StudioSolutionBenefit(icon="🔗", title="Uses what you have",
+                                          body="Keeps your current phone number and connects to your existing booking system.",
+                                          title_pt="Usa o que já tens",
+                                          body_pt="Mantém o teu número atual e liga-se ao teu sistema de marcações existente."),
+                    StudioSolutionBenefit(icon="🙋", title="Hands over to a human",
+                                          body="Anything complex or sensitive is escalated to your team, with the full context.",
+                                          title_pt="Passa para uma pessoa",
+                                          body_pt="O que for complexo ou sensível é encaminhado para a tua equipa, com todo o contexto."),
+                )
+                sol.stats.add(
+                    StudioSolutionStat(value="24/7", label="Always answering", label_pt="Sempre a atender"),
+                    StudioSolutionStat(value="1 number", label="Calls + SMS, same line", label_pt="Chamadas + SMS, mesma linha"),
+                    StudioSolutionStat(value="60–120s", label="Typical call, end to end", label_pt="Chamada típica, do início ao fim"),
+                    StudioSolutionStat(value="2 studios", label="Live in production", label_pt="Em produção"),
+                )
+                sol.save_revision().publish()
+                self.stdout.write(self.style.SUCCESS("  + StudioSolutionPage (/voice-agent) created"))
+
+            # Link the voice-agent case to the solution page (idempotent, direct save)
+            vcase = (
+                studio_home.cases.filter(title__icontains="AI assistants").first()
+                or studio_home.cases.first()
+            )
+            if vcase and not vcase.link_url:
+                vcase.link_url = "/voice-agent/"
+                vcase.save()
+                self.stdout.write(self.style.SUCCESS("  + linked voice-agent case → /voice-agent/"))
 
         self.stdout.write(self.style.SUCCESS("\nbootstrap_sites complete."))

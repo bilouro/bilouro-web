@@ -122,6 +122,7 @@ class StudioHomePage(Page):
         "studio.StudioThanksPage",
         "studio.StudioBlogIndexPage",
         "studio.StudioProjectIndexPage",
+        "studio.StudioSolutionPage",
     ]
 
     def get_context(self, request, *args, **kwargs):
@@ -189,6 +190,11 @@ class StudioCase(Orderable):
     )
     title = models.CharField(max_length=160)
     body = RichTextField(blank=True)
+    link_url = models.CharField(
+        max_length=300,
+        blank=True,
+        help_text="Optional — when set, the case links to this URL with a 'see more' hint.",
+    )
     title_pt = models.CharField(max_length=160, blank=True)
     body_pt = RichTextField(blank=True)
 
@@ -196,6 +202,7 @@ class StudioCase(Orderable):
         FieldPanel("image"),
         FieldPanel("title"),
         FieldPanel("body"),
+        FieldPanel("link_url"),
         MultiFieldPanel(
             [FieldPanel("title_pt"), FieldPanel("body_pt")],
             heading="PT",
@@ -373,6 +380,124 @@ class StudioProjectIndexPage(RoutablePageMixin, Page):
                 entry["lastmod"] = project.last_published_at
             urls.append(entry)
         return urls
+
+
+# ─── Solution page (business-facing infographic) ───────────────────────
+
+
+class StudioSolutionPage(Page):
+    """A business-facing 'solution' page — infographic style, no jargon.
+    Reached from the Proof section ('see more'). Indexed in the sitemap."""
+
+    hero_eyebrow = models.CharField(max_length=160, blank=True)
+    hero_headline = RichTextField(blank=True, help_text="Use <em> for emphasis.")
+    hero_sub = RichTextField(blank=True)
+    problem_heading = models.CharField(max_length=160, blank=True)
+    problem_body = RichTextField(blank=True)
+    solution_heading = models.CharField(max_length=160, blank=True)
+    solution_body = RichTextField(blank=True)
+    steps_heading = models.CharField(max_length=160, blank=True)
+    benefits_heading = models.CharField(max_length=160, blank=True)
+    stats_heading = models.CharField(max_length=160, blank=True)
+    proof_note = RichTextField(blank=True, help_text="Small 'live in production' trust line.")
+    closing_heading = models.CharField(max_length=200, blank=True)
+    closing_body = RichTextField(blank=True)
+    cta_label = models.CharField(max_length=80, blank=True, default="Book a conversation")
+
+    hero_eyebrow_pt = models.CharField(max_length=160, blank=True)
+    hero_headline_pt = RichTextField(blank=True)
+    hero_sub_pt = RichTextField(blank=True)
+    problem_heading_pt = models.CharField(max_length=160, blank=True)
+    problem_body_pt = RichTextField(blank=True)
+    solution_heading_pt = models.CharField(max_length=160, blank=True)
+    solution_body_pt = RichTextField(blank=True)
+    steps_heading_pt = models.CharField(max_length=160, blank=True)
+    benefits_heading_pt = models.CharField(max_length=160, blank=True)
+    stats_heading_pt = models.CharField(max_length=160, blank=True)
+    proof_note_pt = RichTextField(blank=True)
+    closing_heading_pt = models.CharField(max_length=200, blank=True)
+    closing_body_pt = RichTextField(blank=True)
+    cta_label_pt = models.CharField(max_length=80, blank=True)
+
+    template = "studio/solution_page.html"
+    parent_page_types = ["studio.StudioHomePage"]
+    subpage_types: list[str] = []
+
+    content_panels = Page.content_panels + [
+        MultiFieldPanel(
+            [FieldPanel("hero_eyebrow"), FieldPanel("hero_headline"), FieldPanel("hero_sub")],
+            heading="Hero (EN)",
+        ),
+        MultiFieldPanel([FieldPanel("problem_heading"), FieldPanel("problem_body")], heading="Problem (EN)"),
+        MultiFieldPanel([FieldPanel("solution_heading"), FieldPanel("solution_body")], heading="Solution (EN)"),
+        FieldPanel("steps_heading"),
+        InlinePanel("steps", label="How-it-works step"),
+        FieldPanel("benefits_heading"),
+        InlinePanel("benefits", label="Benefit"),
+        FieldPanel("stats_heading"),
+        InlinePanel("stats", label="Stat"),
+        FieldPanel("proof_note"),
+        MultiFieldPanel([FieldPanel("closing_heading"), FieldPanel("closing_body"), FieldPanel("cta_label")], heading="Closing CTA (EN)"),
+        MultiFieldPanel(
+            [
+                FieldPanel("hero_eyebrow_pt"), FieldPanel("hero_headline_pt"), FieldPanel("hero_sub_pt"),
+                FieldPanel("problem_heading_pt"), FieldPanel("problem_body_pt"),
+                FieldPanel("solution_heading_pt"), FieldPanel("solution_body_pt"),
+                FieldPanel("steps_heading_pt"), FieldPanel("benefits_heading_pt"), FieldPanel("stats_heading_pt"),
+                FieldPanel("proof_note_pt"),
+                FieldPanel("closing_heading_pt"), FieldPanel("closing_body_pt"), FieldPanel("cta_label_pt"),
+            ],
+            heading="PT",
+            classname="collapsed",
+        ),
+    ]
+
+    def get_context(self, request, *args, **kwargs):
+        ctx = super().get_context(request, *args, **kwargs)
+        ctx["steps"] = self.steps.all()
+        ctx["benefits"] = self.benefits.all()
+        ctx["stats"] = self.stats.all()
+        return ctx
+
+
+class StudioSolutionStep(Orderable):
+    page = ParentalKey(StudioSolutionPage, on_delete=models.CASCADE, related_name="steps")
+    icon = models.CharField(max_length=8, blank=True, help_text="Emoji.")
+    title = models.CharField(max_length=120)
+    body = models.TextField(blank=True)
+    title_pt = models.CharField(max_length=120, blank=True)
+    body_pt = models.TextField(blank=True)
+
+    panels = [
+        FieldPanel("icon"), FieldPanel("title"), FieldPanel("body"),
+        MultiFieldPanel([FieldPanel("title_pt"), FieldPanel("body_pt")], heading="PT", classname="collapsed"),
+    ]
+
+
+class StudioSolutionBenefit(Orderable):
+    page = ParentalKey(StudioSolutionPage, on_delete=models.CASCADE, related_name="benefits")
+    icon = models.CharField(max_length=8, blank=True, help_text="Emoji.")
+    title = models.CharField(max_length=120)
+    body = models.TextField(blank=True)
+    title_pt = models.CharField(max_length=120, blank=True)
+    body_pt = models.TextField(blank=True)
+
+    panels = [
+        FieldPanel("icon"), FieldPanel("title"), FieldPanel("body"),
+        MultiFieldPanel([FieldPanel("title_pt"), FieldPanel("body_pt")], heading="PT", classname="collapsed"),
+    ]
+
+
+class StudioSolutionStat(Orderable):
+    page = ParentalKey(StudioSolutionPage, on_delete=models.CASCADE, related_name="stats")
+    value = models.CharField(max_length=40, help_text="e.g. '24/7'")
+    label = models.CharField(max_length=120, blank=True)
+    label_pt = models.CharField(max_length=120, blank=True)
+
+    panels = [
+        FieldPanel("value"), FieldPanel("label"),
+        MultiFieldPanel([FieldPanel("label_pt")], heading="PT", classname="collapsed"),
+    ]
 
 
 # ─── Booking (plain Django model — leads) ──────────────────────────────

@@ -1,0 +1,95 @@
+{% extends "studio/_base.html" %}
+{% load i18n i18n_fields wagtailcore_tags %}
+
+{% block title %}{% tr page "hero_headline" as hh %}{{ page.title }} · Bilouro Studio{% endblock %}
+{% block meta_description %}{% tr page "hero_sub" as hs %}{{ hs|striptags|truncatechars:160 }}{% endblock %}
+
+{% block content %}
+{% with booking=STUDIO_BOOKING_URL %}
+
+{# ── Hero ─────────────────────────────────────────────── #}
+<section class="st-sol-hero">
+  <div class="st-container">
+    {% tr page "hero_eyebrow" as eb %}{% if eb %}<p class="st-eyebrow">{{ eb }}</p>{% endif %}
+    <h1 class="st-sol-hero__title">{% tr_richtext page "hero_headline" %}</h1>
+    <div class="st-sol-hero__sub">{% tr_richtext page "hero_sub" %}</div>
+    <a class="st-btn st-btn--lg" href="{{ booking }}" target="_blank" rel="noopener">{% tr page "cta_label" %}</a>
+  </div>
+</section>
+
+{# ── Problem vs Solution ──────────────────────────────── #}
+<section class="st-section">
+  <div class="st-container st-sol-grid">
+    <div class="st-sol-card st-sol-card--problem">
+      <span class="st-sol-card__tag">{% tr page "problem_heading" %}</span>
+      <div class="st-sol-card__body">{% tr_richtext page "problem_body" %}</div>
+    </div>
+    <div class="st-sol-arrow" aria-hidden="true">→</div>
+    <div class="st-sol-card st-sol-card--solution">
+      <span class="st-sol-card__tag">{% tr page "solution_heading" %}</span>
+      <div class="st-sol-card__body">{% tr_richtext page "solution_body" %}</div>
+    </div>
+  </div>
+</section>
+
+{# ── How it works (flow) ──────────────────────────────── #}
+<section class="st-section st-section--alt">
+  <div class="st-container">
+    <h2 class="st-section__title">{% tr page "steps_heading" %}</h2>
+    <ol class="st-flow">
+      {% for step in steps %}
+        <li class="st-flow__step">
+          <div class="st-flow__icon">{{ step.icon }}</div>
+          <div class="st-flow__n">{{ forloop.counter }}</div>
+          <h3 class="st-flow__title">{% tr step "title" %}</h3>
+          <p class="st-flow__body">{% tr step "body" %}</p>
+        </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+
+{# ── Benefits ─────────────────────────────────────────── #}
+<section class="st-section">
+  <div class="st-container">
+    <h2 class="st-section__title">{% tr page "benefits_heading" %}</h2>
+    <div class="st-benefits">
+      {% for b in benefits %}
+        <article class="st-benefit">
+          <div class="st-benefit__icon">{{ b.icon }}</div>
+          <h3 class="st-benefit__title">{% tr b "title" %}</h3>
+          <p class="st-benefit__body">{% tr b "body" %}</p>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ── Stats band ───────────────────────────────────────── #}
+<section class="st-statband">
+  <div class="st-container">
+    {% tr page "stats_heading" as sh %}{% if sh %}<h2 class="st-statband__title">{{ sh }}</h2>{% endif %}
+    <div class="st-stats">
+      {% for s in stats %}
+        <div class="st-stat">
+          <div class="st-stat__value">{{ s.value }}</div>
+          <div class="st-stat__label">{% tr s "label" %}</div>
+        </div>
+      {% endfor %}
+    </div>
+    {% tr_richtext page "proof_note" as pn %}{% if pn %}<div class="st-statband__note">{{ pn }}</div>{% endif %}
+  </div>
+</section>
+
+{# ── Closing CTA ──────────────────────────────────────── #}
+<section class="st-cta">
+  <div class="st-container">
+    <h2 class="st-cta__title">{% tr page "closing_heading" %}</h2>
+    <div class="st-cta__body">{% tr_richtext page "closing_body" %}</div>
+    <a class="st-btn st-btn--lg" href="{{ booking }}" target="_blank" rel="noopener">{% tr page "cta_label" %}</a>
+    <p class="st-sol-back"><a href="/">← {% trans "Back to home" %}</a></p>
+  </div>
+</section>
+
+{% endwith %}
+{% endblock %}

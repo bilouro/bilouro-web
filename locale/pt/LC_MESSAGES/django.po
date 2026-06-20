@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-20 16:54+0100\n"
+"POT-Creation-Date: 2026-06-20 21:30+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: OpenAI Responses API\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -216,7 +216,7 @@ msgstr "Agendar"
 
 #: templates/studio/_base.html:29
 msgid "Menu"
-msgstr ""
+msgstr "Menu"
 
 #: templates/studio/_base.html:43
 msgid "Footer"
@@ -226,6 +226,10 @@ msgstr "Rodapé"
 #: templates/tech/blog_index_page.html:26
 msgid "No posts yet."
 msgstr "Ainda não há publicações."
+
+#: templates/studio/home_page.html:66
+msgid "See the full solution — click for more"
+msgstr "Ver a solução completa — clica para ver mais"
 
 #: templates/studio/project_index_page.html:28
 #: templates/tech/project_index_page.html:38
@@ -244,7 +248,7 @@ msgstr "Ver no GitHub"
 msgid "View live"
 msgstr "Ver online"
 
-#: templates/studio/thanks_page.html:10
+#: templates/studio/solution_page.html:90 templates/studio/thanks_page.html:10
 msgid "Back to home"
 msgstr "Voltar ao início"
 

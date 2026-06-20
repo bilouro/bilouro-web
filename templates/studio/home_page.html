@@ -58,11 +58,20 @@
     <div class="st-section__intro">{% tr_richtext page "cases_intro" %}</div>
     <div class="st-cases">
       {% for case in cases %}
-        <article class="st-case">
-          {% if case.image %}{% image case.image fill-640x360 class="st-case__img" %}{% endif %}
-          <h3 class="st-case__title">{% tr case "title" %}</h3>
-          <div class="st-case__body">{% tr_richtext case "body" %}</div>
-        </article>
+        {% if case.link_url %}
+          <a class="st-case st-case--link" href="{{ case.link_url }}">
+            {% if case.image %}{% image case.image fill-640x360 class="st-case__img" %}{% endif %}
+            <h3 class="st-case__title">{% tr case "title" %}</h3>
+            <div class="st-case__body">{% tr_richtext case "body" %}</div>
+            <span class="st-case__more">{% trans "See the full solution — click for more" %} →</span>
+          </a>
+        {% else %}
+          <article class="st-case">
+            {% if case.image %}{% image case.image fill-640x360 class="st-case__img" %}{% endif %}
+            <h3 class="st-case__title">{% tr case "title" %}</h3>
+            <div class="st-case__body">{% tr_richtext case "body" %}</div>
+          </article>
+        {% endif %}
       {% endfor %}
     </div>
   </div>
