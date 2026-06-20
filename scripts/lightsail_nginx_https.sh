@@ -2,6 +2,13 @@
 # scripts/lightsail_nginx_https.sh — switch nginx to HTTPS using per-domain certs.
 # Run after all 5 certs (www/tech/books/studio/bilouro) exist in /etc/letsencrypt/live/.
 #
+# ⚠️  STALE — DO NOT RUN AS-IS ON THE LIVE VM. The live config at
+# /etc/nginx/sites-enabled/bilouro is hand-maintained and ALSO serves the
+# hashtag-jesus.com vhosts (apex + br/pt/en/www), which are NOT in this script.
+# Running this would overwrite them and take those sites down. This file is kept
+# only as a reference for the bilouro.com sub-site blocks; edit the live file
+# surgically instead. (studio.bilouro.com was added live on 2026-06-20 this way.)
+#
 # To add the studio cert (after the DNS A/CNAME for studio.bilouro.com resolves
 # to this VM and the HTTP→301 block below is live so the ACME webroot is served):
 #   sudo certbot certonly --webroot -w /var/www/html \
