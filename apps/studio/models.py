@@ -234,6 +234,11 @@ class StudioBookingPage(Page):
         ctx["thanks_page"] = StudioThanksPage.objects.live().first()
         return ctx
 
+    def get_sitemap_urls(self, request=None):
+        # Dormant fallback page (bookings go through the external calendar link) —
+        # keep it out of the sitemap.
+        return []
+
 
 class StudioThanksPage(Page):
     """Post-submit confirmation page (/obrigado)."""
@@ -253,6 +258,10 @@ class StudioThanksPage(Page):
 
     parent_page_types = ["studio.StudioHomePage"]
     subpage_types: list[str] = []
+
+    def get_sitemap_urls(self, request=None):
+        # Post-submit confirmation page — never index.
+        return []
 
 
 # ─── Booking (plain Django model — leads) ──────────────────────────────

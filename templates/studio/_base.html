@@ -16,7 +16,7 @@
         <a href="/i18n/setlang/?lang=en&next={{ request.path|urlencode }}" class="{% if cur == 'en' %}is-active{% endif %}">EN</a>
         <a href="/i18n/setlang/?lang=pt&next={{ request.path|urlencode }}" class="{% if cur == 'pt' %}is-active{% endif %}">PT</a>
       </div>
-      <a class="st-btn st-btn--sm" href="{% if booking_page %}{{ booking_page.url }}{% else %}/agendar/{% endif %}">{% trans "Book a conversation" %}</a>
+      <a class="st-btn st-btn--sm" href="{{ STUDIO_BOOKING_URL }}" target="_blank" rel="noopener">{% trans "Book a conversation" %}</a>
     </nav>
   </div>
 </header>

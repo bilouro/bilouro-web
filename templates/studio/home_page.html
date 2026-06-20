@@ -2,7 +2,7 @@
 {% load static i18n i18n_fields wagtailcore_tags wagtailimages_tags %}
 
 {% block content %}
-{% with booking_url=booking_page.url|default:'/agendar/' %}
+{% with booking_url=STUDIO_BOOKING_URL %}
 
 {# ── Hero ─────────────────────────────────────────────── #}
 <section class="st-hero">
@@ -10,7 +10,7 @@
     {% if page.hero_eyebrow or page.hero_eyebrow_pt %}<p class="st-eyebrow">{% tr page "hero_eyebrow" %}</p>{% endif %}
     <h1 class="st-hero__title">{% tr_richtext page "hero_headline" %}</h1>
     <div class="st-hero__sub">{% tr_richtext page "hero_subhead" %}</div>
-    <a class="st-btn st-btn--lg" href="{{ booking_url }}">{% tr page "cta_label" %}</a>
+    <a class="st-btn st-btn--lg" href="{{ booking_url }}" target="_blank" rel="noopener">{% tr page "cta_label" %}</a>
   </div>
 </section>
 
@@ -81,7 +81,7 @@
   <div class="st-container">
     <h2 class="st-cta__title">{% tr page "closing_heading" %}</h2>
     <div class="st-cta__body">{% tr_richtext page "closing_body" %}</div>
-    <a class="st-btn st-btn--lg" href="{{ booking_url }}">{% tr page "cta_label" %}</a>
+    <a class="st-btn st-btn--lg" href="{{ booking_url }}" target="_blank" rel="noopener">{% tr page "cta_label" %}</a>
   </div>
 </section>
 
