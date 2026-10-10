@@ -1,5 +1,5 @@
 {% extends "studio/_base.html" %}
-{% load i18n i18n_fields wagtailcore_tags %}
+{% load i18n i18n_fields wagtailcore_tags wagtailimages_tags %}
 
 {% block title %}{% tr page "hero_headline" as hh %}{{ page.title }} · Bilouro Studio{% endblock %}
 {% block meta_description %}{% tr page "hero_sub" as hs %}{{ hs|striptags|truncatechars:160 }}{% endblock %}
@@ -9,11 +9,16 @@
 
 {# ── Hero ─────────────────────────────────────────────── #}
 <section class="st-sol-hero">
-  <div class="st-container">
-    {% tr page "hero_eyebrow" as eb %}{% if eb %}<p class="st-eyebrow">{{ eb }}</p>{% endif %}
-    <h1 class="st-sol-hero__title">{% tr_richtext page "hero_headline" %}</h1>
-    <div class="st-sol-hero__sub">{% tr_richtext page "hero_sub" %}</div>
-    <a class="st-btn st-btn--lg" href="{{ booking }}" target="_blank" rel="noopener">{% tr page "cta_label" %}</a>
+  <div class="st-container{% if page.image %} st-sol-hero__grid{% endif %}">
+    <div>
+      {% tr page "hero_eyebrow" as eb %}{% if eb %}<p class="st-eyebrow">{{ eb }}</p>{% endif %}
+      <h1 class="st-sol-hero__title">{% tr_richtext page "hero_headline" %}</h1>
+      <div class="st-sol-hero__sub">{% tr_richtext page "hero_sub" %}</div>
+      <a class="st-btn st-btn--lg" href="{{ booking }}" target="_blank" rel="noopener">{% tr page "cta_label" %}</a>
+    </div>
+    {% if page.image %}
+    <div class="st-sol-hero__media">{% image page.image width-900 class="st-sol-hero__img" %}</div>
+    {% endif %}
   </div>
 </section>
 
@@ -64,6 +69,23 @@
     </div>
   </div>
 </section>
+
+{# ── Screens (hidden until screenshots are added in Wagtail) ── #}
+{% if screens %}
+<section class="st-section st-section--alt">
+  <div class="st-container">
+    {% tr page "screens_heading" as sch %}{% if sch %}<h2 class="st-section__title">{{ sch }}</h2>{% endif %}
+    <div class="st-screens">
+      {% for sc in screens %}
+        <figure class="st-screen">
+          {% image sc.image width-720 class="st-screen__img" loading="lazy" %}
+          {% tr sc "caption" as cap %}{% if cap %}<figcaption class="st-screen__cap">{{ cap }}</figcaption>{% endif %}
+        </figure>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
 
 {# ── Stats band ───────────────────────────────────────── #}
 <section class="st-statband">

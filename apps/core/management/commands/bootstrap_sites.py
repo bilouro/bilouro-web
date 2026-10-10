@@ -748,4 +748,159 @@ class Command(BaseCommand):
                 sol.save_revision().publish()
                 self.stdout.write(self.style.SUCCESS("  + solution investment set"))
 
+            # Solution page — Studio App (members app + staff app for studios/gyms).
+            # Price is intentionally left empty: the Investment block stays hidden
+            # until a value is set in Wagtail.
+            if not StudioSolutionPage.objects.filter(slug="studio-app").exists():
+                app = StudioSolutionPage(
+                    title="Studio App",
+                    slug="studio-app",
+                    hero_eyebrow="Solution · Studio App",
+                    hero_headline="The app that runs your studio — <em>bookings, payments and members in one place</em>",
+                    hero_sub=(
+                        "<p>Members sign up, pay and book classes from their phone. Your team manages the "
+                        "schedule, trial classes and substitutions from theirs. No app store, no passwords, "
+                        "no spreadsheets — and it already runs two Pilates studios every day.</p>"
+                    ),
+                    problem_heading="The problem",
+                    problem_body=(
+                        "<p>Running a studio on a generic SaaS means paying every month for features you "
+                        "don't use, fighting a system that doesn't speak your language, and still closing "
+                        "the month's billing by hand. Members call to book, the team juggles WhatsApp "
+                        "messages and spreadsheets, and nobody knows at a glance who has paid.</p>"
+                    ),
+                    solution_heading="The solution",
+                    solution_body=(
+                        "<p>A complete app built for how a studio actually works. Members get a simple app "
+                        "on their phone: enrol, pay with MB WAY or Multibanco, book or cancel a class in two "
+                        "taps. Your team gets its own app: calendar, class templates, trial classes, "
+                        "substitutions, availability. Billing closes itself at month end, with legal "
+                        "invoices — VAT to the cent.</p>"
+                    ),
+                    steps_heading="How it works",
+                    benefits_heading="What you get",
+                    screens_heading="See it in action",
+                    stats_heading="In numbers",
+                    proof_note=(
+                        "<p><strong>Live in production today</strong> — running two Pilates studios in "
+                        "Portugal: every class, every payment.</p>"
+                    ),
+                    closing_heading="Want this running your studio?",
+                    closing_body=(
+                        "<p>Tell us how your studio works in a free conversation — we'll show you the app "
+                        "with your classes and plans already in it.</p>"
+                    ),
+                    cta_label="Book a conversation",
+                    hero_eyebrow_pt="Solução · Studio App",
+                    hero_headline_pt="A app que gere o teu estúdio — <em>marcações, pagamentos e sócios num só lugar</em>",
+                    hero_sub_pt=(
+                        "<p>Os sócios inscrevem-se, pagam e marcam aulas pelo telemóvel. A tua equipa gere o "
+                        "horário, as aulas experimentais e as substituições pelo dela. Sem app store, sem "
+                        "passwords, sem folhas de cálculo — e já corre todos os dias em dois estúdios de "
+                        "Pilates.</p>"
+                    ),
+                    problem_heading_pt="O problema",
+                    problem_body_pt=(
+                        "<p>Gerir um estúdio num SaaS genérico é pagar todos os meses por funcionalidades que "
+                        "não usas, lutar com um sistema que não fala a tua língua e, ainda assim, fechar a "
+                        "faturação do mês à mão. Os sócios ligam para marcar, a equipa gere mensagens de "
+                        "WhatsApp e folhas de cálculo, e ninguém sabe num relance quem já pagou.</p>"
+                    ),
+                    solution_heading_pt="A solução",
+                    solution_body_pt=(
+                        "<p>Uma app completa feita para a forma como um estúdio funciona de verdade. Os sócios "
+                        "têm uma app simples no telemóvel: inscrevem-se, pagam por MB WAY ou Multibanco, "
+                        "marcam ou cancelam uma aula em dois toques. A tua equipa tem a app dela: calendário, "
+                        "modelos de aulas, aulas experimentais, substituições, disponibilidade. A faturação "
+                        "fecha sozinha ao fim do mês, com faturas legais — IVA ao cêntimo.</p>"
+                    ),
+                    steps_heading_pt="Como funciona",
+                    benefits_heading_pt="O que ganhas",
+                    screens_heading_pt="Vê em ação",
+                    stats_heading_pt="Em números",
+                    proof_note_pt=(
+                        "<p><strong>Em produção hoje</strong> — a gerir dois estúdios de Pilates em Portugal: "
+                        "todas as aulas, todos os pagamentos.</p>"
+                    ),
+                    closing_heading_pt="Queres isto a gerir o teu estúdio?",
+                    closing_body_pt=(
+                        "<p>Conta-nos como funciona o teu estúdio numa conversa gratuita — mostramos-te a app "
+                        "já com as tuas aulas e planos lá dentro.</p>"
+                    ),
+                    cta_label_pt="Marca uma conversa",
+                )
+                studio_home.add_child(instance=app)
+                app.steps.add(
+                    StudioSolutionStep(icon="📱", title="Members use their phone",
+                                       body="They open the app, log in with a code sent by SMS — no password to forget — and book, cancel or change their plan in seconds.",
+                                       title_pt="Os sócios usam o telemóvel",
+                                       body_pt="Abrem a app, entram com um código enviado por SMS — sem password para esquecer — e marcam, cancelam ou mudam de plano em segundos."),
+                    StudioSolutionStep(icon="📅", title="Your team runs the day",
+                                       body="Calendar, class templates, trial classes, substitutions and availability — managed in the staff app, not over WhatsApp.",
+                                       title_pt="A tua equipa gere o dia",
+                                       body_pt="Calendário, modelos de aulas, aulas experimentais, substituições e disponibilidade — geridos na app da equipa, não pelo WhatsApp."),
+                    StudioSolutionStep(icon="💶", title="Payments and invoices take care of themselves",
+                                       body="Members pay by MB WAY, Multibanco or card; the month closes automatically with a legal invoice for every member.",
+                                       title_pt="Pagamentos e faturas tratam-se sozinhos",
+                                       body_pt="Os sócios pagam por MB WAY, Multibanco ou cartão; o mês fecha automaticamente com uma fatura legal para cada sócio."),
+                )
+                app.benefits.add(
+                    StudioSolutionBenefit(icon="📱", title="An app, not a website",
+                                          body="Installs on any phone from a link — no app store, no updates to chase. Works on iPhone and Android.",
+                                          title_pt="Uma app, não um site",
+                                          body_pt="Instala-se em qualquer telemóvel a partir de um link — sem app store, sem atualizações para gerir. Funciona em iPhone e Android."),
+                    StudioSolutionBenefit(icon="🔑", title="No passwords",
+                                          body="Members log in with a one-time code by SMS. Fewer support requests, nobody locked out.",
+                                          title_pt="Sem passwords",
+                                          body_pt="Os sócios entram com um código de utilização única por SMS. Menos pedidos de ajuda, ninguém fica de fora."),
+                    StudioSolutionBenefit(icon="📅", title="Booking in two taps",
+                                          body="Members see the schedule, book, cancel and join waiting lists on their own — 24/7.",
+                                          title_pt="Marcação em dois toques",
+                                          body_pt="Os sócios veem o horário, marcam, cancelam e entram em lista de espera sozinhos — 24/7."),
+                    StudioSolutionBenefit(icon="💶", title="Portuguese payments, built in",
+                                          body="MB WAY, Multibanco and card. Automatic month-end billing with legal invoices, VAT to the cent.",
+                                          title_pt="Pagamentos portugueses, incluídos",
+                                          body_pt="MB WAY, Multibanco e cartão. Faturação automática ao fim do mês com faturas legais, IVA ao cêntimo."),
+                    StudioSolutionBenefit(icon="🧑‍🏫", title="Staff tools that match reality",
+                                          body="Trial classes, instructor substitutions, availability, class templates — the things a studio deals with every day.",
+                                          title_pt="Ferramentas de equipa que batem com a realidade",
+                                          body_pt="Aulas experimentais, substituições de instrutores, disponibilidade, modelos de aulas — o que um estúdio enfrenta todos os dias."),
+                    StudioSolutionBenefit(icon="🗄️", title="You own the data",
+                                          body="Members, plans, history and invoices live in your own database — not in a SaaS you rent. Export anytime, no lock-in.",
+                                          title_pt="Os dados são teus",
+                                          body_pt="Sócios, planos, histórico e faturas ficam na tua base de dados — não num SaaS alugado. Exportas quando quiseres, sem amarras."),
+                )
+                app.stats.add(
+                    StudioSolutionStat(value="2 studios", label="Running on it every day", label_pt="A correr nela todos os dias"),
+                    StudioSolutionStat(value="2 apps", label="One for members, one for staff", label_pt="Uma para sócios, outra para a equipa"),
+                    StudioSolutionStat(value="24/7", label="Bookings without a phone call", label_pt="Marcações sem telefonema"),
+                    StudioSolutionStat(value="MB WAY", label="Multibanco and card, built in", label_pt="Multibanco e cartão, incluídos"),
+                )
+                app.save_revision().publish()
+                self.stdout.write(self.style.SUCCESS("  + StudioSolutionPage (/studio-app) created"))
+
+            # Link the 'Small applications' service card and the app case → /studio-app/
+            acard = studio_home.service_cards.filter(title__icontains="Small applications").first()
+            if acard and not acard.link_url:
+                acard.link_url = "/studio-app/"
+                acard.save()
+                self.stdout.write(self.style.SUCCESS("  + linked Small-applications service card → /studio-app/"))
+            acase = studio_home.cases.filter(title__icontains="full app").first()
+            if acase and not acase.link_url:
+                acase.link_url = "/studio-app/"
+                acase.save()
+                self.stdout.write(self.style.SUCCESS("  + linked studio-app case → /studio-app/"))
+
+            # Feature the Studio App on the home — the most prominent block under the hero.
+            app = StudioSolutionPage.objects.filter(slug="studio-app").first()
+            studio_home = StudioHomePage.objects.get(pk=studio_home.pk)  # fresh copy
+            if app and studio_home.featured_solution_id is None:
+                studio_home.featured_solution = app
+                studio_home.featured_eyebrow = "Featured solution"
+                studio_home.featured_eyebrow_pt = "Solução em destaque"
+                studio_home.featured_cta_label = "See the Studio App"
+                studio_home.featured_cta_label_pt = "Ver a Studio App"
+                studio_home.save_revision().publish()
+                self.stdout.write(self.style.SUCCESS("  + home: featured solution → /studio-app/"))
+
         self.stdout.write(self.style.SUCCESS("\nbootstrap_sites complete."))

@@ -14,6 +14,47 @@
   </div>
 </section>
 
+{# ── Featured solution (most prominent block of the page) ── #}
+{% if featured %}
+<section class="st-featured" id="featured">
+  <div class="st-container">
+    <div class="st-featured__card{% if featured.image %} st-featured__card--img{% endif %}">
+      <div class="st-featured__main">
+        {% tr page "featured_eyebrow" as feb %}{% if feb %}<p class="st-eyebrow">{{ feb }}</p>{% endif %}
+        <h2 class="st-featured__title">{% tr_richtext featured "hero_headline" %}</h2>
+        <div class="st-featured__sub">{% tr_richtext featured "hero_sub" %}</div>
+        {% if featured_benefits %}
+        <ul class="st-featured__points">
+          {% for b in featured_benefits %}
+            <li><span class="st-featured__icon" aria-hidden="true">{{ b.icon }}</span>{% tr b "title" %}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        <div class="st-featured__actions">
+          <a class="st-btn st-btn--lg" href="{{ featured.url }}">{% tr page "featured_cta_label" %} →</a>
+          <a class="st-btn st-btn--lg st-btn--ghost" href="{{ booking_url }}" target="_blank" rel="noopener">{% tr page "cta_label" %}</a>
+        </div>
+        {% tr_richtext featured "proof_note" as fpn %}{% if fpn %}<div class="st-featured__proof">{{ fpn }}</div>{% endif %}
+      </div>
+      {% if featured.image %}
+      <a class="st-featured__media" href="{{ featured.url }}" tabindex="-1" aria-hidden="true">
+        {% image featured.image width-900 class="st-featured__img" %}
+      </a>
+      {% elif featured_stats %}
+      <div class="st-featured__stats">
+        {% for s in featured_stats %}
+          <div class="st-featured__stat">
+            <div class="st-featured__stat-value">{{ s.value }}</div>
+            <div class="st-featured__stat-label">{% tr s "label" %}</div>
+          </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
 {# ── Services ─────────────────────────────────────────── #}
 <section class="st-section" id="services">
   <div class="st-container">

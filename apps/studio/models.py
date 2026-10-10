@@ -10,7 +10,12 @@ Phase 1 (MVP):
   studio.bilouro.com/
   ├── /            → StudioHomePage  (hero + 5 services + process + 3 cases + about + CTA)
   ├── /agendar     → StudioBookingPage  (booking form)
-  └── /obrigado    → StudioThanksPage   (post-submit confirmation)
+  ├── /obrigado    → StudioThanksPage   (post-submit confirmation)
+  ├── /blog, /projects → studio-styled views of tech content
+  └── /<slug>      → StudioSolutionPage (business infographic: /voice-agent, /studio-app)
+
+The home can feature ONE solution page (`featured_solution`) — rendered as the
+most prominent block right under the hero, with copy pulled from that page.
 
 The booking form POSTs to /api/studio/booking (apps/studio/views.py). Leads are
 persisted to the `Booking` model BEFORE the notification email is attempted, so a
@@ -68,6 +73,21 @@ class StudioHomePage(Page):
     closing_body_pt = RichTextField(blank=True)
     stack_note_pt = RichTextField(blank=True)
 
+    # Featured solution — the most prominent block on the home (under the hero).
+    # Headline, sub, benefits and stats are pulled from the chosen solution page.
+    featured_solution = models.ForeignKey(
+        "studio.StudioSolutionPage",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="Solution page shown as the featured block right under the hero.",
+    )
+    featured_eyebrow = models.CharField(max_length=120, blank=True, default="Featured solution")
+    featured_cta_label = models.CharField(max_length=80, blank=True, default="See the full solution")
+    featured_eyebrow_pt = models.CharField(max_length=120, blank=True)
+    featured_cta_label_pt = models.CharField(max_length=80, blank=True)
+
     template = "studio/home_page.html"
 
     content_panels = Page.content_panels + [
@@ -79,6 +99,10 @@ class StudioHomePage(Page):
                 FieldPanel("cta_label"),
             ],
             heading="Hero (EN)",
+        ),
+        MultiFieldPanel(
+            [FieldPanel("featured_solution"), FieldPanel("featured_eyebrow"), FieldPanel("featured_cta_label")],
+            heading="Featured solution (EN)",
         ),
         MultiFieldPanel([FieldPanel("services_heading"), FieldPanel("services_intro")], heading="Services (EN)"),
         InlinePanel("service_cards", label="Service card"),
@@ -94,6 +118,8 @@ class StudioHomePage(Page):
                 FieldPanel("hero_headline_pt"),
                 FieldPanel("hero_subhead_pt"),
                 FieldPanel("cta_label_pt"),
+                FieldPanel("featured_eyebrow_pt"),
+                FieldPanel("featured_cta_label_pt"),
                 FieldPanel("services_heading_pt"),
                 FieldPanel("services_intro_pt"),
                 FieldPanel("process_heading_pt"),
@@ -131,6 +157,13 @@ class StudioHomePage(Page):
         ctx["process_steps"] = self.process_steps.all()
         ctx["cases"] = self.cases.all()
         ctx["booking_page"] = StudioBookingPage.objects.live().descendant_of(self).first()
+        featured = self.featured_solution
+        if featured is not None and featured.live:
+            ctx["featured"] = featured
+            ctx["featured_benefits"] = featured.benefits.all()[:4]
+            ctx["featured_stats"] = featured.stats.all()[:3]
+        else:
+            ctx["featured"] = None
         return ctx
 
 
@@ -395,6 +428,14 @@ class StudioSolutionPage(Page):
     """A business-facing 'solution' page — infographic style, no jargon.
     Reached from the Proof section ('see more'). Indexed in the sitemap."""
 
+    image = models.ForeignKey(
+        "wagtailimages.Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="Optional hero visual — also used as the social-share (og:image) picture.",
+    )
     hero_eyebrow = models.CharField(max_length=160, blank=True)
     hero_headline = RichTextField(blank=True, help_text="Use <em> for emphasis.")
     hero_sub = RichTextField(blank=True)
@@ -405,6 +446,7 @@ class StudioSolutionPage(Page):
     steps_heading = models.CharField(max_length=160, blank=True)
     benefits_heading = models.CharField(max_length=160, blank=True)
     stats_heading = models.CharField(max_length=160, blank=True)
+    screens_heading = models.CharField(max_length=160, blank=True, help_text="Heading for the screenshots strip (hidden when there are no screens).")
     proof_note = RichTextField(blank=True, help_text="Small 'live in production' trust line.")
     closing_heading = models.CharField(max_length=200, blank=True)
     closing_body = RichTextField(blank=True)
@@ -423,6 +465,7 @@ class StudioSolutionPage(Page):
     steps_heading_pt = models.CharField(max_length=160, blank=True)
     benefits_heading_pt = models.CharField(max_length=160, blank=True)
     stats_heading_pt = models.CharField(max_length=160, blank=True)
+    screens_heading_pt = models.CharField(max_length=160, blank=True)
     proof_note_pt = RichTextField(blank=True)
     closing_heading_pt = models.CharField(max_length=200, blank=True)
     closing_body_pt = RichTextField(blank=True)
@@ -437,7 +480,7 @@ class StudioSolutionPage(Page):
 
     content_panels = Page.content_panels + [
         MultiFieldPanel(
-            [FieldPanel("hero_eyebrow"), FieldPanel("hero_headline"), FieldPanel("hero_sub")],
+            [FieldPanel("hero_eyebrow"), FieldPanel("hero_headline"), FieldPanel("hero_sub"), FieldPanel("image")],
             heading="Hero (EN)",
         ),
         MultiFieldPanel([FieldPanel("problem_heading"), FieldPanel("problem_body")], heading="Problem (EN)"),
@@ -446,6 +489,8 @@ class StudioSolutionPage(Page):
         InlinePanel("steps", label="How-it-works step"),
         FieldPanel("benefits_heading"),
         InlinePanel("benefits", label="Benefit"),
+        FieldPanel("screens_heading"),
+        InlinePanel("screens", label="Screen (screenshot)"),
         FieldPanel("stats_heading"),
         InlinePanel("stats", label="Stat"),
         FieldPanel("proof_note"),
@@ -457,6 +502,7 @@ class StudioSolutionPage(Page):
                 FieldPanel("problem_heading_pt"), FieldPanel("problem_body_pt"),
                 FieldPanel("solution_heading_pt"), FieldPanel("solution_body_pt"),
                 FieldPanel("steps_heading_pt"), FieldPanel("benefits_heading_pt"), FieldPanel("stats_heading_pt"),
+                FieldPanel("screens_heading_pt"),
                 FieldPanel("proof_note_pt"),
                 FieldPanel("price_heading_pt"), FieldPanel("price_value_pt"), FieldPanel("price_note_pt"),
                 FieldPanel("closing_heading_pt"), FieldPanel("closing_body_pt"), FieldPanel("cta_label_pt"),
@@ -471,6 +517,7 @@ class StudioSolutionPage(Page):
         ctx["steps"] = self.steps.all()
         ctx["benefits"] = self.benefits.all()
         ctx["stats"] = self.stats.all()
+        ctx["screens"] = self.screens.all()
         return ctx
 
 
@@ -499,6 +546,20 @@ class StudioSolutionBenefit(Orderable):
     panels = [
         FieldPanel("icon"), FieldPanel("title"), FieldPanel("body"),
         MultiFieldPanel([FieldPanel("title_pt"), FieldPanel("body_pt")], heading="PT", classname="collapsed"),
+    ]
+
+
+class StudioSolutionScreen(Orderable):
+    """A screenshot of the product with a short caption — rendered as a strip."""
+
+    page = ParentalKey(StudioSolutionPage, on_delete=models.CASCADE, related_name="screens")
+    image = models.ForeignKey("wagtailimages.Image", on_delete=models.CASCADE, related_name="+")
+    caption = models.CharField(max_length=160, blank=True)
+    caption_pt = models.CharField(max_length=160, blank=True)
+
+    panels = [
+        FieldPanel("image"), FieldPanel("caption"),
+        MultiFieldPanel([FieldPanel("caption_pt")], heading="PT", classname="collapsed"),
     ]
 
 

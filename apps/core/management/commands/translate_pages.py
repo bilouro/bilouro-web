@@ -64,6 +64,8 @@ TRANSLATABLE = {
             ("hero_headline", "hero_headline_pt"),
             ("hero_subhead", "hero_subhead_pt"),
             ("cta_label", "cta_label_pt"),
+            ("featured_eyebrow", "featured_eyebrow_pt"),
+            ("featured_cta_label", "featured_cta_label_pt"),
             ("services_heading", "services_heading_pt"),
             ("services_intro", "services_intro_pt"),
             ("process_heading", "process_heading_pt"),
@@ -85,6 +87,29 @@ TRANSLATABLE = {
         "studio_thanks",
         [("heading", "heading_pt"), ("body", "body_pt")],
     ),
+    "StudioSolutionPage": (
+        "studio_solution",
+        [
+            ("hero_eyebrow", "hero_eyebrow_pt"),
+            ("hero_headline", "hero_headline_pt"),
+            ("hero_sub", "hero_sub_pt"),
+            ("problem_heading", "problem_heading_pt"),
+            ("problem_body", "problem_body_pt"),
+            ("solution_heading", "solution_heading_pt"),
+            ("solution_body", "solution_body_pt"),
+            ("steps_heading", "steps_heading_pt"),
+            ("benefits_heading", "benefits_heading_pt"),
+            ("screens_heading", "screens_heading_pt"),
+            ("stats_heading", "stats_heading_pt"),
+            ("proof_note", "proof_note_pt"),
+            ("price_heading", "price_heading_pt"),
+            ("price_value", "price_value_pt"),
+            ("price_note", "price_note_pt"),
+            ("closing_heading", "closing_heading_pt"),
+            ("closing_body", "closing_body_pt"),
+            ("cta_label", "cta_label_pt"),
+        ],
+    ),
 }
 
 # Inline (Orderable) children that also need PT translation, keyed by parent
@@ -94,6 +119,12 @@ TRANSLATABLE_INLINES = {
         ("service_cards", "service_card", [("title", "title_pt"), ("subtitle", "subtitle_pt"), ("output", "output_pt")]),
         ("process_steps", "process_step", [("title", "title_pt"), ("description", "description_pt")]),
         ("cases", "case", [("title", "title_pt"), ("body", "body_pt")]),
+    ],
+    "StudioSolutionPage": [
+        ("steps", "solution_step", [("title", "title_pt"), ("body", "body_pt")]),
+        ("benefits", "solution_benefit", [("title", "title_pt"), ("body", "body_pt")]),
+        ("stats", "solution_stat", [("label", "label_pt")]),
+        ("screens", "solution_screen", [("caption", "caption_pt")]),
     ],
 }
 
