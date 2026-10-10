@@ -102,8 +102,8 @@ msgstr "Blog técnico"
 
 #: templates/autoral/home_page.html:43
 msgid ""
-"Notes on engineering leadership, modernizing legacy, and building production "
-"AI agents at SMB scale."
+"Notes on engineering leadership, modernizing legacy, and building production"
+" AI agents at SMB scale."
 msgstr ""
 "Notas sobre liderança de engenharia, modernização de legado e construção de "
 "agentes de IA em produção à escala de PME."
@@ -267,6 +267,14 @@ msgstr "por"
 #: templates/tech/blog_post_page.html:64
 msgid "Read next"
 msgstr "Ler a seguir"
+
+#: templates/studio/solution_page.html
+msgid "Close"
+msgstr "Fechar"
+
+#: templates/studio/solution_page.html
+msgid "Enlarged image"
+msgstr "Imagem ampliada"
 
 #~ msgid "Name"
 #~ msgstr "Nome"

@@ -37,7 +37,49 @@
   </div>
 </section>
 
-{# ── How it works (flow) ──────────────────────────────── #}
+{# ── Feature stories (in-depth pages; hidden when none) ── #}
+{% if features %}
+<section class="st-section st-features">
+  <div class="st-container">
+    {% tr page "features_heading" as fh %}{% if fh %}<h2 class="st-section__title">{{ fh }}</h2>{% endif %}
+    {% for f in features %}
+      <article class="st-feature{% cycle '' ' st-feature--flip' %}{% if f.image and f.image.width > f.image.height %} st-feature--wide{% endif %}" id="feature-{{ forloop.counter }}">
+        <div class="st-feature__text">
+          <span class="st-feature__n">{% if f.icon %}<span aria-hidden="true">{{ f.icon }}</span> {% endif %}{{ forloop.counter }}</span>
+          <h3 class="st-feature__title">{% tr f "title" %}</h3>
+          {% tr f "pain" as pain %}{% if pain %}<p class="st-feature__pain">{{ pain }}</p>{% endif %}
+          <div class="st-feature__body">{% tr_richtext f "body" %}</div>
+          {% tr f "differentiator" as diff %}{% if diff %}<p class="st-feature__diff">{{ diff }}</p>{% endif %}
+          {% if f.stat_value %}<div class="st-feature__stat"><span class="st-feature__stat-value">{{ f.stat_value }}</span><span class="st-feature__stat-label">{% tr f "stat_label" %}</span></div>{% endif %}
+        </div>
+        {% if f.image or f.image2 %}
+        <div class="st-feature__media{% if f.image and f.image2 %} st-feature__media--two{% endif %}">
+          {% if f.image %}{% image f.image width-1800 as f_full %}<a class="st-zoom" href="{{ f_full.url }}" data-caption="{% tr f 'title' %}">{% image f.image width-1200 class="st-feature__img" loading="lazy" %}</a>{% endif %}
+          {% if f.image2 %}{% image f.image2 width-1800 as f_full2 %}<a class="st-zoom" href="{{ f_full2.url }}" data-caption="{% tr f 'title' %}">{% image f.image2 width-1200 class="st-feature__img" loading="lazy" %}</a>{% endif %}
+        </div>
+        {% endif %}
+      </article>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{# ── Also included (hidden when empty) ────────────────── #}
+{% if extras %}
+<section class="st-section st-section--alt">
+  <div class="st-container">
+    {% tr page "extras_heading" as xh %}{% if xh %}<h2 class="st-section__title">{{ xh }}</h2>{% endif %}
+    <ul class="st-extras">
+      {% for x in extras %}
+        <li class="st-extra"><strong>{% tr x "title" %}</strong>{% tr x "body" as xb %}{% if xb %}<span>{{ xb }}</span>{% endif %}</li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
+{# ── How it works (flow; hidden when no steps) ────────── #}
+{% if steps %}
 <section class="st-section st-section--alt">
   <div class="st-container">
     <h2 class="st-section__title">{% tr page "steps_heading" %}</h2>
@@ -53,8 +95,10 @@
     </ol>
   </div>
 </section>
+{% endif %}
 
-{# ── Benefits ─────────────────────────────────────────── #}
+{# ── Benefits (hidden when none) ──────────────────────── #}
+{% if benefits %}
 <section class="st-section">
   <div class="st-container">
     <h2 class="st-section__title">{% tr page "benefits_heading" %}</h2>
@@ -69,6 +113,7 @@
     </div>
   </div>
 </section>
+{% endif %}
 
 {# ── Screens (hidden until screenshots are added in Wagtail) ── #}
 {% if screens %}
@@ -78,8 +123,9 @@
     <div class="st-screens">
       {% for sc in screens %}
         <figure class="st-screen">
-          {% image sc.image width-720 class="st-screen__img" loading="lazy" %}
-          {% tr sc "caption" as cap %}{% if cap %}<figcaption class="st-screen__cap">{{ cap }}</figcaption>{% endif %}
+          {% tr sc "caption" as cap %}{% image sc.image width-1800 as sc_full %}
+          <a class="st-zoom" href="{{ sc_full.url }}" data-caption="{{ cap }}">{% image sc.image width-720 class="st-screen__img" loading="lazy" %}</a>
+          {% if cap %}<figcaption class="st-screen__cap">{{ cap }}</figcaption>{% endif %}
         </figure>
       {% endfor %}
     </div>
@@ -126,4 +172,27 @@
 </section>
 
 {% endwith %}
+
+{# ── Lightbox: any .st-zoom link opens its full-size image in a scrollable dialog ── #}
+<dialog class="st-lightbox" id="st-lightbox" aria-label="{% trans 'Enlarged image' %}">
+  <button type="button" class="st-lightbox__close" aria-label="{% trans 'Close' %}" title="{% trans 'Close' %}">×</button>
+  <figure class="st-lightbox__fig"><img alt=""><figcaption class="st-lightbox__cap"></figcaption></figure>
+</dialog>
+<script>
+(function () {
+  var dlg = document.getElementById('st-lightbox');
+  if (!dlg || typeof dlg.showModal !== 'function') return;  // no <dialog>: links open the image normally
+  var img = dlg.querySelector('img'), cap = dlg.querySelector('figcaption');
+  document.querySelectorAll('a.st-zoom').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      img.src = a.href; img.alt = a.dataset.caption || ''; cap.textContent = a.dataset.caption || '';
+      dlg.showModal(); dlg.scrollTop = 0;
+    });
+  });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+  dlg.querySelector('.st-lightbox__close').addEventListener('click', function () { dlg.close(); });
+  dlg.addEventListener('close', function () { img.removeAttribute('src'); });
+})();
+</script>
 {% endblock %}

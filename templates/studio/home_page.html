@@ -26,7 +26,7 @@
         {% if featured_benefits %}
         <ul class="st-featured__points">
           {% for b in featured_benefits %}
-            <li><span class="st-featured__icon" aria-hidden="true">{{ b.icon }}</span>{% tr b "title" %}</li>
+            <li>{% if b.icon %}<span class="st-featured__icon" aria-hidden="true">{{ b.icon }}</span>{% endif %}{% tr b "title" %}</li>
           {% endfor %}
         </ul>
         {% endif %}

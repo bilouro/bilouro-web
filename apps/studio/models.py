@@ -160,7 +160,9 @@ class StudioHomePage(Page):
         featured = self.featured_solution
         if featured is not None and featured.live:
             ctx["featured"] = featured
-            ctx["featured_benefits"] = featured.benefits.all()[:4]
+            # Chips under the featured headline: benefits (compact pages) or
+            # feature stories (in-depth pages) — first one that is non-empty.
+            ctx["featured_benefits"] = list(featured.benefits.all()[:4]) or list(featured.features.all()[:5])
             ctx["featured_stats"] = featured.stats.all()[:3]
         else:
             ctx["featured"] = None
@@ -447,6 +449,8 @@ class StudioSolutionPage(Page):
     benefits_heading = models.CharField(max_length=160, blank=True)
     stats_heading = models.CharField(max_length=160, blank=True)
     screens_heading = models.CharField(max_length=160, blank=True, help_text="Heading for the screenshots strip (hidden when there are no screens).")
+    features_heading = models.CharField(max_length=160, blank=True, help_text="Heading above the feature stories (hidden when there are none).")
+    extras_heading = models.CharField(max_length=160, blank=True, help_text="Heading for the 'Also included' list (hidden when empty).")
     proof_note = RichTextField(blank=True, help_text="Small 'live in production' trust line.")
     closing_heading = models.CharField(max_length=200, blank=True)
     closing_body = RichTextField(blank=True)
@@ -466,6 +470,8 @@ class StudioSolutionPage(Page):
     benefits_heading_pt = models.CharField(max_length=160, blank=True)
     stats_heading_pt = models.CharField(max_length=160, blank=True)
     screens_heading_pt = models.CharField(max_length=160, blank=True)
+    features_heading_pt = models.CharField(max_length=160, blank=True)
+    extras_heading_pt = models.CharField(max_length=160, blank=True)
     proof_note_pt = RichTextField(blank=True)
     closing_heading_pt = models.CharField(max_length=200, blank=True)
     closing_body_pt = RichTextField(blank=True)
@@ -485,6 +491,10 @@ class StudioSolutionPage(Page):
         ),
         MultiFieldPanel([FieldPanel("problem_heading"), FieldPanel("problem_body")], heading="Problem (EN)"),
         MultiFieldPanel([FieldPanel("solution_heading"), FieldPanel("solution_body")], heading="Solution (EN)"),
+        FieldPanel("features_heading"),
+        InlinePanel("features", label="Feature story"),
+        FieldPanel("extras_heading"),
+        InlinePanel("extras", label="Also included"),
         FieldPanel("steps_heading"),
         InlinePanel("steps", label="How-it-works step"),
         FieldPanel("benefits_heading"),
@@ -503,6 +513,7 @@ class StudioSolutionPage(Page):
                 FieldPanel("solution_heading_pt"), FieldPanel("solution_body_pt"),
                 FieldPanel("steps_heading_pt"), FieldPanel("benefits_heading_pt"), FieldPanel("stats_heading_pt"),
                 FieldPanel("screens_heading_pt"),
+                FieldPanel("features_heading_pt"), FieldPanel("extras_heading_pt"),
                 FieldPanel("proof_note_pt"),
                 FieldPanel("price_heading_pt"), FieldPanel("price_value_pt"), FieldPanel("price_note_pt"),
                 FieldPanel("closing_heading_pt"), FieldPanel("closing_body_pt"), FieldPanel("cta_label_pt"),
@@ -518,6 +529,8 @@ class StudioSolutionPage(Page):
         ctx["benefits"] = self.benefits.all()
         ctx["stats"] = self.stats.all()
         ctx["screens"] = self.screens.all()
+        ctx["features"] = self.features.all()
+        ctx["extras"] = self.extras.all()
         return ctx
 
 
@@ -545,6 +558,54 @@ class StudioSolutionBenefit(Orderable):
 
     panels = [
         FieldPanel("icon"), FieldPanel("title"), FieldPanel("body"),
+        MultiFieldPanel([FieldPanel("title_pt"), FieldPanel("body_pt")], heading="PT", classname="collapsed"),
+    ]
+
+
+class StudioSolutionFeature(Orderable):
+    """One in-depth feature story: the pain, the steps, 1-2 screenshots, one
+    proof number and the differentiator. Rendered as alternating full-width
+    sections right after Problem/Solution."""
+
+    page = ParentalKey(StudioSolutionPage, on_delete=models.CASCADE, related_name="features")
+    icon = models.CharField(max_length=8, blank=True, help_text="Emoji (used in the home featured block).")
+    title = models.CharField(max_length=120)
+    pain = models.CharField(max_length=255, blank=True, help_text="One line: the problem this solves.")
+    body = RichTextField(blank=True, help_text="The 3-4 steps, as an ordered list.")
+    image = models.ForeignKey("wagtailimages.Image", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    image2 = models.ForeignKey("wagtailimages.Image", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    stat_value = models.CharField(max_length=40, blank=True, help_text="e.g. '312'")
+    stat_label = models.CharField(max_length=160, blank=True)
+    differentiator = models.CharField(max_length=255, blank=True, help_text="One line: why this is better than the usual way.")
+    title_pt = models.CharField(max_length=120, blank=True)
+    pain_pt = models.CharField(max_length=255, blank=True)
+    body_pt = RichTextField(blank=True)
+    stat_label_pt = models.CharField(max_length=160, blank=True)
+    differentiator_pt = models.CharField(max_length=255, blank=True)
+
+    panels = [
+        FieldPanel("icon"), FieldPanel("title"), FieldPanel("pain"), FieldPanel("body"),
+        FieldPanel("image"), FieldPanel("image2"),
+        FieldPanel("stat_value"), FieldPanel("stat_label"), FieldPanel("differentiator"),
+        MultiFieldPanel(
+            [FieldPanel("title_pt"), FieldPanel("pain_pt"), FieldPanel("body_pt"),
+             FieldPanel("stat_label_pt"), FieldPanel("differentiator_pt")],
+            heading="PT", classname="collapsed",
+        ),
+    ]
+
+
+class StudioSolutionExtra(Orderable):
+    """'Also included' item: title + one line."""
+
+    page = ParentalKey(StudioSolutionPage, on_delete=models.CASCADE, related_name="extras")
+    title = models.CharField(max_length=120)
+    body = models.CharField(max_length=255, blank=True)
+    title_pt = models.CharField(max_length=120, blank=True)
+    body_pt = models.CharField(max_length=255, blank=True)
+
+    panels = [
+        FieldPanel("title"), FieldPanel("body"),
         MultiFieldPanel([FieldPanel("title_pt"), FieldPanel("body_pt")], heading="PT", classname="collapsed"),
     ]
 

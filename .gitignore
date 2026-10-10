@@ -63,3 +63,7 @@ docker-compose.override.yml
 # Local-only assistant context (private; references private repos/paths)
 CLAUDE.md
 
+
+# Content handoff drafts (studio2 session) and local Claude settings — never committed
+drafts/
+.claude/settings.local.json
