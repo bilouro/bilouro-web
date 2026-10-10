@@ -23,7 +23,8 @@
   <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
   <meta property="og:site_name" content="{{ wagtail_site_name|default:"bilouro.com" }}">
   {% block og_image %}{# pages with .image override; fallback below #}
-    {% if page.image %}{% image page.image fill-1200x630 as og_img %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ og_img.url }}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">{% endif %}
+    {# Media URLs are relative locally but absolute (S3) in prod — only prefix the host for relative ones. #}
+    {% if page.image %}{% image page.image fill-1200x630 as og_img %}<meta property="og:image" content="{% if og_img.url|slice:':1' == '/' %}{{ request.scheme }}://{{ request.get_host }}{% endif %}{{ og_img.url }}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">{% endif %}
   {% endblock %}
 
   {# Twitter #}
