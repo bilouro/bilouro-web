@@ -288,6 +288,29 @@ msgstr "Todas as funcionalidades, em detalhe"
 msgid "Frequently asked questions"
 msgstr "Perguntas frequentes"
 
+#: templates/studio/article_page.html
+msgid "Articles"
+msgstr "Artigos"
+
+#: templates/studio/article_page.html
+msgid "See how the app does it"
+msgstr "Vê como a app resolve isto"
+
+#: templates/studio/article_page.html
+msgid "Keep reading"
+msgstr "Continua a ler"
+
+#: templates/studio/article_page.html
+msgid "No articles yet."
+msgstr "Ainda não há artigos."
+
+#: templates/studio/article_page.html
+#, python-format
+msgid "%(m)s min read"
+msgid_plural "%(m)s min read"
+msgstr[0] "%(m)s min de leitura"
+msgstr[1] "%(m)s min de leitura"
+
 #~ msgid "Name"
 #~ msgstr "Nome"
 

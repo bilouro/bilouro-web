@@ -178,6 +178,7 @@ class StudioHomePage(StudioSitemapMixin, Page):
         "studio.StudioBlogIndexPage",
         "studio.StudioProjectIndexPage",
         "studio.StudioSolutionPage",
+        "studio.StudioArticleIndexPage",
     ]
 
     def get_context(self, request, *args, **kwargs):
@@ -734,3 +735,91 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"{self.name} <{self.email}> ({self.created_at:%Y-%m-%d})"
+
+
+# ─── Articles (/artigos) — PT-first content for studio and gym owners ───
+#
+# Separate from /blog (which mirrors the engineering posts of tech.bilouro.com).
+# Body is Markdown in both languages; content arrives from drafts/artigos/<slug>/
+# through `manage.py import_article`.
+
+
+class StudioArticleIndexPage(StudioSitemapMixin, Page):
+    intro = RichTextField(blank=True)
+    intro_pt = RichTextField(blank=True)
+    title_pt = models.CharField(max_length=160, blank=True)
+    seo_title_pt = models.CharField(max_length=255, blank=True)
+    search_description_pt = models.TextField(blank=True)
+
+    template = "studio/article_index_page.html"
+    max_count = 1
+    parent_page_types = ["studio.StudioHomePage"]
+    subpage_types = ["studio.StudioArticlePage"]
+
+    content_panels = Page.content_panels + [
+        MultiFieldPanel([FieldPanel("intro")], heading="EN"),
+        MultiFieldPanel([FieldPanel("title_pt"), FieldPanel("intro_pt")], heading="PT", classname="collapsed"),
+    ]
+    promote_panels = Page.promote_panels + [SEO_PT_PANEL]
+
+    def get_context(self, request, *args, **kwargs):
+        ctx = super().get_context(request, *args, **kwargs)
+        ctx["articles"] = StudioArticlePage.objects.live().child_of(self).order_by("-date", "-first_published_at")
+        return ctx
+
+
+class StudioArticlePage(StudioSitemapMixin, Page):
+    date = models.DateField()
+    author = models.CharField(max_length=120, blank=True, default="Victor Bilouro")
+    image = models.ForeignKey(
+        "wagtailimages.Image", null=True, blank=True, on_delete=models.SET_NULL, related_name="+",
+        help_text="Cover image — also the social-share picture.",
+    )
+    related_solution = models.ForeignKey(
+        "studio.StudioSolutionPage", null=True, blank=True, on_delete=models.SET_NULL, related_name="articles",
+        help_text="Solution page promoted at the end of the article (and used to group related articles).",
+    )
+    intro = models.TextField(blank=True, help_text="Lede under the title; also the meta description fallback.")
+    body_md = models.TextField(blank=True, help_text="Markdown.")
+    title_pt = models.CharField(max_length=255, blank=True)
+    intro_pt = models.TextField(blank=True)
+    body_md_pt = models.TextField(blank=True)
+    seo_title_pt = models.CharField(max_length=255, blank=True)
+    search_description_pt = models.TextField(blank=True)
+
+    template = "studio/article_page.html"
+    parent_page_types = ["studio.StudioArticleIndexPage"]
+    subpage_types: list[str] = []
+
+    content_panels = Page.content_panels + [
+        MultiFieldPanel([FieldPanel("date"), FieldPanel("author"), FieldPanel("image"), FieldPanel("related_solution")], heading="Meta"),
+        MultiFieldPanel([FieldPanel("intro"), FieldPanel("body_md")], heading="EN"),
+        MultiFieldPanel([FieldPanel("title_pt"), FieldPanel("intro_pt"), FieldPanel("body_md_pt")], heading="PT"),
+    ]
+    promote_panels = Page.promote_panels + [SEO_PT_PANEL]
+
+    search_fields = Page.search_fields + [
+        index.SearchField("intro"), index.SearchField("body_md"),
+        index.SearchField("title_pt"), index.SearchField("body_md_pt"),
+    ]
+
+    def body_for(self, lang: str) -> str:
+        return (self.body_md_pt if lang == "pt" and self.body_md_pt else self.body_md) or ""
+
+    def reading_minutes(self, lang: str = "pt") -> int:
+        return max(1, round(len(self.body_for(lang).split()) / 220))
+
+    def get_context(self, request, *args, **kwargs):
+        ctx = super().get_context(request, *args, **kwargs)
+        import markdown as md
+
+        lang = (getattr(request, "LANGUAGE_CODE", "pt") or "pt")[:2]
+        ctx["body_html"] = md.markdown(self.body_for(lang), extensions=["extra", "sane_lists"])
+        ctx["minutes"] = self.reading_minutes(lang)
+        siblings = StudioArticlePage.objects.live().sibling_of(self, inclusive=False)
+        if self.related_solution_id:
+            same = siblings.filter(related_solution_id=self.related_solution_id)
+            ctx["related_articles"] = list(same.order_by("-date")[:3]) or list(siblings.order_by("-date")[:3])
+        else:
+            ctx["related_articles"] = list(siblings.order_by("-date")[:3])
+        return ctx

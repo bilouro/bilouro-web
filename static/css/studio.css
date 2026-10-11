@@ -494,3 +494,25 @@ body.studio .st-featured__for { display: flex; flex-wrap: wrap; align-items: cen
 body.studio .st-featured__for span { color: var(--st-muted); font-weight: 600; }
 body.studio .st-featured__for a { padding: 4px 12px; border-radius: 999px; background: var(--st-surface); border: 1px solid var(--st-line); color: var(--st-ink-soft); text-decoration: none; font-weight: 600; }
 body.studio .st-featured__for a:hover { border-color: var(--st-accent); color: var(--st-accent); }
+
+/* ── Articles (/artigos) ─────────────────────────────── */
+body.studio .st-article__body h2 { font-size: 1.55rem; letter-spacing: -.015em; margin: 1.8em 0 .5em; line-height: 1.2; }
+body.studio .st-article__body h3 { font-size: 1.2rem; margin: 1.4em 0 .4em; }
+body.studio .st-article__body ul, body.studio .st-article__body ol { padding-left: 1.3em; margin: 0 0 1.1em; }
+body.studio .st-article__body li { margin: 0 0 .45em; }
+body.studio .st-article__body blockquote { margin: 1.4em 0; padding: 12px 18px; border-left: 3px solid var(--st-accent); background: var(--st-accent-soft); border-radius: 10px; color: var(--st-ink); }
+body.studio .st-article__body blockquote p { margin: 0; }
+body.studio .st-article__body table { width: 100%; border-collapse: collapse; margin: 0 0 1.2em; font-size: .97rem; }
+body.studio .st-article__body th, body.studio .st-article__body td { border-bottom: 1px solid var(--st-line); padding: 8px 10px; text-align: left; vertical-align: top; }
+body.studio .st-article__body a { color: var(--st-accent); }
+body.studio .st-article__hero img { max-height: 520px; width: auto; max-width: 100%; display: block; margin: 0 auto; }
+body.studio .st-article__cta { margin: 40px 0 0; padding: 26px 28px; border-radius: 18px; background: linear-gradient(135deg, var(--st-accent-soft), var(--st-surface)); border: 1px solid #d9e0ff; }
+body.studio .st-article__cta .st-eyebrow { margin-bottom: 8px; }
+body.studio .st-article__cta-title { font-size: 1.35rem; font-weight: 800; letter-spacing: -.015em; margin: 0 0 16px; line-height: 1.2; }
+body.studio .st-article__cta-title p { margin: 0; }
+body.studio .st-article__cta-title em { color: var(--st-accent); font-style: normal; }
+body.studio .st-article__cta-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+body.studio .st-article__related { margin-top: 36px; }
+body.studio .st-article__related-title { font-size: 1.1rem; margin: 0 0 10px; }
+body.studio .st-article__related ul { margin: 0; padding-left: 1.2em; }
+body.studio .st-article__related a { color: var(--st-accent); text-decoration: none; font-weight: 600; }

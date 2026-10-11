@@ -117,3 +117,41 @@ def studio_solution_jsonld(context, page):
             ],
         })
     return mark_safe(_script({"@context": "https://schema.org", "@graph": graph}))
+
+
+@register.simple_tag
+def studio_articles_index():
+    """The live /artigos index, or None — the nav link only shows once it is published."""
+    from apps.studio.models import StudioArticleIndexPage
+
+    return StudioArticleIndexPage.objects.live().first()
+
+
+@register.simple_tag(takes_context=True)
+def studio_article_jsonld(context, page):
+    request = context["request"]
+    lang = getattr(request, "LANGUAGE_CODE", "pt")
+    url = _page_url(request, page, lang)
+    post = {
+        "@type": "BlogPosting",
+        "@id": url + "#article",
+        "headline": _t(page, "title", lang)[:110],
+        "description": _t(page, "search_description", lang) or _t(page, "intro", lang),
+        "datePublished": page.date.isoformat(),
+        "dateModified": (page.last_published_at or page.latest_revision_created_at).date().isoformat()
+        if (page.last_published_at or page.latest_revision_created_at) else page.date.isoformat(),
+        "inLanguage": "en" if lang == "en" else "pt-PT",
+        "mainEntityOfPage": url,
+        "author": {"@type": "Person", "name": page.author or "Victor Bilouro"},
+        "publisher": {"@id": _base_url(request) + "/#org"},
+    }
+    if page.image:
+        r = page.image.get_rendition("fill-1200x630")
+        post["image"] = r.url if r.url.startswith("http") else _base_url(request) + r.url
+    index_page = page.get_parent().specific
+    crumbs = {"@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": ORG_NAME, "item": _base_url(request) + ("/en/" if lang == "en" else "/")},
+        {"@type": "ListItem", "position": 2, "name": _t(index_page, "title", lang) or index_page.title, "item": _page_url(request, index_page, lang)},
+        {"@type": "ListItem", "position": 3, "name": _t(page, "title", lang), "item": url},
+    ]}
+    return mark_safe(_script({"@context": "https://schema.org", "@graph": [_organization(request), post, crumbs]}))

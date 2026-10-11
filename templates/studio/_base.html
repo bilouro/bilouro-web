@@ -1,5 +1,5 @@
 {% extends "_base.html" %}
-{% load static i18n i18n_fields wagtailcore_tags %}
+{% load static i18n i18n_fields wagtailcore_tags studio_seo %}
 
 {% block body_class %}studio{% endblock %}
 
@@ -27,6 +27,7 @@
 
     <nav class="st-nav" id="st-nav" aria-label="{% trans 'Primary' %}">
       <a class="st-navlink" href="/studio-app/">Studio App</a>
+      {% studio_articles_index as art_index %}{% if art_index %}<a class="st-navlink" href="{% pageurl art_index %}">{% trans "Articles" %}</a>{% endif %}
       <a class="st-navlink" href="/blog/">Blog</a>
       <a class="st-navlink" href="/projects/">{% trans "Projects" %}</a>
       {% with p=request.studio_path|default:request.path %}
@@ -55,6 +56,7 @@
     </div>
     <nav class="st-footer__links" aria-label="{% trans 'Footer' %}">
       <a href="/studio-app/">Studio App</a>
+      {% if art_index %}<a href="{% pageurl art_index %}">{% trans "Articles" %}</a>{% endif %}
       <a href="/blog/">Blog</a>
       <a href="/projects/">{% trans "Projects" %}</a>
       <a href="https://github.com/bilouro" target="_blank" rel="noopener">GitHub</a>

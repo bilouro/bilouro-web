@@ -23,6 +23,7 @@ dependencies = [
     "wagtail-metadata>=5.0.0",
     "openai>=2.36.0",
     "django-rosetta>=0.10.3",
+    "markdown>=3.7",
 ]
 
 [dependency-groups]

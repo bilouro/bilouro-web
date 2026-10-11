@@ -75,6 +75,7 @@ dependencies = [
     { name = "django-ses" },
     { name = "django-storages", extra = ["s3"] },
     { name = "gunicorn" },
+    { name = "markdown" },
     { name = "openai" },
     { name = "pillow" },
     { name = "psycopg", extra = ["binary"] },
@@ -106,6 +107,7 @@ requires-dist = [
     { name = "django-ses", specifier = ">=4.1" },
     { name = "django-storages", extras = ["s3"], specifier = ">=1.14" },
     { name = "gunicorn", specifier = ">=23.0" },
+    { name = "markdown", specifier = ">=3.7" },
     { name = "openai", specifier = ">=2.36.0" },
     { name = "pillow", specifier = ">=10.0" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.2" },
@@ -776,6 +778,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/74/9a/9192d6a74e2c6db4f705dd98f56be488e47373172c13f4916aeabc4d68b8/laces-0.1.2.tar.gz", hash = "sha256:3218e09c1889ae5cf3fc7a82f5bb63ec0c7879889b6a9760bfc42323c694b84d", size = 29264, upload-time = "2025-01-14T04:37:34.805Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/60/fe/31f76f5cb2579bdda208aa257ce5482653f22ab1bad3e128fe2f803fa2f1/laces-0.1.2-py3-none-any.whl", hash = "sha256:980cdaf9a31e883a2b8198132e2388931a4eb8814f5bfa5d8bba13ff9f657b7c", size = 22462, upload-time = "2025-01-14T04:37:30.636Z" },
+]
+
+[[package]]
+name = "markdown"
+version = "3.11"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f8/4f/700155c8c20d9e655dd0732b5fc3c7614f291b9148da271d7388e50bf774/markdown-3.11.tar.gz", hash = "sha256:180224db6aed87ba9ce1f2781ebcd5826253de8ff637112090e24b84502bbf9f", size = 485623, upload-time = "2026-09-25T13:46:23.473Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ec/1e/32971905a7ab47f8b66866ed949fa48b104ba1c4a6fa57794c4f2c4b2cb8/markdown-3.11-py3-none-any.whl", hash = "sha256:cd6c89e7eb308c8b332ed673215a52d208a43f8bacc030b1419376129408719e", size = 111296, upload-time = "2026-09-25T13:46:22.163Z" },
 ]
 
 [[package]]
