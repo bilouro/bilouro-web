@@ -28,7 +28,7 @@
     <nav class="st-nav" id="st-nav" aria-label="{% trans 'Primary' %}">
       <a class="st-navlink" href="/studio-app/">Studio App</a>
       {% studio_articles_index as art_index %}{% if art_index %}<a class="st-navlink" href="{% pageurl art_index %}">{% trans "Articles" %}</a>{% endif %}
-      <a class="st-navlink" href="/blog/">Blog</a>
+      <a class="st-navlink" href="/blog/">{% trans "Engineering" %}</a>
       <a class="st-navlink" href="/projects/">{% trans "Projects" %}</a>
       {% with p=request.studio_path|default:request.path %}
       <div class="st-lang" role="group" aria-label="{% trans 'Language' %}">
@@ -57,7 +57,7 @@
     <nav class="st-footer__links" aria-label="{% trans 'Footer' %}">
       <a href="/studio-app/">Studio App</a>
       {% if art_index %}<a href="{% pageurl art_index %}">{% trans "Articles" %}</a>{% endif %}
-      <a href="/blog/">Blog</a>
+      <a href="/blog/">{% trans "Engineering" %}</a>
       <a href="/projects/">{% trans "Projects" %}</a>
       <a href="https://github.com/bilouro" target="_blank" rel="noopener">GitHub</a>
       <a href="mailto:consulting@bilouro.com">consulting@bilouro.com</a>

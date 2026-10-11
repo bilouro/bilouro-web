@@ -311,6 +311,10 @@ msgid_plural "%(m)s min read"
 msgstr[0] "%(m)s min de leitura"
 msgstr[1] "%(m)s min de leitura"
 
+#: templates/studio/_base.html
+msgid "Engineering"
+msgstr "Engenharia"
+
 #~ msgid "Name"
 #~ msgstr "Nome"
 
