@@ -57,7 +57,8 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("slug")
         parser.add_argument("--dir", default="drafts/artigos", help="Parent folder (default drafts/artigos)")
-        parser.add_argument("--publish", action="store_true", help="Publish (also publishes the /artigos index)")
+        parser.add_argument("--publish", action="store_true", help="Publish now (also publishes the /artigos index)")
+        parser.add_argument("--go-live", help="Schedule: 'YYYY-MM-DD HH:MM' Europe/Lisbon. Sets the article date too; publishes the index now.")
 
     def _image(self, base: Path, ref: str):
         path = (base / ref).resolve()
@@ -106,7 +107,11 @@ class Command(BaseCommand):
             if not pt_meta.get(key) or not en_meta.get(key):
                 raise CommandError(f"'{key}' missing in one of the languages")
 
-        idx = self._index(opts["publish"])
+        go_live = None
+        if opts.get("go_live"):
+            from zoneinfo import ZoneInfo
+            go_live = dt.datetime.fromisoformat(opts["go_live"]).replace(tzinfo=ZoneInfo("Europe/Lisbon"))
+        idx = self._index(opts["publish"] or bool(go_live))
         page = StudioArticlePage.objects.filter(slug=opts["slug"]).first()
         if page is None:
             page = StudioArticlePage(slug=opts["slug"], title=en_meta["title"], date=dt.date.today(), live=False)
@@ -132,9 +137,17 @@ class Command(BaseCommand):
         if pt_meta.get("image"):
             page.image = self._image(base, pt_meta["image"])
 
+        # Always build the revision from THIS object (it holds the imported content);
+        # never re-fetch the DB row for a never-published page — its fields are empty.
+        if go_live:
+            page.date = go_live.date()
+            page.go_live_at = go_live
         rev = page.save_revision()
-        if opts["publish"]:
-            rev.publish()
-        state = "LIVE" if opts["publish"] or page.live else "draft"
+        if opts["publish"] or go_live:
+            rev.publish()  # future go_live_at → Wagtail schedules it
+        if go_live:
+            state = f"scheduled {go_live:%Y-%m-%d %H:%M} Lisbon"
+        else:
+            state = "LIVE" if opts["publish"] or page.live else "draft"
         words = len(pt_body.split())
         self.stdout.write(self.style.SUCCESS(f"imported → /artigos/{page.slug}/ [{state}] PT {words} words, {page.reading_minutes('pt')} min"))
