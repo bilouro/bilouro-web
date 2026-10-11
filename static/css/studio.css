@@ -473,3 +473,24 @@ body.studio .st-section__intro--lg { font-size: clamp(1.02rem, 2.2vw, 1.18rem); 
   body.studio .st-featured--hero .st-featured__card { grid-template-columns: 1fr; }
   body.studio .st-featured--hero .st-featured__img { max-height: 520px; }
 }
+
+/* ── SEO additions: breadcrumb, verticals, FAQ, "made for" chips ── */
+body.studio .st-crumb { margin: 0 0 14px; font-size: .9rem; color: var(--st-muted); }
+body.studio .st-crumb a { color: var(--st-accent); text-decoration: none; font-weight: 600; }
+body.studio .st-verticals { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+body.studio .st-vertical { display: flex; flex-direction: column; gap: 6px; height: 100%; padding: 18px 20px; border: 1px solid var(--st-line); border-radius: var(--st-radius); background: var(--st-surface); text-decoration: none; color: inherit; box-shadow: var(--st-shadow); transition: transform .1s ease; }
+body.studio .st-vertical:hover { transform: translateY(-2px); }
+body.studio .st-vertical strong { color: var(--st-ink); font-size: 1.05rem; }
+body.studio .st-vertical span { color: var(--st-muted); font-size: .92rem; }
+body.studio .st-faq { max-width: 820px; }
+body.studio .st-faq__item { border-bottom: 1px solid var(--st-line); padding: 6px 0; }
+body.studio .st-faq__q { cursor: pointer; list-style: none; font-weight: 700; font-size: 1.06rem; padding: 14px 32px 14px 0; position: relative; }
+body.studio .st-faq__q::-webkit-details-marker { display: none; }
+body.studio .st-faq__q::after { content: "+"; position: absolute; right: 4px; top: 10px; font-size: 1.4rem; color: var(--st-accent); }
+body.studio .st-faq__item[open] .st-faq__q::after { content: "−"; }
+body.studio .st-faq__a { color: var(--st-ink-soft); padding: 0 0 14px; }
+body.studio .st-faq__a p { margin: 0 0 10px; }
+body.studio .st-featured__for { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 18px 0 0; font-size: .9rem; }
+body.studio .st-featured__for span { color: var(--st-muted); font-weight: 600; }
+body.studio .st-featured__for a { padding: 4px 12px; border-radius: 999px; background: var(--st-surface); border: 1px solid var(--st-line); color: var(--st-ink-soft); text-decoration: none; font-weight: 600; }
+body.studio .st-featured__for a:hover { border-color: var(--st-accent); color: var(--st-accent); }

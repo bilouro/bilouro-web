@@ -1,5 +1,7 @@
 {% extends "studio/_base.html" %}
-{% load static i18n i18n_fields wagtailcore_tags wagtailimages_tags %}
+{% load static i18n i18n_fields wagtailcore_tags wagtailimages_tags studio_seo %}
+
+{% block jsonld %}{% studio_home_jsonld page %}{% endblock %}
 
 {% block content %}
 {% with booking_url=STUDIO_BOOKING_URL %}
@@ -38,6 +40,11 @@ then introduces the services section below. Without one, the classic hero.{% end
           <a class="st-btn st-btn--lg" href="{{ featured.url }}">{% tr page "featured_cta_label" %} →</a>
           <a class="st-btn st-btn--lg st-btn--ghost" href="{{ booking_url }}" target="_blank" rel="noopener">{% tr page "cta_label" %}</a>
         </div>
+        {% if featured_verticals %}
+        <p class="st-featured__for"><span>{% trans "Made for" %}</span>
+          {% for v in featured_verticals %}<a href="{{ v.url }}">{% tr v "nav_label" as vl %}{{ vl|default:v.title }}</a>{% endfor %}
+        </p>
+        {% endif %}
         {% tr_richtext featured "proof_note" as fpn %}{% if fpn %}<div class="st-featured__proof">{{ fpn }}</div>{% endif %}
       </div>
       {% if featured.image %}

@@ -276,6 +276,18 @@ msgstr "Fechar"
 msgid "Enlarged image"
 msgstr "Imagem ampliada"
 
+#: templates/studio/solution_page.html
+msgid "Made for"
+msgstr "Feita para"
+
+#: templates/studio/solution_page.html
+msgid "Every feature, in depth"
+msgstr "Todas as funcionalidades, em detalhe"
+
+#: templates/studio/solution_page.html
+msgid "Frequently asked questions"
+msgstr "Perguntas frequentes"
+
 #~ msgid "Name"
 #~ msgstr "Nome"
 

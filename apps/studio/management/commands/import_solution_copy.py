@@ -40,6 +40,7 @@ from wagtail.images import get_image_model
 
 from apps.studio.models import (
     StudioSolutionExtra,
+    StudioSolutionFaq,
     StudioSolutionFeature,
     StudioSolutionPage,
     StudioSolutionScreen,
@@ -69,6 +70,7 @@ class Section:
     steps: list = field(default_factory=list)   # numbered lines under "- steps:"
     bullets: list = field(default_factory=list) # plain "- ..." bullets (extras, numbers)
     paragraphs: list = field(default_factory=list)
+    faqs: list = field(default_factory=list)    # [(question, [answer paragraphs])] in '## FAQ'
 
 
 SECTION_KEYS = {
@@ -79,6 +81,9 @@ SECTION_KEYS = {
     "in numbers": "numbers",
     "numbers": "numbers",
     "closing": "closing",
+    "page": "page",
+    "seo": "seo",
+    "faq": "faq",
 }
 
 
@@ -109,6 +114,12 @@ def parse_copy(text: str) -> list[Section]:
         if cur is None or line.startswith("# ") or not line.strip():
             continue
         stripped = line.strip()
+        if cur.name == "faq":
+            if stripped.startswith("### "):
+                cur.faqs.append((stripped[4:].strip(), []))
+            elif cur.faqs:
+                cur.faqs[-1][1].append(stripped)
+            continue
         # numbered step lines (only meaningful after "- steps:")
         nm = NUM_RE.match(stripped)
         if in_steps and nm:
@@ -182,6 +193,7 @@ class Command(BaseCommand):
         parser.add_argument("--slug", default="studio-app", help="StudioSolutionPage slug (default studio-app)")
         parser.add_argument("--dry-run", action="store_true", help="Parse and report; write nothing")
         parser.add_argument("--keep-steps", action="store_true", help="Do not clear placeholder steps/benefits")
+        parser.add_argument("--create", action="store_true", help="Create the page under the studio home if it does not exist (title from '## Page')")
 
     # -- helpers --------------------------------------------------------
 
@@ -226,8 +238,11 @@ class Command(BaseCommand):
         """Upload (or reuse) screens/<ref>. Reuse only when an image with the same
         title AND the same file content (sha1) exists → idempotent, but a changed
         screenshot with the same name is uploaded again."""
-        name = Path(ref.strip()).name
-        path = folder / "screens" / name
+        ref = ref.strip()
+        name = Path(ref).name
+        path = (folder / ref).resolve()
+        if not path.exists():
+            path = folder / "screens" / name
         if not path.exists():
             raise CommandError(f"Screenshot not found: {path}")
         image_model = get_image_model()
@@ -251,13 +266,17 @@ class Command(BaseCommand):
         caps = self._captions(folder)
 
         # Sanity: both languages must have the same shape.
-        for key in ("hero", "problem", "solution", "numbers", "closing"):
+        for key in ("hero", "problem", "solution"):
             if key not in en or key not in pt:
                 raise CommandError(f"Section '{key}' missing in one of the languages")
         if len(en["feature"]) != len(pt["feature"]):
             raise CommandError(f"Feature count differs: en={len(en['feature'])} pt={len(pt['feature'])}")
-        n_stats_en = len(en["numbers"].bullets)
-        n_stats_pt = len(pt["numbers"].bullets)
+        n_stats_en = len(en["numbers"].bullets) if en.get("numbers") else 0
+        n_stats_pt = len(pt["numbers"].bullets) if pt.get("numbers") else 0
+        fq_en = en["faq"].faqs if en.get("faq") else []
+        fq_pt = pt["faq"].faqs if pt.get("faq") else []
+        if len(fq_en) != len(fq_pt):
+            raise CommandError(f"FAQ count differs: en={len(fq_en)} pt={len(fq_pt)}")
         if n_stats_en != n_stats_pt:
             raise CommandError(f"'In numbers' count differs: en={n_stats_en} pt={n_stats_pt}")
         ex_en = en.get("extras").bullets if en.get("extras") else []
@@ -266,10 +285,20 @@ class Command(BaseCommand):
             raise CommandError(f"'Also included' count differs: en={len(ex_en)} pt={len(ex_pt)}")
 
         page = StudioSolutionPage.objects.filter(slug=opts["slug"]).first()
-        if not page:
-            raise CommandError(f"No StudioSolutionPage with slug '{opts['slug']}'")
+        pg_en = en["page"].kv if en.get("page") else {}
+        pg_pt = pt["page"].kv if pt.get("page") else {}
+        if not page and opts["create"] and not opts["dry_run"]:
+            from apps.studio.models import StudioHomePage
+            home = StudioHomePage.objects.first()
+            if not home:
+                raise CommandError("No StudioHomePage to create the page under")
+            page = StudioSolutionPage(title=pg_en.get("title") or opts["slug"], slug=opts["slug"])
+            home.add_child(instance=page)
+            self.stdout.write(self.style.SUCCESS(f"  + created /{page.slug}/"))
+        if not page and not opts["dry_run"]:
+            raise CommandError(f"No StudioSolutionPage with slug '{opts['slug']}' (use --create)")
 
-        self.stdout.write(f"{folder} → /{page.slug}/ : {len(en['feature'])} features, {len(ex_en)} extras, {n_stats_en} stats, {len(caps)} captions")
+        self.stdout.write(f"{folder} → /{opts['slug']}/ : {len(en['feature'])} features, {len(ex_en)} extras, {n_stats_en} stats, {len(fq_en)} faqs, {len(caps)} captions")
         for f_en in en["feature"]:
             self.stdout.write(f"  feature {f_en.index}: {f_en.heading} | steps={len(f_en.steps)} screens={f_en.kv.get('screens', '')!r} number={f_en.kv.get('number', '')!r}")
         if opts["dry_run"]:
@@ -281,6 +310,23 @@ class Command(BaseCommand):
             setattr(page, field_name, en_val)
             setattr(page, f"{field_name}_pt", pt_val)
 
+        if pg_en.get("title"):
+            page.title = pg_en["title"]
+        for key in ("nav_label", "verticals_heading", "faq_heading", "features_heading", "extras_heading"):
+            if pg_en.get(key):
+                put(key, pg_en[key], pg_pt.get(key, ""))
+        if pg_en.get("parent"):
+            parent = StudioSolutionPage.objects.filter(slug=pg_en["parent"]).first()
+            if not parent:
+                raise CommandError(f"parent solution '{pg_en['parent']}' not found")
+            page.parent_solution = parent
+        seo_en = en["seo"].kv if en.get("seo") else {}
+        seo_pt = pt["seo"].kv if pt.get("seo") else {}
+        if seo_en.get("title"):
+            put("seo_title", seo_en["title"], seo_pt.get("title", ""))
+        if seo_en.get("description"):
+            put("search_description", seo_en["description"], seo_pt.get("description", ""))
+
         h_en, h_pt = en["hero"].kv, pt["hero"].kv
         put("hero_eyebrow", h_en.get("eyebrow", page.hero_eyebrow), h_pt.get("eyebrow", page.hero_eyebrow_pt))
         if h_en.get("headline"):
@@ -291,17 +337,23 @@ class Command(BaseCommand):
             s_en, s_pt = en[key], pt[key]
             if s_en.heading:
                 put(f"{fld}_heading", s_en.heading, s_pt.heading or s_en.heading)
+            elif not getattr(page, f"{fld}_heading"):
+                default = {"problem": ("The problem", "O problema"), "solution": ("The solution", "A solução")}[fld]
+                put(f"{fld}_heading", *default)
             put(f"{fld}_body", _para(s_en.paragraphs), _para(s_pt.paragraphs))
         if en.get("extras") and en["extras"].heading:
             put("extras_heading", en["extras"].heading, pt["extras"].heading or en["extras"].heading)
         elif not page.extras_heading and ex_en:
             put("extras_heading", "Also included", "Também incluído")
-        if en["numbers"].heading:
-            put("stats_heading", en["numbers"].heading, pt["numbers"].heading or en["numbers"].heading)
-        proof_en = en["numbers"].kv.get("proof")
+        num_en = en.get("numbers")
+        num_pt = pt.get("numbers")
+        if num_en and num_en.heading:
+            put("stats_heading", num_en.heading, num_pt.heading or num_en.heading)
+        proof_en = num_en.kv.get("proof") if num_en else ""
         if proof_en:
-            put("proof_note", _para([proof_en]), _para([pt["numbers"].kv.get("proof", "")]))
-        c_en, c_pt = en["closing"].kv, pt["closing"].kv
+            put("proof_note", _para([proof_en]), _para([num_pt.kv.get("proof", "")]))
+        c_en = en["closing"].kv if en.get("closing") else {}
+        c_pt = pt["closing"].kv if pt.get("closing") else {}
         if c_en.get("heading"):
             put("closing_heading", c_en["heading"], c_pt.get("heading", ""))
         if c_en.get("body"):
@@ -309,9 +361,9 @@ class Command(BaseCommand):
         if c_en.get("cta"):
             put("cta_label", c_en["cta"], c_pt.get("cta", ""))
 
-        hero_img = folder / "screens" / "00-hero.png"
-        if hero_img.exists():
-            page.image = self._image(folder, "00-hero.png", caps)
+        hero_ref = h_en.get("image") or ("screens/00-hero.png" if (folder / "screens" / "00-hero.png").exists() else "")
+        if hero_ref:
+            page.image = self._image(folder, hero_ref, caps)
 
         # Inlines (replace) ---------------------------------------------
         page.features.all().delete()
@@ -344,7 +396,7 @@ class Command(BaseCommand):
             page.extras.add(StudioSolutionExtra(sort_order=pos, title=t_en, body=b_en, title_pt=t_pt, body_pt=b_pt))
 
         page.stats.all().delete()
-        for pos, (s_en, s_pt) in enumerate(zip(en["numbers"].bullets, pt["numbers"].bullets, strict=True)):
+        for pos, (s_en, s_pt) in enumerate(zip(num_en.bullets if num_en else [], num_pt.bullets if num_pt else [], strict=True)):
             v, l_en = _split_pipe(s_en)
             _, l_pt = _split_pipe(s_pt)
             page.stats.add(StudioSolutionStat(sort_order=pos, value=v, label=l_en, label_pt=l_pt))
@@ -360,6 +412,10 @@ class Command(BaseCommand):
                 page.screens.add(StudioSolutionScreen(sort_order=pos, image=self._image(folder, name, caps), caption=cap_en, caption_pt=cap_pt))
                 pos += 1
 
+        page.faqs.all().delete()
+        for pos, ((q_en, a_en), (q_pt, a_pt)) in enumerate(zip(fq_en, fq_pt, strict=True)):
+            page.faqs.add(StudioSolutionFaq(sort_order=pos, question=q_en, answer=_para(a_en), question_pt=q_pt, answer_pt=_para(a_pt)))
+
         if en["feature"] and not opts["keep_steps"]:
             page.steps.all().delete()
             page.benefits.all().delete()
@@ -367,5 +423,5 @@ class Command(BaseCommand):
         page.save_revision().publish()
         self.stdout.write(self.style.SUCCESS(
             f"imported → /{page.slug}/ : features={page.features.count()} extras={page.extras.count()} "
-            f"stats={page.stats.count()} screens={page.screens.count()} hero_image={'yes' if page.image else 'no'}"
+            f"stats={page.stats.count()} faqs={page.faqs.count()} screens={page.screens.count()} hero_image={'yes' if page.image else 'no'}"
         ))

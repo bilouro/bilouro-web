@@ -911,6 +911,22 @@ class Command(BaseCommand):
                 acard.save()
                 self.stdout.write(self.style.SUCCESS("  + service card 'Small applications' → Studio App copy"))
 
+            # Home SEO title/description (only when empty — editable in Wagtail → Promote).
+            sh = StudioHomePage.objects.get(pk=studio_home.pk)
+            if not sh.seo_title:
+                sh.seo_title = "Bilouro Studio · Studio management app, AI agents and integrations"
+                sh.seo_title_pt = "Bilouro Studio · App de gestão para estúdios e ginásios, IA e integrações"
+                sh.search_description = (
+                    "Studio App: class booking, waitlist, payments and automatic invoicing for Pilates studios, "
+                    "gyms and group classes. Plus AI agents, integrations and small apps for Portuguese SMEs."
+                )
+                sh.search_description_pt = (
+                    "Studio App: marcação de aulas, lista de espera, pagamentos e faturação automática para estúdios "
+                    "de Pilates, ginásios e aulas de grupo. E agentes de IA, integrações e pequenas apps para PMEs."
+                )
+                sh.save_revision().publish()
+                self.stdout.write(self.style.SUCCESS("  + home SEO title/description set"))
+
             # Feature the Studio App on the home — the most prominent block under the hero.
             app = StudioSolutionPage.objects.filter(slug="studio-app").first()
             studio_home = StudioHomePage.objects.get(pk=studio_home.pk)  # fresh copy

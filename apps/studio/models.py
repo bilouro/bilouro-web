@@ -31,10 +31,35 @@ from wagtail.models import Orderable, Page
 from wagtail.search import index
 
 
+# Portuguese siblings of Wagtail's seo_title / search_description (Promote tab = EN).
+SEO_PT_PANEL = MultiFieldPanel(
+    [FieldPanel("seo_title_pt"), FieldPanel("search_description_pt")],
+    heading="SEO (PT) — EN uses the Promote tab",
+)
+
+
+def with_en_alternates(urls: list[dict]) -> list[dict]:
+    """Duplicate sitemap entries under /en/ (studio serves EN at /en/<path>,
+    see apps/studio/middleware.py)."""
+    out = []
+    for u in urls:
+        out.append(u)
+        loc = u["location"]
+        scheme, _, rest = loc.partition("://")
+        host, _, path = rest.partition("/")
+        out.append({**u, "location": f"{scheme}://{host}/en/{path}"})
+    return out
+
+
+class StudioSitemapMixin:
+    def get_sitemap_urls(self, request=None):
+        return with_en_alternates(super().get_sitemap_urls(request))
+
+
 # ─── Home (studio.bilouro.com root) ────────────────────────────────────
 
 
-class StudioHomePage(Page):
+class StudioHomePage(StudioSitemapMixin, Page):
     """Long-form home: hero · services · process · cases · about · closing CTA."""
 
     # Hero
@@ -86,6 +111,8 @@ class StudioHomePage(Page):
     featured_eyebrow = models.CharField(max_length=120, blank=True, default="Featured solution")
     featured_cta_label = models.CharField(max_length=80, blank=True, default="See the full solution")
     featured_eyebrow_pt = models.CharField(max_length=120, blank=True)
+    seo_title_pt = models.CharField(max_length=255, blank=True)
+    search_description_pt = models.TextField(blank=True)
     featured_cta_label_pt = models.CharField(max_length=80, blank=True)
 
     template = "studio/home_page.html"
@@ -137,6 +164,8 @@ class StudioHomePage(Page):
         ),
     ]
 
+    promote_panels = Page.promote_panels + [SEO_PT_PANEL]
+
     search_fields = Page.search_fields + [
         index.SearchField("hero_headline"),
         index.SearchField("about_body"),
@@ -164,6 +193,7 @@ class StudioHomePage(Page):
             # feature stories (in-depth pages) — first one that is non-empty.
             ctx["featured_benefits"] = list(featured.benefits.all()[:4]) or list(featured.features.all()[:5])
             ctx["featured_stats"] = featured.stats.all()[:3]
+            ctx["featured_verticals"] = featured.verticals()
         else:
             ctx["featured"] = None
         return ctx
@@ -255,7 +285,7 @@ class StudioCase(Orderable):
 # ─── Booking page (/agendar) ───────────────────────────────────────────
 
 
-class StudioBookingPage(Page):
+class StudioBookingPage(StudioSitemapMixin, Page):
     """Booking form page. The form itself is rendered by the template and POSTs
     to /api/studio/booking; copy below is editable."""
 
@@ -369,7 +399,7 @@ class StudioBlogIndexPage(RoutablePageMixin, Page):
             if post.last_published_at:
                 entry["lastmod"] = post.last_published_at
             urls.append(entry)
-        return urls
+        return with_en_alternates(urls)
 
 
 class StudioProjectIndexPage(RoutablePageMixin, Page):
@@ -420,13 +450,13 @@ class StudioProjectIndexPage(RoutablePageMixin, Page):
             if project.last_published_at:
                 entry["lastmod"] = project.last_published_at
             urls.append(entry)
-        return urls
+        return with_en_alternates(urls)
 
 
 # ─── Solution page (business-facing infographic) ───────────────────────
 
 
-class StudioSolutionPage(Page):
+class StudioSolutionPage(StudioSitemapMixin, Page):
     """A business-facing 'solution' page — infographic style, no jargon.
     Reached from the Proof section ('see more'). Indexed in the sitemap."""
 
@@ -458,6 +488,19 @@ class StudioSolutionPage(Page):
     price_heading = models.CharField(max_length=120, blank=True)
     price_value = models.CharField(max_length=80, blank=True, help_text="e.g. 'from €1,000'")
     price_note = RichTextField(blank=True)
+
+    nav_label = models.CharField(max_length=80, blank=True, help_text="Short label for links between solution pages, e.g. 'Pilates studios'.")
+    parent_solution = models.ForeignKey(
+        "self", null=True, blank=True, on_delete=models.SET_NULL, related_name="vertical_pages",
+        help_text="Set on vertical landing pages (e.g. gyms, CrossFit boxes) to link them to the main solution page.",
+    )
+    faq_heading = models.CharField(max_length=160, blank=True)
+    verticals_heading = models.CharField(max_length=160, blank=True, help_text="Heading above the links to the vertical pages.")
+    nav_label_pt = models.CharField(max_length=80, blank=True)
+    faq_heading_pt = models.CharField(max_length=160, blank=True)
+    verticals_heading_pt = models.CharField(max_length=160, blank=True)
+    seo_title_pt = models.CharField(max_length=255, blank=True)
+    search_description_pt = models.TextField(blank=True)
 
     hero_eyebrow_pt = models.CharField(max_length=160, blank=True)
     hero_headline_pt = RichTextField(blank=True)
@@ -504,6 +547,9 @@ class StudioSolutionPage(Page):
         FieldPanel("stats_heading"),
         InlinePanel("stats", label="Stat"),
         FieldPanel("proof_note"),
+        FieldPanel("faq_heading"),
+        InlinePanel("faqs", label="FAQ"),
+        MultiFieldPanel([FieldPanel("nav_label"), FieldPanel("parent_solution"), FieldPanel("verticals_heading")], heading="Links between solution pages"),
         MultiFieldPanel([FieldPanel("price_heading"), FieldPanel("price_value"), FieldPanel("price_note")], heading="Investment (EN)"),
         MultiFieldPanel([FieldPanel("closing_heading"), FieldPanel("closing_body"), FieldPanel("cta_label")], heading="Closing CTA (EN)"),
         MultiFieldPanel(
@@ -514,6 +560,7 @@ class StudioSolutionPage(Page):
                 FieldPanel("steps_heading_pt"), FieldPanel("benefits_heading_pt"), FieldPanel("stats_heading_pt"),
                 FieldPanel("screens_heading_pt"),
                 FieldPanel("features_heading_pt"), FieldPanel("extras_heading_pt"),
+                FieldPanel("faq_heading_pt"), FieldPanel("nav_label_pt"), FieldPanel("verticals_heading_pt"),
                 FieldPanel("proof_note_pt"),
                 FieldPanel("price_heading_pt"), FieldPanel("price_value_pt"), FieldPanel("price_note_pt"),
                 FieldPanel("closing_heading_pt"), FieldPanel("closing_body_pt"), FieldPanel("cta_label_pt"),
@@ -523,6 +570,13 @@ class StudioSolutionPage(Page):
         ),
     ]
 
+    promote_panels = Page.promote_panels + [SEO_PT_PANEL]
+
+    def verticals(self):
+        """Live vertical pages of this solution (or of its parent, seen from a vertical)."""
+        root = self.parent_solution or self
+        return StudioSolutionPage.objects.live().filter(parent_solution=root).order_by("path")
+
     def get_context(self, request, *args, **kwargs):
         ctx = super().get_context(request, *args, **kwargs)
         ctx["steps"] = self.steps.all()
@@ -530,6 +584,9 @@ class StudioSolutionPage(Page):
         ctx["stats"] = self.stats.all()
         ctx["screens"] = self.screens.all()
         ctx["features"] = self.features.all()
+        ctx["faqs"] = self.faqs.all()
+        ctx["verticals"] = self.verticals()
+        ctx["main_solution"] = self.parent_solution if self.parent_solution and self.parent_solution.live else None
         ctx["extras"] = self.extras.all()
         return ctx
 
@@ -592,6 +649,21 @@ class StudioSolutionFeature(Orderable):
              FieldPanel("stat_label_pt"), FieldPanel("differentiator_pt")],
             heading="PT", classname="collapsed",
         ),
+    ]
+
+
+class StudioSolutionFaq(Orderable):
+    """Question + answer — rendered as an accordion and as FAQPage JSON-LD."""
+
+    page = ParentalKey(StudioSolutionPage, on_delete=models.CASCADE, related_name="faqs")
+    question = models.CharField(max_length=255)
+    answer = RichTextField()
+    question_pt = models.CharField(max_length=255, blank=True)
+    answer_pt = RichTextField(blank=True)
+
+    panels = [
+        FieldPanel("question"), FieldPanel("answer"),
+        MultiFieldPanel([FieldPanel("question_pt"), FieldPanel("answer_pt")], heading="PT", classname="collapsed"),
     ]
 
 

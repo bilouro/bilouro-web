@@ -5,6 +5,16 @@
 
 {% block extra_css %}<link rel="stylesheet" href="{% static 'css/studio.css' %}">{% endblock %}
 
+{% block html_lang %}{% if request.LANGUAGE_CODE == "en" %}en{% else %}pt-PT{% endif %}{% endblock %}
+
+{# Language lives in the URL: PT at /path, EN at /en/path (apps/studio/middleware.py). #}
+{% block hreflang %}{% with p=request.studio_path|default:request.path %}<link rel="alternate" hreflang="pt-PT" href="{{ request.scheme }}://{{ request.get_host }}{{ p }}"><link rel="alternate" hreflang="en" href="{{ request.scheme }}://{{ request.get_host }}/en{{ p }}"><link rel="alternate" hreflang="x-default" href="{{ request.scheme }}://{{ request.get_host }}{{ p }}"><meta property="og:locale" content="{% if request.LANGUAGE_CODE == "en" %}en_GB{% else %}pt_PT{% endif %}">{% endwith %}{% endblock %}
+
+{% block title %}{% tr page "seo_title" as st %}{% if st %}{{ st }}{% else %}{% tr page "title" as pt %}{{ pt }} · Bilouro Studio{% endif %}{% endblock %}
+{% block og_title %}{% tr page "seo_title" as st %}{% if st %}{{ st }}{% else %}{% tr page "title" as pt %}{{ pt }} · Bilouro Studio{% endif %}{% endblock %}
+{% block meta_description %}{% tr page "search_description" as sd %}{% if sd %}{{ sd }}{% else %}{% tr page "hero_sub" as hs %}{% if hs %}{{ hs|striptags|truncatechars:160 }}{% else %}{% tr page "hero_subhead" as hsh %}{% if hsh %}{{ hsh|striptags|truncatechars:160 }}{% else %}{% tr page "intro" as it %}{{ it|striptags|truncatechars:160 }}{% endif %}{% endif %}{% endif %}{% endblock %}
+{% block og_description %}{% tr page "search_description" as sd %}{% if sd %}{{ sd }}{% else %}{% tr page "hero_sub" as hs %}{{ hs|striptags|truncatechars:200 }}{% endif %}{% endblock %}
+
 {% block body %}
 {% with cur=request.LANGUAGE_CODE|default:'en' %}
 <a class="st-skip" href="#main">{% trans "Skip to content" %}</a>
@@ -19,10 +29,12 @@
       <a class="st-navlink" href="/studio-app/">Studio App</a>
       <a class="st-navlink" href="/blog/">Blog</a>
       <a class="st-navlink" href="/projects/">{% trans "Projects" %}</a>
+      {% with p=request.studio_path|default:request.path %}
       <div class="st-lang" role="group" aria-label="{% trans 'Language' %}">
-        <a href="/i18n/setlang/?lang=en&next={{ request.path|urlencode }}" class="{% if cur == 'en' %}is-active{% endif %}">EN</a>
-        <a href="/i18n/setlang/?lang=pt&next={{ request.path|urlencode }}" class="{% if cur == 'pt' %}is-active{% endif %}">PT</a>
+        <a href="//{{ request.get_host }}/en{{ p }}" hreflang="en" lang="en" class="{% if cur == 'en' %}is-active{% endif %}">EN</a>
+        <a href="//{{ request.get_host }}{{ p }}" hreflang="pt-PT" lang="pt-PT" class="{% if cur == 'pt' %}is-active{% endif %}">PT</a>
       </div>
+      {% endwith %}
     </nav>
 
     <div class="st-header__actions">

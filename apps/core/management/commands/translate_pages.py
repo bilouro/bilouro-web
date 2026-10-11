@@ -102,6 +102,11 @@ TRANSLATABLE = {
             ("screens_heading", "screens_heading_pt"),
             ("features_heading", "features_heading_pt"),
             ("extras_heading", "extras_heading_pt"),
+            ("faq_heading", "faq_heading_pt"),
+            ("nav_label", "nav_label_pt"),
+            ("verticals_heading", "verticals_heading_pt"),
+            ("seo_title", "seo_title_pt"),
+            ("search_description", "search_description_pt"),
             ("stats_heading", "stats_heading_pt"),
             ("proof_note", "proof_note_pt"),
             ("price_heading", "price_heading_pt"),
@@ -129,6 +134,7 @@ TRANSLATABLE_INLINES = {
         ("screens", "solution_screen", [("caption", "caption_pt")]),
         ("features", "solution_feature", [("title", "title_pt"), ("pain", "pain_pt"), ("body", "body_pt"), ("stat_label", "stat_label_pt"), ("differentiator", "differentiator_pt")]),
         ("extras", "solution_extra", [("title", "title_pt"), ("body", "body_pt")]),
+        ("faqs", "solution_faq", [("question", "question_pt"), ("answer", "answer_pt")]),
     ],
 }
 
