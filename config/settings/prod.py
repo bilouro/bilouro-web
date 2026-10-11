@@ -30,13 +30,15 @@ AWS_QUERYSTRING_AUTH = True
 
 STORAGES = {
     "default": {
-        "BACKEND": "storages.backends.s3.S3Storage",
+        "BACKEND": "apps.core.storage.MediaStorage",  # renditions unsigned, rest signed
         "OPTIONS": {
             "bucket_name": AWS_STORAGE_BUCKET_NAME,
             "region_name": AWS_S3_REGION_NAME,
             "default_acl": None,
             "querystring_auth": True,
             "file_overwrite": False,
+            # Renditions are content-addressed (filter spec in the name): cache hard.
+            "object_parameters": {"CacheControl": "public, max-age=31536000, immutable"},
         },
     },
     "staticfiles": {

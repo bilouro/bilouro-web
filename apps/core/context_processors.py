@@ -8,4 +8,5 @@ def site_globals(request):
         "PLAUSIBLE_DOMAIN": settings.PLAUSIBLE_DOMAIN,
         "PLAUSIBLE_SCRIPT": settings.PLAUSIBLE_SCRIPT,
         "STUDIO_BOOKING_URL": settings.STUDIO_BOOKING_URL,
+        "GOOGLE_SITE_VERIFICATION": settings.GOOGLE_SITE_VERIFICATION,
     }

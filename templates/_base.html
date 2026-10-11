@@ -39,6 +39,7 @@
   <link rel="stylesheet" href="{% static 'css/_base.css' %}">
   {% block extra_css %}{% endblock %}
 
+  {% for token in GOOGLE_SITE_VERIFICATION %}<meta name="google-site-verification" content="{{ token }}">{% endfor %}
   {% block jsonld %}{% endblock %}
   {% block extra_head %}{% endblock %}
   {% if PLAUSIBLE_DOMAIN %}<script defer data-domain="{{ PLAUSIBLE_DOMAIN }}" src="{{ PLAUSIBLE_SCRIPT }}"></script>{% endif %}

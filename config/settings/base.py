@@ -197,6 +197,9 @@ STUDIO_BOOKING_NOTIFY_EMAIL = env("STUDIO_BOOKING_NOTIFY_EMAIL", default="consul
 # studio.bilouro.com — external booking link (Google Calendar appointment page).
 # When set, the "Book a conversation" CTAs open this in a new tab instead of the
 # internal /agendar form.
+# Google Search Console HTML-tag verification token(s), comma-separated (one per property).
+GOOGLE_SITE_VERIFICATION = env.list("GOOGLE_SITE_VERIFICATION", default=[])
+
 STUDIO_BOOKING_URL = env(
     "STUDIO_BOOKING_URL",
     default="https://calendar.app.google/7utRLdu8B1vn2WJo6",
