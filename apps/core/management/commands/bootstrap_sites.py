@@ -891,6 +891,26 @@ class Command(BaseCommand):
                 acase.save()
                 self.stdout.write(self.style.SUCCESS("  + linked studio-app case → /studio-app/"))
 
+            # The 'Small applications' card becomes the Studio App card (Victor, 2026-10-11).
+            acard = studio_home.service_cards.filter(link_url="/studio-app/").first()
+            if acard and acard.title == "Small applications":
+                acard.title = "Your studio runs itself — from the trial class to the invoice."
+                acard.subtitle = ""
+                acard.output = (
+                    "One app for members and one panel for the team. Bookings, waitlist, MB WAY and "
+                    "Multibanco payments, automatic invoices and a referral programme — all connected, "
+                    "with no phone calls and no spreadsheets."
+                )
+                acard.title_pt = "O teu estúdio anda sozinho — da aula experimental à fatura."
+                acard.subtitle_pt = ""
+                acard.output_pt = (
+                    "Uma app para as sócias e um painel para a equipa. Marcações, fila de espera, "
+                    "pagamentos por MB WAY e Multibanco, faturas automáticas e um programa de "
+                    "indicações — tudo ligado, sem telefonemas nem folhas de cálculo."
+                )
+                acard.save()
+                self.stdout.write(self.style.SUCCESS("  + service card 'Small applications' → Studio App copy"))
+
             # Feature the Studio App on the home — the most prominent block under the hero.
             app = StudioSolutionPage.objects.filter(slug="studio-app").first()
             studio_home = StudioHomePage.objects.get(pk=studio_home.pk)  # fresh copy

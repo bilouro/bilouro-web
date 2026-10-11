@@ -5,6 +5,9 @@
 {% with booking_url=STUDIO_BOOKING_URL %}
 
 {# ── Hero ─────────────────────────────────────────────── #}
+{% comment %}With a featured solution, THAT is the hero (h1). The page's own hero copy
+then introduces the services section below. Without one, the classic hero.{% endcomment %}
+{% if not featured %}
 <section class="st-hero">
   <div class="st-container">
     {% if page.hero_eyebrow or page.hero_eyebrow_pt %}<p class="st-eyebrow">{% tr page "hero_eyebrow" %}</p>{% endif %}
@@ -13,15 +16,16 @@
     <a class="st-btn st-btn--lg" href="{{ booking_url }}" target="_blank" rel="noopener">{% tr page "cta_label" %}</a>
   </div>
 </section>
+{% endif %}
 
-{# ── Featured solution (most prominent block of the page) ── #}
+{# ── Featured solution as the hero ────────────────────── #}
 {% if featured %}
-<section class="st-featured" id="featured">
+<section class="st-featured st-featured--hero" id="featured">
   <div class="st-container">
     <div class="st-featured__card{% if featured.image %} st-featured__card--img{% endif %}">
       <div class="st-featured__main">
         {% tr page "featured_eyebrow" as feb %}{% if feb %}<p class="st-eyebrow">{{ feb }}</p>{% endif %}
-        <h2 class="st-featured__title">{% tr_richtext featured "hero_headline" %}</h2>
+        <h1 class="st-featured__title">{% tr_richtext featured "hero_headline" %}</h1>
         <div class="st-featured__sub">{% tr_richtext featured "hero_sub" %}</div>
         {% if featured_benefits %}
         <ul class="st-featured__points">
@@ -58,8 +62,14 @@
 {# ── Services ─────────────────────────────────────────── #}
 <section class="st-section" id="services">
   <div class="st-container">
-    <h2 class="st-section__title">{% tr page "services_heading" %}</h2>
-    <div class="st-section__intro">{% tr_richtext page "services_intro" %}</div>
+    {% if featured %}
+      {% if page.hero_eyebrow or page.hero_eyebrow_pt %}<p class="st-eyebrow">{% tr page "hero_eyebrow" %}</p>{% endif %}
+      <h2 class="st-section__title st-section__title--hero">{% tr_richtext page "hero_headline" %}</h2>
+      <div class="st-section__intro st-section__intro--lg">{% tr_richtext page "hero_subhead" %}</div>
+    {% else %}
+      <h2 class="st-section__title">{% tr page "services_heading" %}</h2>
+      <div class="st-section__intro">{% tr_richtext page "services_intro" %}</div>
+    {% endif %}
     <div class="st-cards">
       {% for card in service_cards %}
         {% if card.link_url %}

@@ -455,3 +455,21 @@ body.studio .st-lightbox__cap { padding: 12px 18px; color: var(--st-ink-soft); f
 body.studio .st-lightbox__cap:empty { display: none; }
 body.studio .st-lightbox__close { position: sticky; top: 10px; float: right; margin: 10px 10px 0 0; width: 40px; height: 40px; border-radius: 999px; border: 0; background: var(--st-ink); color: #fff; font-size: 1.5rem; line-height: 1; cursor: pointer; z-index: 2; }
 body.studio .st-lightbox__close:hover { background: var(--st-accent); }
+
+/* ── Featured solution promoted to the home hero ─────── */
+body.studio .st-featured--hero { padding: clamp(40px, 8vw, 88px) 0 clamp(40px, 8vw, 80px); background: linear-gradient(180deg, var(--st-accent-soft), transparent 75%); }
+body.studio .st-featured--hero .st-featured__card { background: transparent; background-image: none; border: 0; box-shadow: none; padding: 0; border-radius: 0; grid-template-columns: 1.15fr 1fr; gap: clamp(28px, 5vw, 72px); }
+body.studio .st-featured--hero .st-featured__title { font-size: clamp(2.1rem, 5.6vw, 3.5rem); line-height: 1.07; letter-spacing: -.03em; margin-bottom: 18px; }
+body.studio .st-featured--hero .st-featured__sub { font-size: clamp(1.05rem, 2.3vw, 1.25rem); max-width: 58ch; margin-bottom: 24px; }
+body.studio .st-featured--hero .st-featured__points { margin-bottom: 30px; }
+body.studio .st-featured--hero .st-featured__media { text-align: center; }
+body.studio .st-featured--hero .st-featured__img { width: auto; max-width: 100%; max-height: 640px; margin: 0 auto; border-radius: 18px; box-shadow: 0 1px 2px rgba(14,17,22,.05), 0 18px 48px rgba(59,91,255,.18); }
+/* The page's former hero copy, now heading the services section */
+body.studio .st-section__title--hero { font-size: clamp(1.9rem, 5vw, 3rem); line-height: 1.1; letter-spacing: -.03em; max-width: 20ch; margin-bottom: 16px; }
+body.studio .st-section__title--hero p { margin: 0; }
+body.studio .st-section__title--hero em { color: var(--st-accent); font-style: normal; }
+body.studio .st-section__intro--lg { font-size: clamp(1.02rem, 2.2vw, 1.18rem); color: var(--st-ink-soft); max-width: 60ch; }
+@media (max-width: 860px) {
+  body.studio .st-featured--hero .st-featured__card { grid-template-columns: 1fr; }
+  body.studio .st-featured--hero .st-featured__img { max-height: 520px; }
+}
