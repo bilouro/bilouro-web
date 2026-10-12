@@ -58,6 +58,7 @@ class Command(BaseCommand):
         parser.add_argument("slug")
         parser.add_argument("--dir", default="drafts/artigos", help="Parent folder (default drafts/artigos)")
         parser.add_argument("--publish", action="store_true", help="Publish now (also publishes the /artigos index)")
+        parser.add_argument("--dry-run", action="store_true", help="Parse and report; write nothing")
         parser.add_argument("--go-live", help="Schedule: 'YYYY-MM-DD HH:MM' Europe/Lisbon. Sets the article date too; publishes the index now.")
 
     def _image(self, base: Path, ref: str):
@@ -111,6 +112,14 @@ class Command(BaseCommand):
         if opts.get("go_live"):
             from zoneinfo import ZoneInfo
             go_live = dt.datetime.fromisoformat(opts["go_live"]).replace(tzinfo=ZoneInfo("Europe/Lisbon"))
+        if opts["dry_run"]:
+            self.stdout.write(f"{base} → /artigos/{opts['slug']}/ | PT: {pt_meta['title']} ({len(pt_body.split())} words) | "
+                              f"EN: {en_meta['title']} ({len(en_body.split())} words) | related={pt_meta.get('related', '-')} | "
+                              f"image={pt_meta.get('image', '-')} | go_live={go_live or '-'}")
+            if pt_meta.get("image") and not (base / pt_meta["image"]).resolve().exists():
+                raise CommandError(f"image not found: {pt_meta['image']}")
+            self.stdout.write(self.style.WARNING("dry-run: nothing written"))
+            return
         idx = self._index(opts["publish"] or bool(go_live))
         page = StudioArticlePage.objects.filter(slug=opts["slug"]).first()
         if page is None:
