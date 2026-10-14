@@ -927,6 +927,15 @@ class Command(BaseCommand):
                 sh.save_revision().publish()
                 self.stdout.write(self.style.SUCCESS("  + home SEO title/description set"))
 
+            # Home keeps its own H1 (the slogan) so it does not duplicate /studio-app/'s H1.
+            sh = StudioHomePage.objects.get(pk=studio_home.pk)
+            if sh.featured_solution_id and not sh.featured_headline:
+                sol = sh.featured_solution
+                sh.featured_headline = sol.hero_headline
+                sh.featured_headline_pt = sol.hero_headline_pt
+                sh.save_revision().publish()
+                self.stdout.write(self.style.SUCCESS("  + home featured_headline frozen from the featured solution"))
+
             # Feature the Studio App on the home — the most prominent block under the hero.
             app = StudioSolutionPage.objects.filter(slug="studio-app").first()
             studio_home = StudioHomePage.objects.get(pk=studio_home.pk)  # fresh copy

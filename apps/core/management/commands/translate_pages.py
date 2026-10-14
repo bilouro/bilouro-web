@@ -65,6 +65,7 @@ TRANSLATABLE = {
             ("hero_subhead", "hero_subhead_pt"),
             ("cta_label", "cta_label_pt"),
             ("featured_eyebrow", "featured_eyebrow_pt"),
+            ("featured_headline", "featured_headline_pt"),
             ("featured_cta_label", "featured_cta_label_pt"),
             ("services_heading", "services_heading_pt"),
             ("services_intro", "services_intro_pt"),

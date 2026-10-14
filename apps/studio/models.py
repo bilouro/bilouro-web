@@ -109,6 +109,12 @@ class StudioHomePage(StudioSitemapMixin, Page):
         help_text="Solution page shown as the featured block right under the hero.",
     )
     featured_eyebrow = models.CharField(max_length=120, blank=True, default="Featured solution")
+    featured_headline = RichTextField(
+        blank=True,
+        help_text="Home H1 when a solution is featured. Leave empty to reuse the solution's headline "
+        "(avoid that: two pages with the same H1 compete in search).",
+    )
+    featured_headline_pt = RichTextField(blank=True)
     featured_cta_label = models.CharField(max_length=80, blank=True, default="See the full solution")
     featured_eyebrow_pt = models.CharField(max_length=120, blank=True)
     seo_title_pt = models.CharField(max_length=255, blank=True)
@@ -128,7 +134,7 @@ class StudioHomePage(StudioSitemapMixin, Page):
             heading="Hero (EN)",
         ),
         MultiFieldPanel(
-            [FieldPanel("featured_solution"), FieldPanel("featured_eyebrow"), FieldPanel("featured_cta_label")],
+            [FieldPanel("featured_solution"), FieldPanel("featured_eyebrow"), FieldPanel("featured_headline"), FieldPanel("featured_cta_label")],
             heading="Featured solution (EN)",
         ),
         MultiFieldPanel([FieldPanel("services_heading"), FieldPanel("services_intro")], heading="Services (EN)"),
@@ -146,6 +152,7 @@ class StudioHomePage(StudioSitemapMixin, Page):
                 FieldPanel("hero_subhead_pt"),
                 FieldPanel("cta_label_pt"),
                 FieldPanel("featured_eyebrow_pt"),
+                FieldPanel("featured_headline_pt"),
                 FieldPanel("featured_cta_label_pt"),
                 FieldPanel("services_heading_pt"),
                 FieldPanel("services_intro_pt"),

@@ -27,7 +27,7 @@ then introduces the services section below. Without one, the classic hero.{% end
     <div class="st-featured__card{% if featured.image %} st-featured__card--img{% endif %}">
       <div class="st-featured__main">
         {% tr page "featured_eyebrow" as feb %}{% if feb %}<p class="st-eyebrow">{{ feb }}</p>{% endif %}
-        <h1 class="st-featured__title">{% tr_richtext featured "hero_headline" %}</h1>
+        <h1 class="st-featured__title">{% if page.featured_headline %}{% tr_richtext page "featured_headline" %}{% else %}{% tr_richtext featured "hero_headline" %}{% endif %}</h1>
         <div class="st-featured__sub">{% tr_richtext featured "hero_sub" %}</div>
         {% if featured_benefits %}
         <ul class="st-featured__points">

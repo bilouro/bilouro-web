@@ -153,6 +153,8 @@ def _inline(text: str) -> str:
     t = html.escape(text, quote=False)
     t = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", t)
     t = re.sub(r"\*(.+?)\*", r"<em>\1</em>", t)
+    # [text](https://url) → link (external URLs only)
+    t = re.sub(r"\[([^\]]+)\]\((https?://[^)\s]+)\)", r'<a href="\2">\1</a>', t)
     return t
 
 
