@@ -647,19 +647,23 @@ class StudioSolutionFeature(Orderable):
     stat_value = models.CharField(max_length=40, blank=True, help_text="e.g. '312'")
     stat_label = models.CharField(max_length=160, blank=True)
     differentiator = models.CharField(max_length=255, blank=True, help_text="One line: why this is better than the usual way.")
+    link_url = models.CharField(max_length=300, blank=True, help_text="Optional deep link (e.g. the product page on nfc.bilouro.com).")
+    link_label = models.CharField(max_length=80, blank=True, help_text="Text of the deep link, e.g. 'See the Google Review plate'.")
     title_pt = models.CharField(max_length=120, blank=True)
     pain_pt = models.CharField(max_length=255, blank=True)
     body_pt = RichTextField(blank=True)
     stat_label_pt = models.CharField(max_length=160, blank=True)
     differentiator_pt = models.CharField(max_length=255, blank=True)
+    link_label_pt = models.CharField(max_length=80, blank=True)
 
     panels = [
         FieldPanel("icon"), FieldPanel("title"), FieldPanel("pain"), FieldPanel("body"),
         FieldPanel("image"), FieldPanel("image2"),
         FieldPanel("stat_value"), FieldPanel("stat_label"), FieldPanel("differentiator"),
+        FieldPanel("link_url"), FieldPanel("link_label"),
         MultiFieldPanel(
             [FieldPanel("title_pt"), FieldPanel("pain_pt"), FieldPanel("body_pt"),
-             FieldPanel("stat_label_pt"), FieldPanel("differentiator_pt")],
+             FieldPanel("stat_label_pt"), FieldPanel("differentiator_pt"), FieldPanel("link_label_pt")],
             heading="PT", classname="collapsed",
         ),
     ]

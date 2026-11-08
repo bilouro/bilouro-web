@@ -52,6 +52,7 @@
           <div class="st-feature__body">{% tr_richtext f "body" %}</div>
           {% tr f "differentiator" as diff %}{% if diff %}<p class="st-feature__diff">{{ diff }}</p>{% endif %}
           {% if f.stat_value %}<div class="st-feature__stat"><span class="st-feature__stat-value">{{ f.stat_value }}</span><span class="st-feature__stat-label">{% tr f "stat_label" %}</span></div>{% endif %}
+          {% if f.link_url %}<p class="st-feature__link"><a href="{{ f.link_url }}" target="_blank" rel="noopener">{% tr f "link_label" as ll %}{{ ll|default:f.link_url }} ↗</a></p>{% endif %}
         </div>
         {% if f.image or f.image2 %}
         <div class="st-feature__media{% if f.image and f.image2 %} st-feature__media--two{% endif %}">

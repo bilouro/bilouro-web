@@ -16,6 +16,7 @@ Markdown skeleton (## headings are matched case-insensitively):
     ## Solution                 one paragraph
     ## Feature N: <title>       - pain: / - steps: (numbered lines) / - screens:
                                 - number: value | label / - differentiator:
+                                - link: url | label   (deep link shown under the story)
     ## Also included            - <title> — one line
     ## In numbers               - value | label (x4) / - proof: one line
     ## Closing                  - heading: / - body: / - cta:
@@ -392,6 +393,10 @@ class Command(BaseCommand):
                     stat_value=val_en, stat_label=lab_en, stat_label_pt=lab_pt,
                     differentiator=f_en.kv.get("differentiator", ""),
                     differentiator_pt=f_pt.kv.get("differentiator", ""),
+                    # "- link: <url> | <label>" — the URL comes from the EN file, the label per language.
+                    link_url=f_en.kv.get("link", "").partition("|")[0].strip(),
+                    link_label=f_en.kv.get("link", "").partition("|")[2].strip(),
+                    link_label_pt=f_pt.kv.get("link", "").partition("|")[2].strip(),
                 )
             )
 

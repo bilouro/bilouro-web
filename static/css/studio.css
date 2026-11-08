@@ -407,6 +407,9 @@ body.studio .st-feature__diff {
   background: var(--st-accent-soft); border-left: 3px solid var(--st-accent); border-radius: 10px;
   padding: 10px 14px; font-weight: 600; margin: 0 0 16px;
 }
+body.studio .st-feature__link { margin: 14px 0 0; font-weight: 700; }
+body.studio .st-feature__link a { color: var(--st-accent); text-decoration: none; border-bottom: 2px solid var(--st-accent-soft); }
+body.studio .st-feature__link a:hover { border-bottom-color: var(--st-accent); }
 body.studio .st-feature__stat { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
 body.studio .st-feature__stat-value { font-size: clamp(1.7rem, 4vw, 2.3rem); font-weight: 800; letter-spacing: -.02em; color: var(--st-accent); line-height: 1; }
 body.studio .st-feature__stat-label { color: var(--st-muted); font-size: .95rem; }
