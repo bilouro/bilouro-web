@@ -151,6 +151,13 @@ class Command(BaseCommand):
         # Remove the default Site (will be replaced)
         Site.objects.filter(hostname="localhost").delete()
 
+        # Guard: a database that already has the production sites is production. Seeding the
+        # *.localhost sites there adds a second default site and every hostname falls back to
+        # the www home (incident 2026-11-08). Switch to --prod instead of trusting the flag.
+        if not opts["prod"] and Site.objects.filter(hostname=SITE_SPECS[0]["host_prod"]).exists():
+            self.stdout.write(self.style.WARNING(f"  ! {SITE_SPECS[0]['host_prod']} exists: production database, running as --prod"))
+            opts["prod"] = True
+
         for spec in SITE_SPECS:
             hostname = spec["host_prod"] if opts["prod"] else spec["host_local"]
             slug = spec["page_data"]["slug"]
