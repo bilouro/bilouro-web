@@ -80,7 +80,7 @@ then introduces the services section below. Without one, the classic hero.{% end
     <div class="st-cards">
       {% for card in service_cards %}
         {% if card.link_url %}
-          <a class="st-card st-card--link" href="{{ card.link_url }}">
+          <a class="st-card st-card--link" href="{{ card.link_url }}"{% if card.link_url|slice:":4" == "http" %} target="_blank" rel="noopener"{% endif %}>
             {% if card.image %}{% image card.image fill-96x96 class="st-card__icon" %}{% endif %}
             <h3 class="st-card__title">{% tr card "title" %}</h3>
             {% tr card "subtitle" as sub %}{% if sub %}<p class="st-card__sub">{{ sub }}</p>{% endif %}

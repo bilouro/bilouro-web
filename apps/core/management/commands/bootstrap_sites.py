@@ -911,6 +911,29 @@ class Command(BaseCommand):
                 acard.save()
                 self.stdout.write(self.style.SUCCESS("  + service card 'Small applications' → Studio App copy"))
 
+            # NFC cards and plates (nfc.bilouro.com) — last service card, external link (Victor, 2026-11-08).
+            nfc_url = "https://nfc.bilouro.com"
+            if not StudioServiceCard.objects.filter(page=studio_home, link_url__startswith=nfc_url).exists():
+                # The original cards were created without sort_order; PostgreSQL sorts NULLs last,
+                # so number them first to keep the new card at the end.
+                existing = StudioServiceCard.objects.filter(page=studio_home).order_by("sort_order", "id")
+                for i, card in enumerate(existing):
+                    if card.sort_order != i:
+                        card.sort_order = i
+                        card.save(update_fields=["sort_order"])
+                StudioServiceCard.objects.create(
+                    page=studio_home,
+                    sort_order=existing.count(),
+                    title="NFC cards and plates",
+                    subtitle="Google reviews, Instagram followers and digital menus for restaurants.",
+                    output="Ready-to-use NFC + QR plates from €20, link set up by us. Delivered in 2–5 working days.",
+                    link_url=nfc_url,
+                    title_pt="Cartões e placas NFC",
+                    subtitle_pt="Avaliações no Google, seguidores no Instagram e menus digitais para restaurantes.",
+                    output_pt="Placas NFC + QR prontas a usar desde 20 €, com o link configurado por nós. Entrega em 2 a 5 dias úteis.",
+                )
+                self.stdout.write(self.style.SUCCESS("  + service card 'NFC cards and plates' → nfc.bilouro.com"))
+
             # Home SEO title/description (only when empty — editable in Wagtail → Promote).
             sh = StudioHomePage.objects.get(pk=studio_home.pk)
             if not sh.seo_title:
