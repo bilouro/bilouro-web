@@ -933,6 +933,13 @@ class Command(BaseCommand):
                     output_pt="Placas NFC + QR prontas a usar desde 20 €, com o link configurado por nós. Entrega em 2 a 5 dias úteis.",
                 )
                 self.stdout.write(self.style.SUCCESS("  + service card 'NFC cards and plates' → nfc.bilouro.com"))
+            # Once the /nfc/ solution page exists, the card points at it (the hub links on to nfc.bilouro.com).
+            if StudioSolutionPage.objects.filter(slug="nfc", live=True).exists():
+                ncard = StudioServiceCard.objects.filter(page=studio_home, link_url=nfc_url).first()
+                if ncard:
+                    ncard.link_url = "/nfc/"
+                    ncard.save(update_fields=["link_url"])
+                    self.stdout.write(self.style.SUCCESS("  + service card 'NFC cards and plates' → /nfc/"))
 
             # Home SEO title/description (only when empty — editable in Wagtail → Promote).
             sh = StudioHomePage.objects.get(pk=studio_home.pk)

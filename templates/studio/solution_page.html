@@ -15,6 +15,7 @@
       <h1 class="st-sol-hero__title">{% tr_richtext page "hero_headline" %}</h1>
       <div class="st-sol-hero__sub">{% tr_richtext page "hero_sub" %}</div>
       <a class="st-btn st-btn--lg" href="{{ booking }}" target="_blank" rel="noopener">{% tr page "cta_label" %}</a>
+      {% if page.external_url %}<a class="st-btn st-btn--lg st-btn--ghost" href="{{ page.external_url }}{% if cur == 'en' %}/en{% endif %}" target="_blank" rel="noopener">{% trans "See products and prices" %} ↗</a>{% endif %}
     </div>
     {% if page.image %}
     <div class="st-sol-hero__media">{% image page.image width-900 class="st-sol-hero__img" %}</div>
@@ -200,6 +201,7 @@
     <h2 class="st-cta__title">{% tr page "closing_heading" %}</h2>
     <div class="st-cta__body">{% tr_richtext page "closing_body" %}</div>
     <a class="st-btn st-btn--lg" href="{{ booking }}" target="_blank" rel="noopener">{% tr page "cta_label" %}</a>
+    {% if page.external_url %}<a class="st-btn st-btn--lg st-btn--ghost" href="{{ page.external_url }}{% if cur == 'en' %}/en{% endif %}" target="_blank" rel="noopener">{% trans "See products and prices" %} ↗</a>{% endif %}
     <p class="st-sol-back"><a href="/">← {% trans "Back to home" %}</a></p>
   </div>
 </section>

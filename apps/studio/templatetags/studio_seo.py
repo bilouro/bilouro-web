@@ -11,6 +11,8 @@ from django.utils.safestring import mark_safe
 register = template.Library()
 
 ORG_NAME = "Bilouro Studio"
+# Sister sites of the studio; each declares Bilouro Studio as its parentOrganization.
+SUB_ORGANIZATIONS = [{"@type": "Organization", "name": "Bilouro NFC", "url": "https://nfc.bilouro.com"}]
 
 
 def _t(obj, field, lang):
@@ -49,6 +51,7 @@ def _organization(request) -> dict:
         "url": _base_url(request) + "/",
         "email": "consulting@bilouro.com",
         "areaServed": {"@type": "Country", "name": "Portugal"},
+        "subOrganization": SUB_ORGANIZATIONS,
     }
 
 
@@ -77,22 +80,43 @@ def studio_solution_jsonld(context, page):
     url = _page_url(request, page, lang)
     name = _t(page, "seo_title", lang) or page.title
     description = _t(page, "search_description", lang) or _plain(_t(page, "hero_sub", lang))
-    app = {
-        "@type": "SoftwareApplication",
-        "@id": url + "#app",
-        "name": "Studio App",
-        "alternateName": name,
-        "description": description,
-        "url": url,
-        "applicationCategory": "BusinessApplication",
-        "applicationSubCategory": "Gym and fitness studio management software",
-        "operatingSystem": "Web, iOS, Android (PWA)",
-        "inLanguage": ["pt-PT", "en"],
-        "areaServed": {"@type": "Country", "name": "Portugal"},
-        "provider": {"@id": _base_url(request) + "/#org"},
-        "featureList": [_t(f, "title", lang) for f in page.features.all()]
-        + [_t(x, "title", lang) for x in page.extras.all()],
-    }
+    feature_list = [_t(f, "title", lang) for f in page.features.all()] + [_t(x, "title", lang) for x in page.extras.all()]
+    if getattr(page, "external_url", ""):
+        # A solution sold on its own site (e.g. nfc.bilouro.com): a Service provided by the studio.
+        app = {
+            "@type": "Service",
+            "@id": url + "#service",
+            "name": _t(page, "nav_label", lang) or page.title,
+            "alternateName": name,
+            "description": description,
+            "url": url,
+            "serviceType": _plain(_t(page, "hero_eyebrow", lang)) or page.title,
+            "inLanguage": ["pt-PT", "en"],
+            "areaServed": {"@type": "Country", "name": "Portugal"},
+            "provider": {"@id": _base_url(request) + "/#org"},
+            "sameAs": [page.external_url],
+            "hasOfferCatalog": {
+                "@type": "OfferCatalog",
+                "name": _t(page, "features_heading", lang) or page.title,
+                "itemListElement": [{"@type": "Offer", "itemOffered": {"@type": "Product", "name": n}} for n in feature_list],
+            },
+        }
+    else:
+        app = {
+            "@type": "SoftwareApplication",
+            "@id": url + "#app",
+            "name": "Studio App",
+            "alternateName": name,
+            "description": description,
+            "url": url,
+            "applicationCategory": "BusinessApplication",
+            "applicationSubCategory": "Gym and fitness studio management software",
+            "operatingSystem": "Web, iOS, Android (PWA)",
+            "inLanguage": ["pt-PT", "en"],
+            "areaServed": {"@type": "Country", "name": "Portugal"},
+            "provider": {"@id": _base_url(request) + "/#org"},
+            "featureList": feature_list,
+        }
     if getattr(page, "image", None):
         rendition = page.image.get_rendition("width-1200")
         app["image"] = rendition.url if rendition.url.startswith("http") else _base_url(request) + rendition.url

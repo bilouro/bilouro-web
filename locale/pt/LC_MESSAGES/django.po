@@ -315,6 +315,14 @@ msgstr[1] "%(m)s min de leitura"
 msgid "Engineering"
 msgstr "Engenharia"
 
+#: templates/studio/_base.html
+msgid "NFC cards"
+msgstr "Cartões NFC"
+
+#: templates/studio/solution_page.html
+msgid "See products and prices"
+msgstr "Ver produtos e preços"
+
 #~ msgid "Name"
 #~ msgstr "Nome"
 

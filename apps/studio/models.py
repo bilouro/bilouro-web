@@ -498,6 +498,11 @@ class StudioSolutionPage(StudioSitemapMixin, Page):
     price_note = RichTextField(blank=True)
 
     nav_label = models.CharField(max_length=80, blank=True, help_text="Short label for links between solution pages, e.g. 'Pilates studios'.")
+    external_url = models.URLField(
+        max_length=300,
+        blank=True,
+        help_text="Canonical site of this solution when it lives elsewhere (e.g. https://nfc.bilouro.com): adds a 'See products and prices' button and Service JSON-LD.",
+    )
     parent_solution = models.ForeignKey(
         "self", null=True, blank=True, on_delete=models.SET_NULL, related_name="vertical_pages",
         help_text="Set on vertical landing pages (e.g. gyms, CrossFit boxes) to link them to the main solution page.",
@@ -557,7 +562,7 @@ class StudioSolutionPage(StudioSitemapMixin, Page):
         FieldPanel("proof_note"),
         FieldPanel("faq_heading"),
         InlinePanel("faqs", label="FAQ"),
-        MultiFieldPanel([FieldPanel("nav_label"), FieldPanel("parent_solution"), FieldPanel("verticals_heading")], heading="Links between solution pages"),
+        MultiFieldPanel([FieldPanel("nav_label"), FieldPanel("parent_solution"), FieldPanel("verticals_heading"), FieldPanel("external_url")], heading="Links between solution pages"),
         MultiFieldPanel([FieldPanel("price_heading"), FieldPanel("price_value"), FieldPanel("price_note")], heading="Investment (EN)"),
         MultiFieldPanel([FieldPanel("closing_heading"), FieldPanel("closing_body"), FieldPanel("cta_label")], heading="Closing CTA (EN)"),
         MultiFieldPanel(

@@ -9,6 +9,8 @@ The folder follows the handoff contract agreed with the content session
 
 Markdown skeleton (## headings are matched case-insensitively):
 
+    ## Page                     - title: / - nav_label: / - parent: <slug> / - external_url:
+                                (external_url = canonical site elsewhere, e.g. nfc.bilouro.com)
     ## Hero                     - eyebrow: / - headline: (*emphasis*) / - sub:
     ## Problem                  one paragraph   (## Problem: Custom heading)
     ## Solution                 one paragraph
@@ -317,6 +319,8 @@ class Command(BaseCommand):
         for key in ("nav_label", "verticals_heading", "faq_heading", "features_heading", "extras_heading"):
             if pg_en.get(key):
                 put(key, pg_en[key], pg_pt.get(key, ""))
+        if pg_en.get("external_url"):
+            page.external_url = pg_en["external_url"]
         if pg_en.get("parent"):
             parent = StudioSolutionPage.objects.filter(slug=pg_en["parent"]).first()
             if not parent:
